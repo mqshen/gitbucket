@@ -1,0 +1,34 @@
+@(milestones: List[model.Milestone],
+q: String,
+repository: service.RepositoryService.RepositoryInfo)(implicit context: app.Context)
+@import view.helpers._
+
+<div class="select-menu-filters">
+    <div class="select-menu-text-filter">
+        <input type="text" id="milestones-filter-field" class="js-filterable-field js-navigation-enable" placeholder="Filter milestones" autocomplete="off">
+    </div>
+</div>
+
+<div class="select-menu-list">
+    <div data-filterable-for="milestones-filter-field" data-filterable-type="substring">
+
+        <a href="@url(repository)/issues?q=@q%20no%3Amilestone" class="select-menu-item js-navigation-item js-navigation-open ">
+            <span class="select-menu-item-icon octicon octicon-check"></span>
+            <div class="select-menu-item-text">
+                <strong>Issues with no milestone</strong>
+            </div>
+        </a>
+
+
+        @milestones.map { milestone =>
+            <a href="@url(repository)/issues?q=@q%20milestone%3A@milestone.title" class="select-menu-item js-navigation-item js-navigation-open ">
+                <span class="select-menu-item-icon octicon octicon-check"></span>
+                <div class="select-menu-item-text">@milestone.title</div>
+            </a>
+        }
+
+    </div>
+
+    <div class="select-menu-no-results">No milestones found. Sorry about that.</div>
+</div>
+

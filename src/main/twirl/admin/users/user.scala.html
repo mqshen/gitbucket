@@ -1,0 +1,107 @@
+@(account: Option[model.Account])(implicit context: app.Context)
+@import context._
+@import util.LDAPUtil
+@import view.helpers._
+@html.main(if(account.isEmpty) "New User" else "Update User"){
+@admin.html.menu("users"){
+<div class="boxed-group">
+    <h3>User profile</h3>
+    @account.map { account =>
+    <div class="boxed-group-inner clearfix js-uploadable-container js-upload-avatar-image is-default page-new-repo">
+        <form action="@path/admin/users/@account.userName/_edituser" method="POST" validate="true">
+            <div class="column two-thirds">
+                <dl class="form edit-profile-avatar">
+                    <dt><label >Profile picture</label></dt>
+                    <dd class="avatar-upload-container clearfix">
+                        @avatar(account.userName, 70, avatarClass = "avatar left")
+                    </dd>
+                </dl>
+                <dl class="form">
+                    <dt><label for="user_profile_full_name">Full Name</label></dt>
+                    <dd><input id="user_profile_full_name" name="fullName" size="30" type="text" value="@account.fullName"></dd>
+                </dl>
+                <dl class="form">
+                    <dt><label for="user_profile_mail">Mail Address</label></dt>
+                    <dd><input id="user_profile_mail" name="mailAddress" size="30" type="email" value="@if(!LDAPUtil.isDummyMailAddress(account)){@account.mailAddress}"></dd>
+                </dl>
+                <dl class="form">
+                    <dt><label for="user_profile_blog">URL</label></dt>
+                    <dd><input id="user_profile_blog" name="url" size="30" type="url" value="@account.url"></dd>
+                </dl>
+                <hr>
+                <div class="form-checkbox">
+                    <label>
+                        <input @if(!account.isAdmin){ checked="checked" } id="repository_public_false" name="isAdmin" tabindex="5" type="radio" value="false">
+                        Normal
+                    </label>
+                    <span class="mega-octicon octicon-repo"></span>
+                    <span class="note">
+                        Normal User
+                    </span>
+                </div>
+                <div class="form-checkbox">
+                    <label>
+                        <input @if(account.isAdmin){ checked="checked" }  id="repository_public_true" name="isAdmin" tabindex="5" type="radio" value="true">
+                        Administrator
+                    </label>
+                    <span class="mega-octicon octicon-lock"></span>
+                    <span class="note">
+                        Administrator
+                    </span>
+                </div>
+                <p><button type="submit" class="button primary">Update profile</button></p>
+            </div>
+        </form>
+    </div>
+    }.getOrElse {
+    <div class="boxed-group-inner clearfix js-uploadable-container js-upload-avatar-image is-default page-new-repo">
+        <form action="@path/admin/users/_newuser" method="POST" validate="true">
+            <div class="column two-thirds">
+                <dl class="form">
+                    <dt><label for="user_profile_name">Name</label></dt>
+                    <dd><input id="user_profile_name" name="userName" size="30" type="text" value=""></dd>
+                </dl>
+                <dl class="form">
+                    <dt><label for="user_profile_password">Password</label></dt>
+                    <dd><input id="user_profile_password" name="password" size="30" type="password" value=""></dd>
+                </dl>
+                <dl class="form">
+                    <dt><label for="user_profile_name">Full Name</label></dt>
+                    <dd><input id="user_profile_name" name="fullName" size="30" type="text" value=""></dd>
+                </dl>
+                <dl class="form">
+                    <dt><label for="user_profile_mail">Mail Address</label></dt>
+                    <dd><input id="user_profile_full_name" name="mailAddress" size="30" type="email" value=""></dd>
+                </dl>
+                <dl class="form">
+                    <dt><label for="user_profile_blog">URL</label></dt>
+                    <dd><input id="user_profile_blog" name="url" size="30" type="url" value=""></dd>
+                </dl>
+                <hr>
+                <div class="form-checkbox">
+                    <label>
+                        <input checked="checked"  id="repository_public_false" name="isAdmin" tabindex="5" type="radio" value="false">
+                        Normal
+                    </label>
+                    <span class="mega-octicon octicon-repo"></span>
+                    <span class="note">
+                        Normal User
+                    </span>
+                </div>
+                <div class="form-checkbox">
+                    <label>
+                        <input  id="repository_public_true" name="isAdmin" tabindex="5" type="radio" value="true">
+                        Administrator
+                    </label>
+                    <span class="mega-octicon octicon-lock"></span>
+                    <span class="note">
+                        Administrator
+                    </span>
+                </div>
+                <p><button type="submit" class="button primary">Create User</button></p>
+            </div>
+        </form>
+    </div>
+    }
+  }
+}

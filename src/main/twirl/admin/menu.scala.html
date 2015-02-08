@@ -1,0 +1,18 @@
+@(active: String)(body: Html)(implicit context: app.Context)
+@import context._
+<div class="container">
+    <div class="columns">
+        <div class="column one-fourth" role="navigation">
+            <nav class="menu" data-pjax="">
+                <h3 class="menu-heading">
+                    System settings
+                </h3>
+                <a href="@path/admin/users" class="@if(active=="users"){ selected } js-selected-navigation-item menu-item" data-selected-links="avatar_settings /admin/users">User Management</a>
+                <a href="@path/admin/users" class="@if(active=="system"){ selected } js-selected-navigation-item menu-item" data-selected-links="avatar_settings /admin/system">System Management</a>
+                <a href="@path/console/login.jsp" js-selected-navigation-item menu-item"  data-selected-links="avatar_settings /admin/users">User Management</a>
+            </nav>
+        </div>
+        <div class="column three-fourths">
+            @body
+        </div>
+    </div>

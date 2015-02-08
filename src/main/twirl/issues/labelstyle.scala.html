@@ -1,0 +1,10 @@
+@(labels: List[model.Label])(implicit context: app.Context)
+@import context._
+@import view.helpers._
+<style type="text/css" media="screen">
+@labels.map { label =>
+    span.labelstyle-@{label.color}, .linked-labelstyle-@{label.color} {  background-color: #@label.color !important;  color: #@label.fontColor !important;}
+    .labelstyle-@{label.color}.selected {  background-color: #@label.color !important;  color: #@label.fontColor !important;}
+    .label-select-menu .labelstyle-@{label.color}.selected {  background:#@label.color !important;  color: #@label.fontColor !important;}
+}
+</style>

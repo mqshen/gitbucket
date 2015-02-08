@@ -1,0 +1,19 @@
+@(users: List[model.Account])(implicit context: app.Context)
+@import view.helpers._
+
+<ul class="autocomplete-group js-autocomplete-results js-navigation-container">
+    @users.map { user =>
+
+    <li class="member-suggestion typeahead-result js-navigation-item" data-autocomplete-value="@user.userName">
+        @avatar(user.userName, 20)
+        <p class="member-info">
+            <strong class="member-login">@user.userName</strong>
+        <span class="member-name">
+            @user.fullName
+        </span>
+        </p>
+        <span class="octicon octicon-plus right"></span>
+    </li>
+    }
+</ul>
+

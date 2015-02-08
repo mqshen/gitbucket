@@ -1,0 +1,10 @@
+@(name: String, value: Option[java.util.Date])
+@import view.helpers
+<div  class="input-append date" data-date="@value.map(helpers.date)">
+  <span class="add-on"><i class="icon-calendar"></i></span>
+</div>
+<script>
+$(function(){
+  $('#@name').datepicker({format: "yyyy-mm-dd"});
+});
+</script>

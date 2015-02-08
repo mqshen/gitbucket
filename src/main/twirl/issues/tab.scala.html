@@ -1,0 +1,48 @@
+@(active: String, newButton: Boolean,
+  repository: service.RepositoryService.RepositoryInfo)(implicit context: app.Context)
+@import context._
+@import view.helpers._
+<div class="subnav" data-pjax="">
+@if(loginAccount.isDefined) {
+    @if(newButton) {
+        @if(active == "issues") {
+            <a href="@url(repository)/issues/new" class="button primary right" data-hotkey="c">
+                New issue
+            </a>
+        }
+        @if(active == "pulls") {
+            <a href="@url(repository)/compare" class="button primary right" data-hotkey="c">
+                New pull request
+            </a>
+        }
+        @if(active == "labels") {
+            <a href="@url(repository)/issues/new" class="button primary right" data-hotkey="c">
+                New label
+            </a>
+        }
+        @if(active == "milestones") {
+            <a href="@url(repository)/issues/milestones/new" class="button primary right" data-hotkey="c">
+                New milestone
+            </a>
+        }
+    }
+}
+
+    <div class="right" role="search">
+
+        <form method="get" action="@url(repository)/issues" class="subnav-search subnav-divider-right left" data-pjax="">
+            <input type="text" name="q" value="is:open is:issue " id="js-issues-search" class="subnav-search-input input-contrast" placeholder="Search all issues" data-hotkey="/">
+            <span class="octicon octicon-search subnav-search-icon"></span>
+        </form>
+    </div>
+
+
+    <div class="subnav-links left" role="navigation">
+        <a href="@url(repository)/issues" class="@if(active == "issues"    ){selected} js-selected-navigation-item subnav-item" data-selected-links="repo_issues @url(repository)/issues?q=is%3Aopen+is%3Aissue">Issues</a>
+        <a href="@url(repository)/pulls" class="@if(active == "pulls"    ){selected} js-selected-navigation-item subnav-item" data-selected-links="repo_pulls @url(repository)/issues?q=is%3Aopen+is%3Apr">Pull requests</a>
+        <a href="@url(repository)/issues/labels" class="@if(active == "labels"    ){selected} js-selected-navigation-item subnav-item" data-selected-links="repo_labels @url(repository)/labels">Labels</a>
+        <a href="@url(repository)/issues/milestones" class="@if(active == "milestones"    ){selected} js-selected-navigation-item subnav-item" data-selected-links="repo_milestones @url(repository)/milestones">Milestones</a>
+    </div>
+
+</div>
+

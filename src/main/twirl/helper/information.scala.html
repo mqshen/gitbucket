@@ -1,0 +1,9 @@
+@(info: Option[Any])
+@if(info.isDefined){
+<div class="flash-messages container">
+    <div class="flash flash-notice">
+        <span class="octicon octicon-x flash-close js-flash-close"></span>
+        @info
+    </div>
+</div>
+}

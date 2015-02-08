@@ -1,0 +1,9 @@
+@(milestone: model.Milestone, openCount: Int, closeCount: Int,
+    repository: service.RepositoryService.RepositoryInfo)(implicit context: app.Context)
+@import context._
+@import view.helpers._
+@progress(openCount + closeCount, closeCount)
+<span class="strong small">@milestone.title</span>
+<a title="0.1" href="@url(repository)/milestones/@milestone.title" class="milestone-name css-truncate">
+    <span class="css-truncate-target">@milestone.title</span>
+</a>

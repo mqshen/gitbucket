@@ -1,0 +1,59 @@
+@(value : String  = "",
+  prefix: String  = "",
+  mini  : Boolean = true,
+  style : String  = "",
+  right : Boolean = false,
+  flat  : Boolean = false)(body: Html)
+<div class="select-menu js-menu-container js-select-menu left">
+    <span class="minibutton select-menu-button js-menu-target css-truncate" data-hotkey="w" data-master-branch="master" data-ref="master" title="master" role="button" aria-label="Switch branches or tags" tabindex="0" aria-haspopup="true">
+        <span class="octicon octicon-git-branch"></span>
+        <i>branch:</i>
+        <span class="js-select-button css-truncate-target">@value</span>
+    </span>
+
+    <div class="select-menu-modal-holder js-menu-content js-navigation-container" data-pjax="" aria-hidden="true">
+
+        <div class="select-menu-modal">
+            <div class="select-menu-header">
+                <span class="select-menu-title">Switch branches</span>
+                <span class="octicon octicon-x js-menu-close" role="button" aria-label="Close"></span>
+            </div> <!-- /.select-menu-header -->
+
+            <div class="select-menu-list select-menu-tab-bucket js-select-menu-tab-bucket" data-tab-filter="branches">
+
+                <div data-filterable-for="context-commitish-filter-field" data-filterable-type="substring">
+
+                    @body
+
+                </div>
+
+                <div class="select-menu-no-results">Nothing to show</div>
+            </div> <!-- /.select-menu-list -->
+
+
+
+        </div> <!-- /.select-menu-modal -->
+    </div> <!-- /.select-menu-modal-holder -->
+</div>
+
+
+<!--
+
+<div class="btn-group" @if(style.nonEmpty){style="@style"}>
+  <button
+      @if(flat){style="border: none; background-color: #eee;"}
+      class="dropdown-toggle @if(!flat){btn} else {flat} @if(mini){btn-mini} else {btn-small}" data-toggle="dropdown">
+    @if(value.isEmpty){
+      <i class="icon-cog"></i>
+    } else {
+      @if(prefix.nonEmpty){
+        <span class="muted">@prefix:</span>
+      }
+      <span class="strong">@value</span>
+    }
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu@if(right){ pull-right}">
+  </ul>
+</div>
+-->

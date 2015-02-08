@@ -1,0 +1,139 @@
+@(branch: String,
+  repository: service.RepositoryService.RepositoryInfo,
+  pathList: List[String],
+  groupNames: List[String],
+  latestCommit: util.JGitUtil.CommitInfo,
+  files: List[util.JGitUtil.FileInfo],
+  readme: Option[(List[String], String)],
+  hasWritePermission: Boolean,
+  info: Option[Any] = None,
+  error: Option[Any] = None)(implicit context: app.Context)
+@import context._
+@import view.helpers._
+@html.main(s"${repository.owner}/${repository.name}", Some(repository), selectedLink = "repo_source") {
+  @html.menu("code", repository, Some(branch), pathList.isEmpty){
+    <div class="file-navigation in-mid-page">
+      @helper.html.dropdown(
+        value  = if(branch.length == 40) branch.substring(0, 10) else branch,
+        prefix = if(branch.length == 40) "tree" else if(repository.branchList.contains(branch)) "branch" else "tree",
+        mini   = true
+      ){
+        @repository.branchList.map { x =>
+
+            <div class="select-menu-item js-navigation-item ">
+                <span class="select-menu-item-icon octicon octicon-check"></span>
+                <a href="@url(repository)/tree/@encodeRefName(x)" data-name="@helper.html.checkicon(x == branch) @x" data-skip-pjax="true" rel="nofollow" class="js-navigation-open select-menu-item-text css-truncate-target"
+                title="@helper.html.checkicon(x == branch) @x">@helper.html.checkicon(x == branch) @x</a>
+            </div> <!-- /.select-menu-item -->
+        }
+      }
+      <div class="breadcrumb">
+          <span class="repo-root js-repo-root">
+              <span itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                  <a href="@url(repository)/tree/@encodeRefName(branch)" class="" data-branch="master" data-direction="back" data-pjax="true" itemscope="url">
+                      <span itemprop="title">@repository.name</span>
+                  </a>
+              </span>
+          </span>
+          @pathList.zipWithIndex.map { case (section, i) =>
+            <a href="@url(repository)/tree/@encodeRefName(branch)/@pathList.take(i + 1).mkString("<span class=\"separator\"> / </span>")">@section</a> /
+          }
+          @if(hasWritePermission){
+          <form action="@url(repository)/new/@encodeRefName(branch)/@pathList.mkString("/")" aria-label="Fork this project and create a new file" class="js-new-blob-form tooltipped tooltipped-e new-file-link" method="post">
+              <span aria-label="Fork this project and create a new file" class="js-new-blob-submit octicon octicon-plus" data-test-id="create-new-git-file" role="button"></span>
+          </form>
+          }
+      </div>
+    </div>
+
+      <div class="commit commit-tease js-details-container">
+          <p class="commit-title ">
+              <a href="@url(repository)/commit/@latestCommit.id" class="message" data-pjax="true" title="small readme update">@link(latestCommit.summary, repository)</a>
+          </p>
+          <div class="commit-meta">
+              <button aria-label="Copy SHA" class="js-zeroclipboard zeroclipboard-link" data-clipboard-text="0b310afff2524cbeb2bd740a20fe32b025e44197" data-copied-hint="Copied!" type="button"><span class="octicon octicon-clippy"></span></button>
+              <a href="@url(repository)/commit/@latestCommit.id" class="sha-block" data-pjax="">
+                  latest commit <span class="sha">@latestCommit.id.substring(0, 10)</span></a>
+
+              <div class="authorship">
+                  @avatar(latestCommit, 20)
+                  <span class="author-name">
+                      <a href="/@latestCommit.authorName" rel="author">@latestCommit.authorName</a>
+                  </span>
+                  authored @datetime(latestCommit.authorTime)
+              </div>
+          </div>
+      </div>
+      <div class="file-wrap">
+          <table class="files" data-pjax="">
+              <tbody>
+              @if(pathList.size > 0){
+                  <tr>
+                      <td width="16"></td>
+                      <td><a href="@url(repository)@if(pathList.size > 1){/tree/@encodeRefName(branch)/@pathList.init.mkString("/")}">..</a></td>
+                      <td></td>
+                      <td></td>
+                  </tr>
+              }
+                  @files.map { file =>
+                      <tr>
+                          <td class="icon">
+                              @if(file.isDirectory){
+                                  @if(file.linkUrl.isDefined){
+                                      <span class="octicon octicon-file-submodule"></span>
+                                  } else {
+                                      <span class="octicon octicon-file-directory"></span>
+                                  }
+                              } else {
+                                  <span class="octicon octicon-file-text"></span>
+                              }
+                          </td>
+                          <td class="content">
+                              <span class="css-truncate css-truncate-target">
+                              @if(file.isDirectory){
+                                  @if(file.linkUrl.isDefined){
+                                      <a href="@file.linkUrl">
+                                          <span class="simplified-path">@file.name.split("/").toList.init match {
+                                              case Nil => {}
+                                              case list => {@list.mkString("", "/", "/")}
+                                          }</span>@file.name.split("/").toList.last
+                                      </a>
+                                  } else {
+                                      <a href="@url(repository)/tree@{(encodeRefName(branch) :: pathList).mkString("/", "/", "/")}@file.name">
+                                          <span class="simplified-path">@file.name.split("/").toList.init match {
+                                              case Nil => {}
+                                              case list => {@list.mkString("", "/", "/")}
+                                          }</span>@file.name.split("/").toList.last
+                                      </a>
+                                  }
+                              } else {
+                                  <a href="@url(repository)/blob@{(encodeRefName(branch) :: pathList).mkString("/", "/", "/")}@file.name">@file.name</a>
+                              }
+                          </td>
+                          <td class="message">
+                              <a href="@url(repository)/commit/@file.commitId" class="commit-message">@link(file.message, repository)</a>
+                              [@file.author]
+                          </td>
+                          <td class="age">
+                              <span class="css-truncate css-truncate-target">@datetime(file.time)</span>
+                          </td>
+                      </tr>
+                  </tbody>
+              }
+          </table>
+      </div>
+
+    @readme.map { case(filePath, content) =>
+    <div id="readme" class="boxed-group flush clearfix announce instapaper_body md">
+        <h3>
+            <span class="octicon octicon-book"></span>
+            README.md
+        </h3>
+        <article class="markdown-body entry-content" itemprop="mainContentOfPage">
+            @renderMarkup(filePath, content, branch, repository, false, false)
+        </article>
+    </div>
+
+    }
+  }
+}

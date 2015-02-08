@@ -1,0 +1,72 @@
+@(milestone: Option[model.Milestone], repository: service.RepositoryService.RepositoryInfo)(implicit context: app.Context)
+@import context._
+@import view.helpers._
+@html.main(s"Milestones - ${repository.owner}/${repository.name}"){
+  @html.menu("issues", repository){
+    <div class="issues-listing" data-pjax="">
+        <div class="subhead">
+            @if(milestone.isEmpty){
+                <h2 class="subhead-heading">New milestone</h2>
+                <p class="subhead-description">Create a new milestone to help organize your issues and pull requests.</p>
+            } else {
+                @issues.html.tab("milestones", false, repository)
+            }
+        </div>
+        <form method="POST" action="@url(repository)/issues/milestones/@if(milestone.isEmpty){new}else{@milestone.get.milestoneId/edit}" validate="true">
+            <div class="columns">
+                <div class="column two-thirds">
+                    <dl class="form">
+                        <dl class="form">
+                            <dt class="input-label">
+                                <label autofocus="autofocus" class="input-large input-block"
+                                       for="milestone_title" placeholder="Title" tabindex="1">Title</label>
+                            </dt>
+                            <dd>
+                                <input autofocus="autofocus" class="input-large input-block"
+                                       id="milestone_title" name="title" placeholder="Title"
+                                       size="30" tabindex="1" type="text" value="@milestone.map(_.title)">
+                            </dd>
+                        </dl>
+                    </dl>
+                    <dl class="form">
+                        <dt class="input-label">
+                            <label for="milestone_description" tabindex="2">Description</label>
+                        </dt>
+                        <dd>
+                            <textarea cols="40" id="milestone_description" name="description" rows="20" tabindex="2">@milestone.map(_.description)</textarea>
+                        </dd>
+                    </dl>
+                </div>
+                <div class="column milestone-calender-container">
+                    <dl class="form">
+                        <dt class="input-label">
+                            <label class="js-date-input short" for="milestone_due_on">Due Date (optional)
+                                <a href="#" class="js-date-input-clear">clear</a>
+                            </label>
+                        </dt>
+                        <dd  >
+                            <input class="js-date-input short" id="milestone_due_on" name="dueDate"
+                                   size="30" type="text" style="display: none;">
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+            <hr>
+            <div class="form-actions">
+                @if(milestone.isEmpty){
+                <button type="submit" class="button primary" tabindex="4">Create milestone</button>
+                } else {
+                @if(milestone.get.closedDate.isDefined){
+                <button type="submit" class="button primary" tabindex="4"
+                        onclick="location.href='@url(repository)/issues/milestones/@milestone.get.milestoneId/close';">Open</button>
+                } else {
+                <button type="submit" class="button primary" tabindex="4"
+                        onclick="location.href='@url(repository)/issues/milestones/@milestone.get.milestoneId/open';">Close</button>
+                }
+                <button type="submit" class="button primary" tabindex="4" >Update milestone</button>
+                }
+            </div>
+        </form>
+    </div>
+  }
+}

@@ -1,0 +1,83 @@
+@(account: Option[model.Account], members: List[model.GroupMember])(implicit context: app.Context)
+@import context._
+@import view.helpers._
+@html.main(if(account.isEmpty) "New Group" else "Update Group"){
+  @admin.html.menu("users"){
+<div class="boxed-group">
+    <h3>User profile</h3>
+    @account.map { account =>
+    <div class="boxed-group-inner clearfix js-uploadable-container js-upload-avatar-image is-default page-new-repo">
+        <form action="@path/admin/users/@account.userName/_editgroup" method="POST" validate="true" class="js-autocomplete-container js-suggestion-member-form">
+            <input type="hidden" name="clearImage" value="false">
+            <input type="hidden" name="removed" value="false">
+            <div class="column two-thirds">
+                <dl class="form">
+                    <dt><label for="user_profile_name">Group Name</label></dt>
+                    <dd><input id="user_profile_name" name="oldGroupName" disabled size="30" type="text" value="@account.userName"></dd>
+                </dl>
+                <dl class="form">
+                    <dt><label for="user_profile_blog">URL</label></dt>
+                    <dd><input id="user_profile_blog" name="url" size="30" type="url" value="@account.url"></dd>
+                </dl>
+                <dl class="form">
+                    <dt><label >Member</label></dt>
+                    <ul class="boxed-group-list application-authorizations" id="member">
+                        @members.map { member =>
+                        <li class="clearfix " data-type="application">
+                            <input type="hidden" name="members[@member.userName]" value="@member.userName">
+                            <a class="delete-button js-delete-member right" aria-label="Delete comment">
+                                <span class="octicon octicon-x"></span>
+                            </a>
+                            <div class="button-group">
+                                <a href="#" class="minibutton js-composer-member @if(!member.isManager) { selected }"><input style="display: none" type="radio" @if(!member.isManager) {checked} value="false" name="memberTypes[@member.userName]">Member</a>
+                                <a href="#" class="minibutton js-composer-member @if(member.isManager) { selected }"><input style="display: none" type="radio" @if(member.isManager) {checked} value="true" name="memberTypes[@member.userName]">Manager</a>
+                            </div>
+                            <strong>@member.userName</strong>
+                        </li>
+                        }
+
+                    </ul>
+                    <dd>
+                        <input type="text" name="member" id="search-member" class="input-block input-contrast auto-search-input new-member-field js-autocomplete-field" autofocus="" placeholder="Search by username or full name" autocomplete="off">
+                    </dd>
+                </dl>
+                <div class="autocomplete-results js-autocomplete" data-search-url="@path/admin/users/suggestions">
+                    <ul class="autocomplete-group js-autocomplete-results js-navigation-container"></ul>
+                </div>
+                <hr>
+                <p><button type="submit" class="button primary">Update Group</button></p>
+            </div>
+        </form>
+    </div>
+    }.getOrElse {
+    <div class="boxed-group-inner clearfix js-uploadable-container js-upload-avatar-image is-default page-new-repo">
+        <form action="@path/admin/users/_newgroup" method="POST" validate="true" class="js-autocomplete-container js-suggestion-member-form">
+            <div class="column two-thirds">
+                <dl class="form">
+                    <dt><label for="user_profile_name">Group Name</label></dt>
+                    <dd><input id="user_profile_name" name="groupName" size="30" type="text" value=""></dd>
+                </dl>
+                <dl class="form">
+                    <dt><label for="user_profile_blog">URL</label></dt>
+                    <dd><input id="user_profile_blog" name="url" size="30" type="url" value=""></dd>
+                </dl>
+                <dl class="form">
+                    <dt><label >Member</label></dt>
+                    <ul class="boxed-group-list application-authorizations" id="member">
+
+                    </ul>
+                    <dd>
+                        <input type="text" name="member" id="search-member" class="input-block input-contrast auto-search-input new-member-field js-autocomplete-field" autofocus="" placeholder="Search by username or full name" autocomplete="off">
+                    </dd>
+                </dl>
+                <div class="autocomplete-results js-autocomplete" data-search-url="@path/admin/users/suggestions">
+                    <ul class="autocomplete-group js-autocomplete-results js-navigation-container"></ul>
+                </div>
+                <hr>
+                <p><button type="submit" class="button primary">Create Group</button></p>
+            </div>
+        </form>
+    </div>
+    }
+  }
+}

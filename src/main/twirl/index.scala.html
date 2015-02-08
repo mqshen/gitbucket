@@ -1,0 +1,88 @@
+@(activities: List[model.Activity],
+  recentRepositories: List[service.RepositoryService.RepositoryInfo],
+  userRepositories: List[service.RepositoryService.RepositoryInfo])(implicit context: app.Context)
+@import context._
+@import view.helpers._
+@main("GitBucket"){
+  <div class="context-loader-container">
+    @dashboard.html.tab()
+    <div class="container">
+        <div class="dashboard">
+      <div class="news">
+        @helper.html.activities(activities)
+      </div>
+      <div class="dashboard-sidebar">
+        @if(loginAccount.isEmpty){
+          @signinform(settings)
+        } else {
+            <div class="boxed-group flush repos user-repos" id="your_repos" role="navigation">
+                    <!--
+              <div class="boxed-group-action">
+                  <a href="/repositories/new" class="minibutton primary new-repo">
+                      <span class="octicon octicon-plus"></span>
+                      New repository
+                  </a>
+              </div>
+              -->
+                <div class="boxed-group-action">
+                    <a href="/new" class="minibutton primary new-repo" data-ga-click="Dashboard, click, Sidebar header new repo button - context:user">
+                        <span class="octicon octicon-plus"></span>
+                        New repository
+                    </a>
+                </div>
+                <h3>Your repositories
+                    <span class="counter">@userRepositories.size</span></h3>
+                <div class="boxed-group-inner">
+                    <ul id="repo_listing" class="mini-repo-list js-repo-list" data-filterable-for="your-repos-filter" data-filterable-type="substring">
+                    @if(userRepositories.isEmpty){
+                        <li class="public ">
+                           No repositories
+                        </li>
+                    } else {
+                        @userRepositories.map { repository =>
+                        <li class="public @helper.html.repositoryCss(repository, false)">
+                            <a class="mini-repo-list-item css-truncate" href="@url(repository)">
+                                <span class="repo-icon octicon octicon-repo-forked"></span>
+                                <span class="repo-and-owner css-truncate-target" title="@repository.owner/@repository.name">
+                                    @repository.owner/<span class="strong">@repository.name</span>
+                                </span>
+                            </a>
+                        </li>
+                        }
+                    }
+                    </ul>
+                </div>
+            </div>
+        }
+          <div class="boxed-group flush repos user-repos" id="your_repos" role="navigation">
+              <!--
+              <div class="boxed-group-action">
+                  <a href="/repositories/new" class="minibutton primary new-repo">
+                      <span class="octicon octicon-plus"></span>
+                      New repository
+                  </a>
+              </div>
+              -->
+              <h3>Recent updated repositories
+                  <span class="counter">@recentRepositories.size</span></h3>
+              <div class="boxed-group-inner">
+                  <ul id="repo_listing" class="mini-repo-list js-repo-list" data-filterable-for="your-repos-filter" data-filterable-type="substring">
+                  @recentRepositories.map { repository =>
+                      <li class="public @helper.html.repositoryCss(repository, false)">
+                          <a class="mini-repo-list-item css-truncate" href="@url(repository)">
+                              <span class="repo-icon octicon octicon-repo-forked"></span>
+                              <span class="repo-and-owner css-truncate-target" title="@repository.owner/@repository.name">
+                                  @repository.owner/<span class="strong">@repository.name</span>
+                              </span>
+                          </a>
+                      </li>
+                  }
+                  </ul>
+              </div>
+          </div>
+
+      </div>
+    </div>
+  </div>
+  </div>
+}

@@ -1,0 +1,8 @@
+@(total: Int, progress: Int)
+<span class="progress-bar">
+  @if(progress > 0){
+    <span class="progress" style="width: @((progress.toDouble / total.toDouble * 100).toInt)%;"></span>
+  } else {
+    <span class="progress" style="width: 0%">&nbsp;</span>
+  }
+</span>

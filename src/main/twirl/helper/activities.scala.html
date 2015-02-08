@@ -1,0 +1,153 @@
+@(activities: List[model.Activity])(implicit context: app.Context)
+@import context._
+@import view.helpers._
+
+@if(activities.isEmpty){
+  No activity
+} else {
+  @activities.map { activity =>
+      @(activity.activityType match {
+        case "open_issue"        => detailActivity(activity, "issue", "issue-opened")
+        case "comment_issue"     => detailActivity(activity, "comment", "")
+        case "close_issue"       => detailActivity(activity, "issue", "issue-closed")
+        case "reopen_issue"      => detailActivity(activity, "issues_reopened", "issue-reopened")
+        case "open_pullreq"      => detailActivity(activity, "issues_opened", "git-pull-request")
+        case "merge_pullreq"     => detailActivity(activity, "merge", "")
+        case "create_repository" => simpleActivity(activity, "create", "repo")
+        case "create_branch"     => simpleActivity(activity, "create", "git-branch")
+        case "delete_branch"     => simpleActivity(activity, "delete", "git-branch")
+        case "create_tag"        => simpleActivity(activity, "create", "tag")
+        case "delete_tag"        => simpleActivity(activity, "delete", "tag")
+        case "fork"              => simpleActivity(activity, "fork", "git-branch")
+        case "push"  => customActivity(activity, "push", "git-commit"){
+          <div class="small activity-message">
+            {activity.additionalInfo.get.split("\n").reverse.take(4).zipWithIndex.map{ case (commit, i) =>
+              if(i == 3){
+                <div>...</div>
+              } else {
+                if(commit.nonEmpty){
+                  <div>
+                     <a href={s"${path}/${activity.userName}/${activity.repositoryName}/commit/${commit. substring(0, 40)}"} class="monospace">{commit.substring(0, 7)}</a>
+                     <span>{commit.substring(41)}</span>
+                  </div>
+                }
+              }
+            }}
+          </div>
+        }
+        case "create_wiki" => customActivity(activity, "create", "book"){
+          <div class="small activity-message">
+            Created <a href={s"${path}/${activity.userName}/${activity.repositoryName}/wiki/${activity.additionalInfo.get}"}>{activity.additionalInfo.get}</a>.
+          </div>
+        }
+        case "edit_wiki" => customActivity(activity, "edit", "book"){
+          activity.additionalInfo.get.split(":") match {
+            case Array(pageName, commitId) =>
+              <div class="small activity-message">
+                Edited <a href={s"${path}/${activity.userName}/${activity.repositoryName}/wiki/${pageName}"}>{pageName}</a>.
+                <a href={s"${path}/${activity.userName}/${activity.repositoryName}/wiki/${pageName}/_compare/${commitId.substring(0, 7)}^...${commitId.substring(0, 7)}"}>View the diff »</a>
+              </div>
+            case Array(pageName) =>
+              <div class="small activity-message">
+                Edited <a href={s"${path}/${activity.userName}/${activity.repositoryName}/wiki/${pageName}"}>{pageName}</a>.
+              </div>
+          }
+        }
+      })
+  }
+}
+
+@detailActivity(activity: model.Activity, css: String, icon: String) = {
+    <div class="alert @css">
+        <div class="body">
+                <!-- issues -->
+        <span class="mega-octicon octicon-@icon"></span>
+
+        <div class="time">
+        @datetime(activity.activityDate)
+        </div>
+
+        <div class="title">
+            @activityMessage(activity.message)
+        </div>
+
+        <div class="details">
+            @avatarWithHref(activity.activityUserName, 30)
+            @activity.additionalInfo.map { additionalInfo =>
+                <div class="message">
+                    <blockquote>
+                        <div class=" activity-message">@additionalInfo</div>
+                    </blockquote>
+                </div>
+            }
+        </div>
+        </div>
+    </div>
+
+}
+
+@customActivity(activity: model.Activity, css: String, icon: String)(additionalInfo: Any) = {
+    <div class="alert @css">
+        <div class="body">
+                <!-- issues -->
+            <span class="mega-octicon octicon-@icon"></span>
+
+            <div class="time">
+            @datetime(activity.activityDate)
+            </div>
+
+            <div class="title">
+            @activityMessage(activity.message)
+            </div>
+
+            <div class="details">
+                @avatarWithHref(activity.activityUserName, 30)
+                    <div class="message">
+                        <blockquote>
+                            @additionalInfo
+                        </blockquote>
+                    </div>
+            </div>
+        </div>
+    </div>
+    <!--
+  <div class="activity-icon-large"><img src="@assets/common/images/"/></div>
+  <div class="activity-content">
+    <div class="muted small">@datetime(activity.activityDate)</div>
+    <div class="strong">
+      @avatar(activity.activityUserName, 16)
+      @activityMessage(activity.message)
+    </div>
+    @additionalInfo
+  </div>
+    -->
+}
+
+@simpleActivity(activity: model.Activity, css: String, icon: String) = {
+    <div class="alert @css simple">
+        <div class="body">
+            <div class="simple">
+                <!-- issues -->
+                <span class="octicon octicon-@icon"></span>
+
+                <div class="title">
+                @activityMessage(activity.message)
+                </div>
+                <div class="time">
+                @datetime(activity.activityDate)
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--
+  <div class="activity-icon-small"><img src="@assets/common/images/"/></div>
+  <div class="activity-content">
+    <div>
+      @avatar(activity.activityUserName, 16)
+      @activityMessage(activity.message)
+      <span class="muted small">@datetime(activity.activityDate)</span>
+    </div>
+  </div>
+    -->
+}
+

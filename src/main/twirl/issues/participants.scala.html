@@ -1,0 +1,15 @@
+@(issue: model.Issue,
+comments: List[model.Comment])(implicit context: app.Context)
+@import view.helpers._
+<div id="partial-users-participants" class="discussion-sidebar-item js-socket-channel js-updatable-content" >
+    <div class="participation">
+        @defining((issue.openedUserName :: comments.map(_.commentedUserName)).distinct){ participants =>
+        <h3 class="discussion-sidebar-heading">
+            @participants.size @plural(participants.size, "participant") participant
+        </h3>
+        <div class="participation-avatars">
+            @participants.map { participant => @avatarLink(participant, 20, tooltip = true) }
+        </div>
+        }
+    </div>
+</div>

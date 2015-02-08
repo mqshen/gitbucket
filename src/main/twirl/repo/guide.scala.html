@@ -1,0 +1,89 @@
+@(repository: service.RepositoryService.RepositoryInfo,
+  hasWritePermission: Boolean)(implicit context: app.Context)
+@import context._
+@import view.helpers._
+@html.main(s"${repository.owner}/${repository.name}", Some(repository)) {
+  @html.menu("code", repository){
+    @if(!hasWritePermission){
+      <h3>This is an empty repository</h3>
+    } else {
+<div class="outline-box-group empty-repo">
+
+    <div class="outline-box outline-box-highlighted empty-repo-setup-option">
+        <h3><strong>Quick setup</strong> — if you've done this kind of thing before</h3>
+
+        <div class="flex-table empty-repo-options">
+            <div class="flex-table-item">
+                <a href="http://mac.github.com" data-url="github-mac://openRepo/@repository.httpUrl" class="minibutton primary js-conduit-rewrite-url" title="Set up using GitHub Desktop" aria-label="Set up using GitHub Desktop" data-ga-click="Empty repo, click, Clicked Set up in Desktop (Mac)">
+                    <span class="octicon octicon-device-desktop"></span> Set up in Desktop</a>
+            </div>
+            <div class="flex-table-item">
+                <strong class="or-text">or</strong>
+            </div>
+            <div class="flex-table-item flex-table-item-primary">
+                <div class="url-box">
+                <span class="clone-urls js-clone-urls js-zeroclipboard-container">
+                    <span class="clone-url-button js-clone-url-button selected">
+                      <a href="@{repository.httpUrl}" class="js-git-protocol-selector" data-url="/users/set_protocol?protocol_selector=http&amp;protocol_type=push" data-skip-pjax="">HTTPS</a>
+                    </span>
+                    @if(settings.ssh && loginAccount.isDefined){
+                    <span class="clone-url-button js-clone-url-button">
+                      <a href="@repository.httpUrl" class="js-git-protocol-selector" data-url="/users/set_protocol?protocol_selector=ssh&amp;protocol_type=push" data-skip-pjax="">SSH</a>
+                    </span>
+                    }
+                  <input type="text" readonly="" spellcheck="false" class="js-url-field url-field js-zeroclipboard-target" value="@{repository.httpUrl}">
+                  <span class="clone-url-button url-box-clippy">
+                    <button aria-label="Copy to clipboard" class="js-zeroclipboard minibutton zeroclipboard-button" data-copied-hint="Copied!" data-ga-click="Empty repo, click, Clicked copy URL" type="button">
+                        <span class="octicon octicon-clippy"></span>
+                    </button>
+                  </span>
+              </span></div>
+            </div>
+        </div>
+
+        <p>
+            We recommend every repository include a
+            <a href="@url(repository)/new/master?readme=1">README</a>,
+            <a href="@url(repository)/new/master?filename=LICENSE.md">LICENSE</a>,
+            and <a href="@url(repository)/new/master?filename=.gitignore">.gitignore</a>.
+        </p>
+    </div>
+
+    <div class="outline-box empty-repo-setup-option">
+        <h3>…or create a new repository on the command line</h3>
+
+        <div class="copyable-terminal js-zeroclipboard-container">
+            <div class="copyable-terminal-button">
+                <button aria-label="Copy to clipboard" class="js-zeroclipboard minibutton zeroclipboard-button" data-copied-hint="Copied!" data-ga-click="Empty repo, click, Clicked copy new repo commands" type="button"><span class="octicon octicon-clippy"></span></button>
+            </div>
+            <pre class="copyable-terminal-content js-zeroclipboard-target">
+<span class="js-selectable-text">echo "# test" &gt;&gt; README.md</span>
+<span class="js-selectable-text">git init</span>
+<span class="js-selectable-text">git add README.md</span>
+<span class="js-selectable-text">git commit -m "first commit"</span>
+<span class="js-selectable-text">git remote add origin <span class="js-live-clone-url">@{repository.httpUrl}</span></span>
+<span class="js-selectable-text">git push -u origin master</span>
+            </pre>
+        </div>
+    </div>
+
+    <div class="outline-box empty-repo-setup-option">
+        <h3>…or push an existing repository from the command line</h3>
+
+        <div class="copyable-terminal js-zeroclipboard-container">
+            <div class="copyable-terminal-button">
+                <button aria-label="Copy to clipboard" class="js-zeroclipboard minibutton zeroclipboard-button" data-copied-hint="Copied!" data-ga-click="Empty repo, click, Clicked copy existing repo commands" type="button">
+                    <span class="octicon octicon-clippy"></span>
+                </button>
+            </div>
+            <pre class="copyable-terminal-content js-zeroclipboard-target">
+<span class="js-selectable-text">git remote add origin <span class="js-live-clone-url">@{repository.httpUrl}</span></span>
+<span class="js-selectable-text">git push -u origin master</span>
+            </pre>
+        </div>
+    </div>
+
+</div>
+    }
+  }
+}

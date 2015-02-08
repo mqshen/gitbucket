@@ -1,0 +1,70 @@
+@(milestones: List[(model.Milestone, Int, Int)], milestoneId: Int)
+@import view.helpers._
+
+<div class="select-menu-filters">
+    <div class="select-menu-text-filter">
+        <input type="text" id="context-milestone-filter-field" class="js-filterable-field js-navigation-enable" placeholder="Filter milestones" autocomplete="off">
+    </div>
+    <div class="select-menu-tabs">
+        <ul>
+            <li class="select-menu-tab">
+                <a href="#" data-tab-filter="tab-open" class="js-select-menu-tab">Open</a>
+            </li>
+            <li class="select-menu-tab">
+                <a href="#" data-tab-filter="tab-closed" class="js-select-menu-tab">Closed</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="select-menu-list select-menu-tab-bucket js-select-menu-tab-bucket" data-tab-filter="tab-open">
+    @if(milestoneId > 0) {
+        <div class="select-menu-clear-item select-menu-item js-navigation-item js-clear-milestone">
+            <input id="milestone_clear" name="milestoneId" type="radio" value="0">
+            <span class="select-menu-item-icon octicon octicon-x"></span>
+            <div class="select-menu-item-text">Clear this milestone</div>
+        </div>
+    }
+
+    <div data-filterable-for="context-milestone-filter-field" data-filterable-type="substring" role="menu">
+        @milestones.map { case (milestone, _, _) =>
+            @let( milestone.milestoneId == milestoneId ) { flag =>
+            <div class="select-menu-item js-navigation-item @if(flag){ selected } " role="menuitem">
+                <input id="milestone_@milestone.milestoneId" name="milestoneId" @if(flag){ checked }  type="radio" value="@milestone.milestoneId">
+                <span class="select-menu-item-icon octicon octicon-check"></span>
+                <div class="select-menu-item-text">
+                    <h4 class="js-milestone-title js-select-button-text">@milestone.title</h4>
+            <span class="description">
+                @milestone.dueDate.map { dueDate =>
+                    @if(isPast(dueDate)){
+                        <strong class="text-danger">
+                            <span class="octicon octicon-alert"></span> Past due by @date(dueDate)
+                        </strong>
+                    } else {
+                        <span class="octicon octicon-calendar"></span> Due by @date(dueDate)
+                    }
+                }
+            </span>
+                </div>
+            </div>
+            }
+        }
+    </div>
+
+    <div class="select-menu-item select-menu-new-item-form js-navigation-item js-new-item-form">
+        <input type="radio" name="milestone" value="new">
+        <input type="hidden" class="js-new-item-value" name="milestone_title">
+
+        <span class="octicon octicon-milestone select-menu-item-icon"></span>
+        <div class="select-menu-item-text">
+            <h4>Create and assign to new milestone:</h4>
+            <span class="description js-new-item-name js-milestone-title"></span>
+        </div>
+    </div>
+
+</div>
+<div class="select-menu-list select-menu-tab-bucket js-select-menu-tab-bucket" data-tab-filter="tab-closed">
+    <div data-filterable-for="context-milestone-filter-field" data-filterable-type="substring" role="menu">
+    </div>
+    <div class="select-menu-no-results">Nothing to show</div>
+</div>
+

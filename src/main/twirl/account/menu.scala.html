@@ -1,0 +1,29 @@
+@(active: String, ssh: Boolean)(implicit context: app.Context)
+@import context._
+<nav class="menu" data-pjax="">
+    <h3 class="menu-heading">
+        Personal settings
+    </h3>
+    <a href="/settings/profile" class="@if(active=="profile"){ selected } js-selected-navigation-item menu-item" data-selected-links="avatar_settings /settings/profile">Profile</a>
+    @if(ssh){
+    <a href="/settings/ssh" class="@if(active=="ssh"){ selected } js-selected-navigation-item menu-item" data-selected-links=" /settings/ssh">SSH keys</a>
+    }
+    <!--
+    <a href="/settings/admin" class="js-selected-navigation-item menu-item" data-selected-links=" /settings/admin">Account settings</a>
+
+    <a href="/settings/emails" class="js-selected-navigation-item menu-item" data-selected-links=" /settings/emails">
+        Emails
+        <span class="menu-warning octicon octicon-alert" title="You have not verified any email addresses"></span>
+    </a>
+    <a href="/settings/notifications" class="js-selected-navigation-item menu-item" data-selected-links=" /settings/notifications">Notification center</a>
+
+    <a href="/settings/billing" class="js-selected-navigation-item menu-item" data-selected-links="user_billing_settings /settings/billing">Billing</a>
+
+
+    <a href="/settings/security" class="js-selected-navigation-item menu-item" data-selected-links=" /settings/security">Security</a>
+
+    <a href="/settings/applications" class="js-selected-navigation-item menu-item" data-selected-links="applications_settings /settings/applications">Applications</a>
+    <a href="/settings/repositories" class="js-selected-navigation-item menu-item" data-selected-links=" /settings/repositories">Repositories</a>
+    <a href="/settings/organizations" class="js-selected-navigation-item menu-item" data-selected-links=" /settings/organizations">Organizations</a>
+    -->
+</nav>

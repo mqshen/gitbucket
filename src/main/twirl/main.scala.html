@@ -1,0 +1,171 @@
+@(title: String,
+  repository: Option[service.RepositoryService.RepositoryInfo] = None,
+  bodyClass: String = "",
+  selectedLink: String = "")(body: Html)(implicit context: app.Context)
+@import context._
+@import view.helpers._
+@if(!isPJax) {
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>@title</title>
+    <link rel="icon" href="@assets/common/images/favicon.png" type="image/vnd.microsoft.icon" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Le styles -->
+    <link href="@assets/vendors/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="@assets/vendors/bootstrap/js/html5shiv.js"></script>
+    <![endif]-->
+    <link href="@assets/vendors/datepicker/css/datepicker.css" rel="stylesheet">
+    <link href="@assets/vendors/colorpicker/css/bootstrap-colorpicker.css" rel="stylesheet">
+    <link href="@assets/vendors/google-code-prettify/prettify.css" type="text/css" rel="stylesheet"/>
+    <link href="@assets/vendors/octicons/octicons.css" rel="stylesheet">
+    <link href="@assets/common/css/github.css" rel="stylesheet">
+    <link href="@assets/common/css/gitbucket2.css" rel="stylesheet">
+      <!--
+      <script src="@assets/common/js/framework.test.js"></script>
+      -->
+      <script src="@assets/common/js/frameworks2.js"></script>
+      <script src="@assets/common/js/github2.js"></script>
+      <!--
+    <script src="@assets/vendors/jquery/jquery-1.9.1.js"></script>
+    <script src="@assets/vendors/dropzone/dropzone.js"></script>
+    <script src="@assets/common/js/validation.js"></script>
+    <script src="@assets/common/js/gitbucket.js"></script>
+    <script src="@assets/vendors/bootstrap/js/bootstrap.js"></script>
+    <script src="@assets/vendors/datepicker/js/bootstrap-datepicker.js"></script>
+    <script src="@assets/vendors/colorpicker/js/bootstrap-colorpicker.js"></script>
+    <script src="@assets/vendors/google-code-prettify/prettify.js"></script>
+    <script src="@assets/vendors/zclip/ZeroClipboard.min.js"></script>
+    <script src="@assets/vendors/elastic/jquery.elastic.source.js"></script>
+      -->
+  </head>
+  <body class="@bodyClass">
+      <div class="header header-logged-in true" role="banner">
+          <div class="container clearfix">
+              <a class="header-logo-invertocat" href="@path" data-hotkey="g d" aria-label="Homepage" ga-data-click="Header, go to dashboard, icon:logo">
+                  <span class="mega-octicon octicon-mark-"></span>
+              </a>
+
+              <div class="site-search  js-site-search" role="search">
+                  <form accept-charset="UTF-8" action="@path/search" class="js-site-search-form" data-global-search-url="/search" data-repo-search-url="" method="get">
+                      <div style="margin:0;padding:0;display:inline">
+                          <input name="utf8" type="hidden" value="✓">
+                      </div>
+                      <input type="text" class="" data-hotkey="s" name="q" placeholder="Search GitHub" data-global-scope-placeholder="Search GitHub" data-repo-scope-placeholder="Search" tabindex="1" autocapitalize="off">
+                      <div class="scope-badge">This repository</div>
+                  </form>
+              </div>
+
+              <ul class="header-nav user-nav right" id="user-links">
+
+                  @if(loginAccount.isDefined){
+                  <li class="header-nav-item dropdown js-menu-container">
+                      <a class="header-nav-link name" href="@url(loginAccount.get.userName)" data-ga-click="Header, go to profile, text:username">
+                          @avatar(loginAccount.get.userName, 20)
+                          <span class="css-truncate">
+                              <span class="css-truncate-target"> @loginAccount.get.userName</span>
+                          </span>
+                      </a>
+                  </li>
+
+                  <li class="header-nav-item dropdown js-menu-container">
+                      <a class="header-nav-link js-menu-target tooltipped tooltipped-s" href="#" aria-label="Create new..." data-ga-click="Header, create new, icon:add">
+                          <span class="octicon octicon-plus"></span>
+                          <span class="dropdown-caret"></span>
+                      </a>
+
+                      <div class="dropdown-menu-content js-menu-content">
+                          <ul class="dropdown-menu">
+                              <li>
+                                  <a href="@path/new"><span class="octicon octicon-repo"></span> New repository</a>
+                              </li>
+                              <li>
+                                  <a href="@path/groups/new"><span class="octicon octicon-organization"></span> New organization</a>
+                              </li>
+
+
+                          </ul>
+
+                      </div>
+                  </li>
+
+                  <li class="header-nav-item">
+                      <a href="/notifications" aria-label="You have no unread notifications" class="header-nav-link notification-indicator tooltipped tooltipped-s" data-ga-click="Header, go to notifications, icon:read" data-hotkey="g n">
+                          <span class="mail-status all-read"></span>
+                          <span class="octicon octicon-inbox"></span>
+                      </a>
+                  </li>
+                  <li class="header-nav-item">
+                      <a class="header-nav-link tooltipped tooltipped-s" href="/settings/profile" id="account_settings" aria-label="Settings" data-ga-click="Header, go to settings, icon:settings">
+                          <span class="octicon octicon-gear"></span>
+                      </a>
+                  </li>
+                  @if(loginAccount.get.isAdmin){
+                  <li class="header-nav-item">
+                      <a class="header-nav-link tooltipped tooltipped-s" href="/admin/users" id="administration" aria-label="Settings" data-ga-click="Header, go to settings, icon:settings">
+                          <span class="octicon octicon-tools"></span>
+                      </a>
+                  </li>
+                  }
+
+
+                  <li class="header-nav-item">
+                      <form accept-charset="UTF-8" action="@path/signout" class="logout-form" method="post">
+                          <div style="margin:0;padding:0;display:inline">
+                              <input name="utf8" type="hidden" value="✓">
+                              <input name="authenticity_token" type="hidden" value="==">
+                          </div>
+                          <button class="header-nav-link sign-out-button tooltipped tooltipped-s" aria-label="Sign out" data-ga-click="Header, sign out, icon:logout">
+                              <span class="octicon octicon-sign-out"></span>
+                          </button>
+                      </form>
+                  </li>
+
+                      <!--
+                      <a href="" class="username menu"></a>
+                      <a class="dropdown-toggle menu" data-toggle="dropdown" href="#"><i class="icon-plus"></i><span class="caret" style="vertical-align: middle;"></span></a>
+                      <ul class="dropdown-menu">
+                          <li><a href="@path/new">New repository</a></li>
+                          <li><a href="@path/groups/new">New group</a></li>
+                      </ul>
+                      <a href="@url(loginAccount.get.userName)/_edit" class="menu" data-toggle="tooltip" data-placement="bottom" title="Account settings"><i class="icon-user"></i></a>
+                      @if(loginAccount.get.isAdmin){
+                          <a href="@path/admin/users" class="menu" data-toggle="tooltip" data-placement="bottom" title="Administration"><i class="icon-wrench"></i></a>
+                      }
+                      <a href="@path/signout" class="menu-last" data-toggle="tooltip" data-placement="bottom" title="Sign out"><i class="icon-share-alt"></i></a>
+              -->
+                  } else {
+
+              <div class="header-actions" role="navigation">
+                  <a class="button signin" href="@path/signin?redirect=@urlEncode(currentPath)" data-ga-click="(Logged out) Header, clicked Sign in, text:sign-in">Sign in</a>
+              </div>
+                  }
+
+
+
+              </ul>
+
+
+
+          </div>
+      </div>
+    <div id="site-container" class="context-loader-container" data-pjax-container="">
+} else {
+    <div id="pjax-head">
+    <title>@title</title>
+        <meta name="selected-link" value="@selectedLink">
+    </div>
+    <div id="pjax-body">
+}
+          @body
+
+@if(!isPJax) {
+      </div>
+  </body>
+</html>
+} else {
+      </div>
+}

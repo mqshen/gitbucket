@@ -1,0 +1,45 @@
+@(account: model.Account, groupNames: List[String],
+  repositories: List[service.RepositoryService.RepositoryInfo],
+  isGroupManager: Boolean)(implicit context: app.Context)
+@import context._
+@import view.helpers._
+@main(account, groupNames, "repositories", isGroupManager){
+<div class="repo-tab">
+    <div class="filter-bar">
+    </div>
+    <ul class="repo-list js-repo-list" data-filterable-for="your-repos-filter" data-filterable-type="substring">
+        @if(repositories.isEmpty){
+            No repositories
+        } else {
+            @repositories.map { repository =>
+            <li class="repo-list-item public fork">
+                <h3 class="repo-list-name">
+                    <a href="@url(repository)">@repository.name</a>
+                </h3>
+
+                @if(repository.repository.originUserName.isDefined){
+                <p class="repo-list-info">
+                    <span class="octicon octicon-repo-forked"></span>
+                    forked from <a href="/eclipse/jetty.project">eclipse/jetty.project</a>
+                </p>
+                }
+
+                @if(repository.repository.description.isDefined){
+                <p class="repo-list-description">
+                    @repository.repository.description
+                </p>
+                }
+
+                <p class="repo-list-meta">
+                    Updated @datetime(repository.repository.lastActivityDate)
+                </p>
+
+                <div class="participation-graph">
+                </div>
+            </li>
+            }
+        }
+    </ul>
+</div>
+
+}

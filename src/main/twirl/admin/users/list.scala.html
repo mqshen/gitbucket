@@ -1,0 +1,83 @@
+@(users: List[model.Account], members: Map[String, List[String]], includeRemoved: Boolean)(implicit context: app.Context)
+@import context._
+@import view.helpers._
+@html.main("Manage Users"){
+<div class="boxed-group">
+    <h3>User Management</h3>
+    @admin.html.menu("users"){
+    <div class="subnav org-toolbar">
+        <div class="right">
+            <a href="@path/admin/users/_newuser" class="button primary">
+                <span class="octicon octicon-plus"></span>
+                New User
+            </a>
+        </div>
+        <div class="right">
+            <a href="@path/admin/users/_newgroup" class="button primary">
+                <span class="octicon octicon-plus"></span>
+                New Group
+            </a>
+        </div>
+    </div>
+    <div class="table-list-header js-org-toolbar">
+        <label class="table-list-header-select-all">
+            <input type="checkbox" id="includeRemoved" name="includeRemoved" @if(includeRemoved){checked}/>
+        </label>
+        <label class="table-list-header-meta member-list-select-all-label ">
+            Include removed users
+        </label>
+    </div>
+    <div id="org-members">
+        <ul class="member-listing table-list table-list-bordered adminable js-person-grid">
+            @users.map { account =>
+            <li class="table-list-item member-list-item js-org-person adminable" data-id="7775816">
+                <div class="table-list-cell member-info">
+                    @avatar(account.userName, 48, tooltip = true, avatarClass="avatar member-list-avatar")
+                    <a href="@path/@account.userName" class="member-link">
+                        <strong class="member-username">@account.userName</strong>
+                        <span class="member-fullname" itemprop="name">@account.fullName</span>
+                    </a>
+                </div>
+                <div class="member-teams member-meta table-list-cell">
+                    @if(account.isGroupAccount){
+                        Group
+                    } else {
+                        @if(account.isAdmin){
+                            Administrator
+                        } else {
+                            Normal
+                        }
+                    }
+                    @if(account.isGroupAccount){
+                        @members(account.userName).map { userName =>
+                            @avatar(userName, 20, tooltip = true)
+                        }
+                    }
+                </div>
+                <div class="member-meta table-list-cell">
+                    @if(account.isGroupAccount){
+                    <a class="labels-list-action js-edit-label" href="@path/admin/users/@account.userName/_editgroup">
+                        <span class="octicon octicon-pencil"></span>
+                        Edit
+                    </a>
+                    } else {
+                    <a class="labels-list-action js-edit-label" href="@path/admin/users/@account.userName/_edituser">
+                        <span class="octicon octicon-pencil"></span>
+                        Edit
+                    </a>
+                    }
+                </div>
+            </li>
+            }
+        </ul>
+    </div>
+  }
+</div>
+}
+<script>
+$(function(){
+  $('#includeRemoved').click(function(){
+    location.href = '@path/admin/users?includeRemoved=' + this.checked;
+  });
+});
+</script>

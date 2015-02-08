@@ -1,0 +1,12 @@
+@(repository: service.RepositoryService.RepositoryInfo, large: Boolean)(implicit context: app.Context)
+@import context._
+@import view.helpers._
+@if(repository.repository.isPrivate){
+  <span class="mega-octicon octicon-lock"></span>
+} else {
+  @if(repository.repository.originUserName.isDefined){
+    <span class="mega-octicon octicon-repo-forked"></span>
+  } else {
+    <span class="mega-octicon octicon-repo"></span>
+  }
+}

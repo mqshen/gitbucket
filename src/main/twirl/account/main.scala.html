@@ -1,0 +1,96 @@
+@(account: model.Account, groupNames: List[String], active: String,
+  isGroupManager: Boolean = false,
+  bodyClass: String = "")(body: Html)(implicit context: app.Context)
+@import context._
+@import view.helpers._
+@html.main(account.userName, bodyClass = bodyClass){
+<div class="container">
+    <div class="columns profilecols js-username" data-name="account.userName">
+        <div class="column one-fourth vcard" itemscope="" itemtype="http://schema.org/Person">
+            <a href="/account" aria-label="Change your avatar" class="vcard-avatar tooltipped tooltipped-s">
+                @avatar(account.userName, 230)
+            </a>
+            <h1 class="vcard-names">
+                <span class="vcard-fullname" itemprop="name">@account.fullName</span>
+                <span class="vcard-username" itemprop="additionalName">@account.userName</span>
+            </h1>
+            <ul class="vcard-details">
+                <li class="vcard-detail" itemprop="homeLocation"><span class="octicon octicon-location"></span>@account.url</li>
+                <li class="vcard-detail">
+                    <span class="octicon octicon-mail"></span>
+                    <a class="email" href="mailto:@account.mailAddress">@account.mailAddress</a>
+                </li>
+                <li class="vcard-detail">
+                    <span class="octicon octicon-clock"></span>
+                    <span class="join-label">Joined on </span>
+                    @date(account.registeredDate)
+                </li>
+            </ul>
+
+
+            @if(groupNames.nonEmpty){
+            <div class="clearfix">
+                <h3>Organizations</h3>
+                @groupNames.map { groupName =>
+                <a href="@url(groupName)" aria-label="@groupName" class="tooltipped tooltipped-n  avatar-group-item" itemprop="follows">
+                    @avatar(groupName, 36, tooltip = true)
+                </a>
+                }
+            </div>
+            }
+        </div>
+        <div class="column three-fourths">
+            <div class="tabnav">
+
+
+
+
+                @if(loginAccount.isDefined && loginAccount.get.userName == account.userName){
+                <div class="tabnav-right">
+                    <a href="/account" class="minibutton tabnav-widget">
+                        <span class="octicon octicon-pencil"></span>
+                        Edit profile
+                    </a>
+                </div>
+                }
+
+                <ul class="tabnav-tabs" data-pjax="" role="navigation">
+                    <li >
+                        <a href="@url(account.userName)?tab=repositories" class="tabnav-tab @if(active == "repositories"){ selected }">
+                            <span class="octicon octicon-repo"></span>
+                            Repositories
+                        </a>
+                    </li>
+                    @if(account.isGroupAccount){
+                    <li >
+                        <a href="@url(account.userName)?tab=members" class="tabnav-tab @if(active == "members"){ selected }">
+                            <span class="octicon octicon-organization"></span>
+                            Members
+                        </a>
+                    </li>
+                    } else {
+                    <li >
+                    <a href="@url(account.userName)?tab=activity" class="tabnav-tab @if(active == "activity"){ selected }" >
+                        <span class="octicon octicon-rss"></span>
+                        Public Activity
+                    </a>
+                    </li>
+                    }
+
+                    @if(loginAccount.isDefined && account.isGroupAccount && isGroupManager){
+                    <li >
+                        <a href="@url(account.userName)/_editgroup" class="tabnav-tab @if(active == "activity"){ selected }">
+                            <span class="octicon octicon-rss"></span>
+                            Edit Group
+                        </a>
+                    </li>
+                    }
+                </ul>
+            </div>
+            <div class="tab-content js-repo-filter">
+                @body
+            </div>
+        </div>
+    </div>
+</div>
+}

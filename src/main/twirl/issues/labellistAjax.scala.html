@@ -1,0 +1,6 @@
+@(issueLabels: List[model.Label],
+repository: service.RepositoryService.RepositoryInfo)(implicit context: app.Context)
+@import view.helpers._
+@issueLabels.map { label =>
+<a href="@url(repository)/labels/@label.labelName" class="label css-truncate-target linked-labelstyle-@label.color" title="@label.labelName">@label.labelName</a>
+}

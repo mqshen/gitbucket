@@ -1,0 +1,1192 @@
+/****************************************************************************/
+/* Common */
+/****************************************************************************/
+body {
+  color: #333;
+}
+
+li p {
+  margin: 0px;
+}
+
+h1 {
+  font-size: 30px;
+  line-height: 32px;
+}
+
+h2 {
+  font-size: 28px;
+  line-height: 30px;
+}
+
+h3 {
+  font-size: 26px;
+  line-height: 28px;
+}
+
+h4 {
+  font-size: 24px;
+}
+
+h5 {
+  font-size: 22px;
+}
+
+h6 {
+  font-size: 18px;
+}
+
+
+/* ======================================================================== */
+/* Global Header */
+/* ======================================================================== */
+div.navbar-inner {
+  border-radius: 0px;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 1px solid #d4d4d4;
+  padding-right: 0px;
+}
+
+div.header-menu {
+  line-height: 40px;
+}
+
+div.header-menu input,
+div.header-menu a.btn {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+div.nav-collapse a.menu {
+  margin-right: 12px;
+}
+
+div.nav-collapse a.btn-last,
+div.nav-collapse a.menu-last {
+  margin-right: 30px;
+}
+
+.navbar .brand {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.navbar .brand img {
+  vertical-align: bottom;
+}
+
+span.header-version {
+  font-size: small;
+}
+
+div.input-prepend span.count {
+  background-color: white;
+  -webkit-border-radius: 0 4px 4px 0;
+  -moz-border-radius: 0 4px 4px 0;
+  border-radius: 0 4px 4px 0;
+  height: 16px;
+  font-size: 12px;
+  padding-top: 2px;
+  padding-bottom: 6px;
+}
+
+img.plugin-global-menu {
+  width: 16px;
+  height: 16px;
+  position: relative;
+  top: -2px;
+}
+
+/* ======================================================================== */
+/* General Styles */
+/* ======================================================================== */
+div.head {
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+div.head div.forked {
+  font-size: 60%;
+  margin-left: 36px;
+  color: #999999;
+}
+
+div.container {
+  width: 1000px;
+}
+
+div.container-wide {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+div.pagination {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+div.body {
+  margin-bottom: 40px;
+}
+
+span.error {
+  color: red;
+}
+
+.small {
+  font-size: 80%;
+}
+
+.strong {
+  font-weight: bold;
+}
+
+a.commit-message, a.commit-id, a.username, a.issue-comment-count {
+  color: #333333;
+}
+
+a.omit {
+  background-color: #ddd;
+  padding-left: 8px;
+  padding-right: 8px;
+  font-weight: bold;
+}
+
+a.omit:hover {
+  background-color: #aaa;
+}
+
+span.count-right {
+  float: right;
+  font-weight: bold;
+}
+
+.monospace {
+  font-family: monospace;
+}
+
+table.table th {
+  background-color: #d9edf7;
+}
+
+div.block-header {
+  font-size: large;
+  font-weight: bold;
+}
+
+div.block {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+h3 {
+  margin-top: 0px;
+}
+
+div.box {
+  background-color: #efefef;
+  padding: 2px;
+  margin-bottom: 10px;
+}
+
+div.box-header {
+  font-size: 120%;
+  font-weight: bold;
+  background-color: #e0e0e0;
+  background-image: -moz-linear-gradient(#fafafa, #e0e0e0);
+  background-image: -webkit-linear-gradient(#fafafa, #e0e0e0);
+  background-image: linear-gradient(#fafafa, #e0e0e0);
+  background-repeat: repeat-x;
+  margin: 0;
+  border-top-left-radius: 1px;
+  border-top-right-radius: 1px;
+  border: 1px solid #d8d8d8;
+  border-bottom: none;
+  padding: 8px 10px 8px 10px;
+  text-shadow: 0 1px 0 #fff
+}
+
+div.box-header-small {
+  background-color: #e0e0e0;
+  background-image: -moz-linear-gradient(#fafafa, #e0e0e0);
+  background-image: -webkit-linear-gradient(#fafafa, #e0e0e0);
+  background-image: linear-gradient(#fafafa, #e0e0e0);
+  background-repeat: repeat-x;
+  margin: 0;
+  border-top-left-radius: 1px;
+  border-top-right-radius: 1px;
+  border: 1px solid #d8d8d8;
+  border-bottom: none;
+  padding: 6px 4px 6px 4px;
+  text-shadow: 0 1px 0 #fff
+}
+
+div.box-content {
+  background-color: white;
+  border: 1px solid #d8d8d8;
+  padding: 4px;
+}
+
+th.box-header {
+  background-color: #e0e0e0;
+  background-image: -moz-linear-gradient(#fafafa, #e0e0e0);
+  background-image: -webkit-linear-gradient(#fafafa, #e0e0e0);
+  background-image: linear-gradient(#fafafa, #e0e0e0);
+  background-repeat: repeat-x;
+  margin: 0;
+  border-top-left-radius: 1px;
+  border-top-right-radius: 1px;
+  border: 1px solid #d8d8d8;
+  border-bottom: none;
+  text-shadow: 0 1px 0 #fff
+}
+
+.table-bordered th.metal {
+    font-size: 14px;
+    padding: 9px 10px 10px;
+}
+
+th.metal {
+  background-color: #e0e0e0;
+  background-image: -moz-linear-gradient(#fafafa, #e8e8e8);
+  background-image: -webkit-linear-gradient(#fafafa, #e8e8e8);
+  background-image: linear-gradient(#fafafa, #e8e8e8);
+  background-repeat: repeat-x;
+  margin: 0;
+  border-top-left-radius: 1px;
+  border-top-right-radius: 1px;
+}
+
+dl {
+  margin: 0px;
+}
+
+dd {
+  margin-left: 20px;
+}
+
+hr {
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+img.avatar {
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+}
+
+img.avatar-mini {
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+}
+
+div.activity-message {
+  margin-left: 20px;
+}
+
+fieldset.margin {
+  border-top: 1px solid #eee;
+  margin-top: 10px;
+  padding-top: 10px;
+}
+
+div.account-image {
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+ul.dropdown-menu {
+  padding: 2px 0;
+}
+
+ul.dropdown-menu li {
+  border-bottom: 1px solid #eee;
+  font-size: 85%;
+}
+
+ul.dropdown-menu li a {
+  padding: 2px 10px;
+}
+
+ul.dropdown-menu :last-child {
+  border-bottom: none;
+}
+
+span.highlight {
+  background-color: #ffff88;
+}
+
+.fill-width {
+  width: 100%;
+}
+
+/****************************************************************************/
+/* Side Menu */
+/****************************************************************************/
+ul.sidemenu {
+  margin-left: 0px;
+}
+
+ul.sidemenu img {
+  width: 14px;
+  height: 14px;
+}
+
+
+ul.sidemenu a:hover{
+  text-decoration: none;
+}
+
+ul.sidemenu li.active {
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  border-right: 2px solid #bb4444;
+  border-left: 1px solid white;
+}
+
+ul.sidemenu div.gradient {
+  width: 5px;
+  height: 30px;
+  background: linear-gradient(to right, #eee, #fff);
+  margin-right: 4px;
+  border-left: 1px solid #eee;
+}
+
+ul.sidemenu div.margin {
+  width: 5px;
+  height: 30px;
+  margin-right: 4px;
+  border-left: 1px solid white;
+}
+
+ul.sidemenu li {
+  line-height: 30px;
+  height: 30px;
+  border-left: 1px solid #eee;
+  margin-left:0px;
+  border-right: 2px solid white;
+  list-style-type: none;
+  font-size: 90%;
+}
+
+ul.sidemenu span.badge {
+  padding-right: 4px;
+}
+
+/****************************************************************************/
+/* Create Repository */
+/****************************************************************************/
+.slash {
+  font-size: 20px;
+}
+
+/****************************************************************************/
+/* Sign-in form */
+/****************************************************************************/
+div.signin-form {
+  width: 350px;
+  margin: 30px auto;
+}
+
+/****************************************************************************/
+/* Account page */
+/****************************************************************************/
+.account-fullname {
+  margin-top: 20px;
+  font-size: 180%;
+  font-weight: bold;
+}
+
+.account-username {
+  margin-top: 10px;
+  font-size: 140%;
+  color: #888888;
+  font-weight: bold;
+}
+
+/****************************************************************************/
+/* Stacked side menu */
+/****************************************************************************/
+ul.nav-stacked.side-menu {
+  margin-bottom: 0px;
+}
+
+ul.nav-stacked.side-menu li {
+  background-color: #f9f9f9;
+}
+
+ul.nav-stacked.side-menu li a:hover {
+  background-color: white;
+}
+
+ul.nav-stacked.side-menu li.active a {
+  background-color: white;
+  color: #333;
+  font-weight: bold;
+  border-left: 2px solid #cc6666;
+}
+
+ul.nav-stacked.side-menu li.active a:hover {
+  background-color: white;
+  color: #333;
+  font-weight: bold;
+  border-left: 2px solid #cc6666;
+}
+
+.nav-tabs.nav-stacked.side-menu > li:first-child > a {
+  -webkit-border-top-right-radius: 0px;
+
+  border-top-right-radius: 0px;
+  -webkit-border-top-left-radius: 0px;
+
+  border-top-left-radius: 0px;
+  -moz-border-radius-topright: 0px;
+  -moz-border-radius-topleft: 0px;
+}
+
+.nav-tabs.nav-stacked.side-menu > li:last-child > a {
+  -webkit-border-bottom-right-radius: 0px;
+
+  border-bottom-right-radius: 0px;
+  -webkit-border-bottom-left-radius: 0px;
+
+  border-bottom-left-radius: 0px;
+  -moz-border-radius-bottomright: 0px;
+  -moz-border-radius-bottomleft: 0px;
+}
+
+/****************************************************************************/
+/* Repositories */
+/****************************************************************************/
+div.repository-icon {
+    position: absolute;
+}
+
+div.repository-content {
+    margin-left: 40px;
+}
+
+/****************************************************************************/
+/* Activity */
+/****************************************************************************/
+div.activity-icon-large {
+  position: absolute;
+  padding-top: 8px;
+}
+
+div.activity-icon-small {
+  position: absolute;
+  padding-left: 8px;
+}
+
+div.activity-content {
+  margin-left: 40px;
+}
+
+/****************************************************************************/
+/* Repository Viewer */
+/****************************************************************************/
+p.description {
+  color: gray;
+}
+
+a.header-link {
+  color: #888;
+  font-size: 90%;
+}
+
+a.header-link img {
+  width: 14px;
+  height: 14px;
+}
+
+a.header-link strong {
+  color: black;
+  font-size: 90%;
+}
+
+a.header-link:hover {
+  color: #0088cc;
+  text-decoration: none;
+}
+
+table.blobview {
+  table-layout: fixed;
+}
+
+table.table-file-list {
+  margin-bottom: 0px;
+  border: 1px solid #ddd;
+}
+
+table.table-file-list th, table.table-file-list td {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+table.table-file-list td.latest-commit {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  background-color: white;
+}
+
+table.table-file-list td {
+  background-color: #F8F8F8;
+  font-size: small;
+}
+
+th, td, .table th, .table td {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  line-height: 100%;
+}
+
+div.commit-avatar-image {
+  float: left;
+  margin-right: 4px;
+}
+
+div.commit-message-box {
+  margin-left: 42px;
+}
+
+pre.commit-description {
+  font-weight: normal;
+  border: none;
+  background-color: transparent;
+  padding: 2px;
+  margin: 0px;
+}
+
+#repository-url {
+  background-color: white;
+  cursor: default;
+  height: 16px;
+  width: 129px;
+  color: silver;
+  font-size: 9pt;
+  font-family: monospace;
+}
+
+#repository-url-copy {
+  height: 18px;
+  padding-top: 2px;
+}
+
+ul#commit-file-list {
+  list-style-type: none;
+  padding-left: 0px;
+  margin-left: 0px;
+}
+
+ul#commit-file-list li.border {
+  padding-bottom: 2px;
+  border-top: 1px solid #eee;
+}
+
+li.L0, li.L1, li.L2, li.L3, li.L4, li.L5, li.L6, li.L7, li.L8, li.L9 {
+  list-style-type: decimal;
+  background: white;
+  border-left: 1px solid #E5E5E5;
+  padding-left: 10px;
+  color: rgba(0, 0, 0, 0.3);
+}
+
+pre.blob {
+  border: none;
+  background-color: white;
+  padding-left: 20px;
+  font-size: 12px;
+}
+
+#readme {
+  margin-top: 20px;
+}
+
+#readme .box-content {
+  padding: 20px;
+}
+
+li.highlight {
+  background-color: #ffb;
+}
+
+span.simplified-path {
+  color: #888;
+}
+
+/****************************************************************************/
+/* nav pulls group */
+/****************************************************************************/
+.nav-pills-group:after {
+    display: table;
+    line-height: 0;
+    content: "";
+}
+
+.nav-pills-group:after {
+    clear: both;
+}
+
+.nav-pills-group > li {
+    float: left;
+}
+
+.nav-pills-group > li > a {
+    padding-right: 12px;
+    padding-left: 12px;
+    line-height: 14px;
+    color: #666;
+    font-weight: bold;
+}
+
+.nav-pills-group > li > a {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-left   : 1px solid #e5e5e5;
+    border-top    : 1px solid #e5e5e5;
+    border-bottom : 1px solid #e5e5e5;
+}
+
+.nav-pills-group > .first > a {
+    -webkit-border-radius: 4px 0 0 4px;
+    -moz-border-radius: 4px 0 0 4px;
+    border-radius: 4px 0 0 4px;
+}
+
+.nav-pills-group > .last > a {
+    -webkit-border-radius: 0 4px 4px 0;
+    -moz-border-radius: 0 4px 4px 0;
+    border-radius: 0 4px 4px 0;
+    border-right  : 1px solid #e5e5e5;
+}
+
+.nav-pills-group > .active > a,
+.nav-pills-group > .active > a:hover,
+.nav-pills-group > .active > a:focus {
+    color: #ffffff;
+    background-color: #0088cc;
+    border-color: #0088cc;
+}
+
+/****************************************************************************/
+/* Issues */
+/****************************************************************************/
+.btn-group.open .dropdown-toggle.flat {
+    background-image: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+
+a.button-link {
+    font-weight: normal;
+    color: gray;
+}
+
+a.selected {
+    font-weight: bold;
+    color: black;
+}
+
+span.issue-status {
+  font-size: large;
+  text-align: center;
+  padding: 8px;
+}
+
+table.table-issues {
+  margin-top: 12px;
+}
+
+a.issue-title {
+  color: #333;
+  font-weight: bold;
+  font-size: 120%;
+}
+
+ul.label-list {
+  list-style-type: none;
+  padding-left: 0px;
+  margin-left: 0px;
+  font-size: 90%;
+}
+
+ul.label-list a {
+  padding-left: 6px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  margin-bottom: 8px;
+  color: #444;
+}
+
+span.label-color {
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+}
+
+a#clear-filter {
+  display: block;
+  color: #444;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+span.milestone-alert {
+  font-weight: bold;
+  color: #bd2c00;
+}
+
+a.milestone-title {
+  font-size: 180%;
+}
+
+div.milestone-description {
+  border-top: 1px solid #eee;
+  color: #666;
+}
+
+a.milestone-title {
+  color: #333;
+}
+
+div.milestone-menu {
+ margin-top: 8px;
+}
+
+div.milestone-menu a.delete {
+  color: #b00;
+}
+
+div#milestone-progress-area {
+  display: inline-block;
+}
+
+div#milestone-progress-area div.milestone-progress {
+  width: 130px;
+  margin-bottom: -6px;
+}
+
+div.milestone-progress {
+  position: relative;
+  height: 10px;
+  color: white;
+  margin-bottom: 4px;
+  font-weight: bold;
+  font-size: 12px;
+  text-shadow: 0px 0px 5px #444;
+  background-color: silver;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+}
+
+span.milestone-progress {
+  position: absolute;
+  height: 100%;
+  background-color: green;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+}
+
+div.issue-header {
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+div.issue-info {
+  border-top: 1px solid #e5e5e5;
+  border-bottom: 1px solid #e5e5e5;
+  background-color: #f5f5f5;
+  padding: 8px;
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+div.issue-content {
+  padding: 8px;
+  background-color: #fbfbfb;
+}
+
+h4#issueTitle {
+  font-size: large;
+  font-weight: bold;
+  margin-top: 2px;
+  margin-bottom: 0px;
+  padding: 0px;
+}
+
+div.issue-avatar-image {
+  float: left;
+}
+
+div.issue-box {
+  margin-bottom: 5px;
+  margin-left: 50px;
+}
+
+div.issue-participants {
+  margin-bottom: 15px;
+  margin-left: 50px;
+}
+
+div.issue-comment-box {
+  margin-bottom: 15px;
+  margin-left: 50px;
+}
+
+div.issue-comment-action {
+  padding-bottom: 10px;
+  padding-top: 0px;
+  margin-bottom: 10px;
+  border-bottom: 4px solid #ddd;
+}
+
+.nav-pills > li > span.issue-label {
+  display: block;
+  padding: 0px 8px 2px 8px;
+  margin-top: 2px;
+  -webkit-border-radius: 5px;
+     -moz-border-radius: 5px;
+          border-radius: 5px;
+}
+
+div.attachable {
+  margin-bottom: 10px;
+}
+
+div.attachable textarea {
+  margin-bottom: 0px;
+  border-bottom: 1px dashed #ccc;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  border-radius: 0px;
+}
+
+div.attachable div.clickable {
+  padding: 2px;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  background-color: white;
+}
+
+/****************************************************************************/
+/* Pull Request */
+/****************************************************************************/
+div.pullreq-info {
+  border: 1px solid #ddd;
+  background-color: #f8f8f8;
+  margin-bottom: 10px;
+  padding: 8px;
+}
+
+/****************************************************************************/
+/* Wiki */
+/****************************************************************************/
+h1.wiki-title {
+  margin-top: 0px;
+}
+
+a.absent {
+  color: #c00;
+}
+
+/****************************************************************************/
+/* Commit */
+/****************************************************************************/
+div.author-info div.committer {
+  display: block;
+  margin-left: 25px;
+  font-size: 12px;
+}
+
+/****************************************************************************/
+/* Diff */
+/****************************************************************************/
+table.diff {
+    font-size: 12px;
+    font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+    width: 100%;
+}
+
+table.diff thead {
+    display: none;
+}
+
+table.inlinediff td.insert, table.inlinediff td.equal, table.inlinediff td.delete {
+    width: 100%;
+}
+
+td.insert, td.equal, td.delete, td.empty {
+    width: 50%;
+}
+
+/****************************************************************************/
+/* Repository Settings */
+/****************************************************************************/
+ul.collaborator {
+  list-style-type: none;
+  margin-left: 0px;
+}
+    
+ul.collaborator li {
+  background-color: #eee;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 6px;
+  margin-bottom: 2px;
+}
+    
+ul.collaborator li:hover {
+  background-color: #f8f8f8;
+}
+
+ul.collaborator a.remove {
+  color: #dd0000;
+  text-decoration: underline;
+}
+
+/****************************************************************************/
+/* Markdown */
+/****************************************************************************/
+div.markdown-body {
+  line-height: 1.7;
+  font: 15px Helvetica, arial, freesans, clean, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+  word-wrap: break-word;
+}
+div.markdown-body h1 {
+  border-bottom: 1px solid #ddd;
+  font-size: 2.5em;
+  font-weight: bold;
+}
+
+div.markdown-body h2 {
+  border-bottom: 1px solid #eee;
+  font-size: 2em;
+}
+
+div.markdown-body h3 {
+  font-size: 1.5em;
+}
+
+div.markdown-body h4 {
+  font-size: 1.2em;
+}
+
+div.markdown-body h5 {
+  font-size: 1em;
+}
+
+div.markdown-body h6 {
+  color:#777;
+  font-size: 1em;
+}
+
+div.markdown-body li {
+  line-height: 1.7;
+}
+
+div.markdown-body p {
+  margin: 15px 0;
+  line-height: 1.7;
+}
+
+div.markdown-body pre {
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  font-size: 12px;
+  white-space: pre;
+}
+
+div.markdown-body code {
+  font-size: 12px;
+  padding: 0 5px;
+}
+
+div.markdown-body table {
+  /*width: 100%;*/
+  margin-bottom: 20px;
+}
+
+div.markdown-body table th,
+div.markdown-body table td {
+  padding: 8px;
+  line-height: 20px;
+  text-align: left;
+  vertical-align: top;
+  border-top: 1px solid #dddddd;
+}
+
+div.markdown-body table th {
+  font-weight: bold;
+  background-color: #efefef;
+}
+
+div.markdown-body table thead th {
+  vertical-align: bottom;
+}
+
+div.markdown-body table caption + thead tr:first-child th,
+div.markdown-body table caption + thead tr:first-child td,
+div.markdown-body table colgroup + thead tr:first-child th,
+div.markdown-body table colgroup + thead tr:first-child td,
+div.markdown-body table thead:first-child tr:first-child th,
+div.markdown-body table thead:first-child tr:first-child td {
+  border-top: 0;
+}
+
+div.markdown-body table tbody + tbody {
+  border-top: 2px solid #dddddd;
+}
+
+div.markdown-body table {
+  background-color: #ffffff;
+}
+
+div.markdown-body table {
+  border: 1px solid #dddddd;
+  border-collapse: separate;
+  *border-collapse: collapse;
+  border-left: 0;
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+}
+
+div.markdown-body table th,
+div.markdown-body table td {
+  border-left: 1px solid #dddddd;
+}
+
+div.markdown-body table caption + thead tr:first-child th,
+div.markdown-body table caption + tbody tr:first-child th,
+div.markdown-body table caption + tbody tr:first-child td,
+div.markdown-body table colgroup + thead tr:first-child th,
+div.markdown-body table colgroup + tbody tr:first-child th,
+div.markdown-body table colgroup + tbody tr:first-child td,
+div.markdown-body table thead:first-child tr:first-child th,
+div.markdown-body table tbody:first-child tr:first-child th,
+div.markdown-body table tbody:first-child tr:first-child td {
+  border-top: 0;
+}
+
+div.markdown-body table thead:first-child tr:first-child > th:first-child,
+div.markdown-body table tbody:first-child tr:first-child > td:first-child,
+div.markdown-body table tbody:first-child tr:first-child > th:first-child {
+  -webkit-border-top-left-radius: 4px;
+          border-top-left-radius: 4px;
+  -moz-border-radius-topleft: 4px;
+}
+
+div.markdown-body table thead:first-child tr:first-child > th:last-child,
+div.markdown-body table tbody:first-child tr:first-child > td:last-child,
+div.markdown-body table tbody:first-child tr:first-child > th:last-child {
+  -webkit-border-top-right-radius: 4px;
+          border-top-right-radius: 4px;
+  -moz-border-radius-topright: 4px;
+}
+
+div.markdown-body table thead:last-child tr:last-child > th:first-child,
+div.markdown-body table tbody:last-child tr:last-child > td:first-child,
+div.markdown-body table tbody:last-child tr:last-child > th:first-child,
+div.markdown-body table tfoot:last-child tr:last-child > td:first-child,
+div.markdown-body table tfoot:last-child tr:last-child > th:first-child {
+  -webkit-border-bottom-left-radius: 4px;
+          border-bottom-left-radius: 4px;
+  -moz-border-radius-bottomleft: 4px;
+}
+
+div.markdown-body table thead:last-child tr:last-child > th:last-child,
+div.markdown-body table tbody:last-child tr:last-child > td:last-child,
+div.markdown-body table tbody:last-child tr:last-child > th:last-child,
+div.markdown-body table tfoot:last-child tr:last-child > td:last-child,
+div.markdown-body table tfoot:last-child tr:last-child > th:last-child {
+  -webkit-border-bottom-right-radius: 4px;
+          border-bottom-right-radius: 4px;
+  -moz-border-radius-bottomright: 4px;
+}
+
+div.markdown-body table tfoot + tbody:last-child tr:last-child td:first-child {
+  -webkit-border-bottom-left-radius: 0;
+          border-bottom-left-radius: 0;
+  -moz-border-radius-bottomleft: 0;
+}
+
+div.markdown-body table tfoot + tbody:last-child tr:last-child td:last-child {
+  -webkit-border-bottom-right-radius: 0;
+          border-bottom-right-radius: 0;
+  -moz-border-radius-bottomright: 0;
+}
+
+div.markdown-body table caption + thead tr:first-child th:first-child,
+div.markdown-body table caption + tbody tr:first-child td:first-child,
+div.markdown-body table colgroup + thead tr:first-child th:first-child,
+div.markdown-body table colgroup + tbody tr:first-child td:first-child {
+  -webkit-border-top-left-radius: 4px;
+          border-top-left-radius: 4px;
+  -moz-border-radius-topleft: 4px;
+}
+
+div.markdown-body table caption + thead tr:first-child th:last-child,
+div.markdown-body table caption + tbody tr:first-child td:last-child,
+div.markdown-body table colgroup + thead tr:first-child th:last-child,
+div.markdown-body table colgroup + tbody tr:first-child td:last-child {
+  -webkit-border-top-right-radius: 4px;
+          border-top-right-radius: 4px;
+  -moz-border-radius-topright: 4px;
+}
+
+.markdown-head {
+  position: relative;
+  line-height: 1.7;
+}
+
+a.markdown-anchor-link {
+  position: absolute;
+  left: -20px;
+  width: 32px;
+  height: 16px;
+  background-image: url(../images/link.png);
+  background-repeat: no-repeat;
+  display: none;
+}
+
+h1 a.markdown-anchor-link {
+  top: 24px;
+}
+
+h2 a.markdown-anchor-link {
+  top: 20px;
+}
+
+h3 a.markdown-anchor-link {
+  top: 12px;
+}
+
+h4 a.markdown-anchor-link {
+  top: 8px;
+}
+
+h5 a.markdown-anchor-link {
+  top: 6px;
+}
+
+h6 a.markdown-anchor-link {
+  top: 6px;
+}
+
+
+.repository-table td {
+    line-height: 30px;
+}

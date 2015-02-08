@@ -1,0 +1,31 @@
+@(label: model.Label,
+  counts: Map[String, Int],
+  repository: service.RepositoryService.RepositoryInfo,
+  hasWritePermission: Boolean)(implicit context: app.Context)
+@import context._
+@import view.helpers._
+
+
+<li class="table-list-item labels-list-item js-details-container">
+    <div class="table-list-cell">
+        @if(hasWritePermission){
+        <div class="labels-list-actions right">
+            <span class="labels-list-action js-edit-label">
+              <span class="octicon octicon-pencil"></span>
+              Edit
+            </span>
+            <span class="labels-list-action js-details-target">
+              <span class="octicon octicon-x"></span>
+              Delete
+            </span>
+        </div>
+        }
+
+        <span class="label-description right">@counts.get(label.labelName).getOrElse(0) open issues</span>
+
+        <a class="label label-link" href="@url(repository)/issues?labels=@urlEncode(label.labelName)" style="background-color: #@label.color; color: #@label.fontColor;">
+            <span class="octicon octicon-tag"></span>
+            <span class="label-name">@label.labelName</span>
+        </a>
+    </div>
+</li>

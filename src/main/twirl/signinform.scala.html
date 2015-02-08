@@ -1,0 +1,50 @@
+@(systemSettings: service.SystemSettingsService.SystemSettings)(implicit context: app.Context)
+@import context._
+<div class="boxed-group flush " id="signin-form" role="">
+        <h3>Sign In</h3>
+        <div class="boxed-group-inner">
+            <form accept-charset="UTF-8" action="@path/signin" autocomplete="off" class="form-signup-index " method="post">
+                <dl class="form">
+                    <dd>
+                        <input type="text" name="userName" class="textfield" placeholder="username" autofocus="">
+                    </dd>
+                </dl>
+                <dl class="form">
+                    <dd>
+                        <input type="password" name="password" class="textfield" placeholder="password" >
+                    </dd>
+                </dl>
+                <input type="hidden" name="source_label" value="Homepage Form">
+                <button class="button primary button-block" type="submit">Sign in</button>
+            </form>
+    </div>
+</div>
+<!--
+<table class="table table-bordered">
+  <tr>
+    <th class="metal">
+      @if(systemSettings.allowAccountRegistration){
+        <div class="pull-right">
+          <a href="@path/register" class="btn btn-mini">Create new account</a>
+        </div>
+      }
+      Sign in
+    </th>
+  </tr>
+  <tr>
+    <td>
+      <form action="@path/signin" method="POST" validate="true">
+        <label for="userName">Username:</label>
+        <span id="error-userName" class="error"></span>
+        <input type="text" name="userName" id="userName" style="width: 95%"/>
+        <label for="password">Password:</label>
+        <span id="error-password" class="error"></span>
+        <input type="password" name="password" id="password" style="width: 95%"/>
+        <div>
+          <input type="submit" class="btn btn-success" value="Sign in"/>
+        </div>
+      </form>
+    </td>
+  </tr>
+</table>
+    -->

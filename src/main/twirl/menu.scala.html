@@ -1,0 +1,211 @@
+@(active: String,
+  repository: service.RepositoryService.RepositoryInfo,
+  id: Option[String] = None,
+  expand: Boolean = false)(body: Html)(implicit context: app.Context)
+@import context._
+@import view.helpers._
+
+@sidemenu(path: String, name: String, activeLabel: String, label: String, dataLinks: String, count: Int = 0) = {
+    <li class="tooltipped tooltipped-w" aria-label="@name">
+        <a href="@url(repository)@path" aria-label="@name" class="@if(active == activeLabel){selected}  js-selected-navigation-item sunken-menu-item" data-hotkey="g c" data-pjax="true"
+        data-selected-links="@dataLinks @url(repository)">
+            <span class="octicon octicon-@name"></span>
+            <span class="full-word">@label</span>
+            @if(name == "issues" || name == "pulls") {
+                <span class="counter">@count</span>
+            }
+            <img alt="" class="mini-loader" height="16" src="@assets/spinners//octocat-spinner-32.gif" width="16">
+        </a>
+    </li>
+}
+
+@sidemenuPlugin(path: String, name: String, label: String, icon: String) = {
+  <li @if(active == name){class="active"}>
+    <div class="@if(active == name){margin} else {gradient} pull-left"></div>
+    <a href="@url(repository)@path"><img src="@icon"/>@if(expand){ @label}</a>
+  </li>
+}
+
+@if(!isPJax) {
+<div class="pagehead repohead instapaper_ignore readability-menu">
+    <div class="container">
+        @if(repository.commitCount > 0){
+        <ul class="pagehead-actions">
+            <li>
+                <a href="@path/@repository.owner/@repository.name/fork" class="minibutton with-count js-toggler-target fork-button tooltipped-n"
+                   title="Fork your own copy of @repository.owner/@repository.name to your account"
+                   aria-label="Fork your own copy of @repository.owner/@repository.name to your account" rel="facebox nofollow">
+                    <span class="octicon octicon-repo-forked"></span>
+                    Fork
+                </a>
+                <a href="@url(repository)/network/members" class="social-count">@repository.forkedCount</a>
+            </li>
+        </ul>
+        }
+        <h1 itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb" class="entry-title public">
+            @helper.html.repositoryicon(repository, true)
+            <span class="author">
+                <a href="@url(repository.owner)" class="url fn" itemprop="url" rel="author">
+                    <span itemprop="title">@repository.owner</span>
+                </a>
+            </span>
+            <span class="path-divider">/</span>
+            <strong>
+                <a href="@url(repository)" class="js-current-repository js-repo-home-link">@repository.name</a>
+            </strong>
+            <span class="page-context-loader">
+                <img alt="" height="16" src="@assets/spinners/octocat-spinner-32.gif" width="16">
+            </span>
+            @defining(repository.repository){ x =>
+                @if(repository.repository.originRepositoryName.isDefined){
+                <span class="fork-flag">
+                    <span class="text">forked from <a href="@path/@x.parentUserName/@x.parentRepositoryName">@x.parentUserName/@x.parentRepositoryName</a></span>
+                </span>
+                }
+            }
+        </h1>
+    </div>
+</div>
+<div class="container body">
+    <div class="repository-with-sidebar repo-container new-discussion-timeline @if(expand) {with-full-navigation}">
+        <div class="repository-sidebar clearfix">
+
+            <nav class="sunken-menu repo-nav js-repo-nav js-sidenav-container-pjax js-octicon-loaders" role="navigation" data-pjax="#js-repo-pjax-container" data-issue-count-url="@url(repository)/issues/counts">
+                <ul class="sunken-menu-group">
+                    @sidemenu(""       , "code"  , "code"  , "Code", "repo_source repo_downloads repo_commits repo_releases repo_tags repo_branches")
+                    @sidemenu("/issues", "issue-opened", "issues"  , "Issues", "repo_issues repo_labels repo_milestones", repository.issueCount)
+                    @sidemenu("/pulls" , "git-pull-request" , "pulls"  , "Pull Requests", "repo_pulls ", repository.pullCount)
+                    @sidemenu("/wiki"  , "book"  , "wiki"  , "Wiki", "repo_wiki")
+                </ul>
+
+                @if(loginAccount.isDefined && (loginAccount.get.isAdmin || repository.managers.contains(loginAccount.get.userName))) {
+                    <div class="sunken-menu-separator"></div>
+                    <ul class="sunken-menu-group">
+                        @sidemenu("/settings", "tools", "settings", "Settings", "repo_settings")
+                    </ul>
+                }
+            </nav>
+
+            <div class="only-with-full-nav">
+
+                <div class="clone-url open" data-protocol-type="http" data-url="/users/set_protocol?protocol_selector=http&amp;protocol_type=push">
+                    <h3><span class="text-emphasized">HTTPS</span> clone URL</h3>
+                    <div class="input-group">
+                        <input type="text" class="input-mini input-monospace js-url-field" value="@repository.httpUrl" readonly="readonly">
+                        <span class="input-group-button">
+                            <button aria-label="Copy to clipboard" class="js-zeroclipboard minibutton zeroclipboard-button" data-clipboard-text="@repository.httpUrl" data-copied-hint="Copied!" type="button">
+                                <span class="octicon octicon-clippy"></span>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+
+
+                @if(settings.ssh && loginAccount.isDefined){
+                <div class="clone-url " data-protocol-type="ssh" data-url="/users/set_protocol?protocol_selector=ssh&amp;protocol_type=push">
+                    <h3><span class="text-emphasized">SSH</span> clone URL</h3>
+                    <div class="input-group">
+                        <input type="text" class="input-mini input-monospace js-url-field" value="@repository.sshUrl(settings.sshPort.getOrElse(service.SystemSettingsService.DefaultSshPort), loginAccount.get.userName)" readonly="readonly">
+                        <span class="input-group-button">
+                            <button aria-label="Copy to clipboard" class="js-zeroclipboard minibutton zeroclipboard-button" data-clipboard-text="gitgithub.com:mqshen/gitbucket.git" data-copied-hint="Copied!" type="button"><span class="octicon octicon-clippy"></span></button>
+                        </span>
+                    </div>
+                </div>
+                }
+
+
+                <div class="clone-url " data-protocol-type="subversion" data-url="/users/set_protocol?protocol_selector=subversion&amp;protocol_type=push">
+                    <h3><span class="text-emphasized">Subversion</span> checkout URL</h3>
+                    <div class="input-group">
+                        <input type="text" class="input-mini input-monospace js-url-field" value="@repository.httpUrl" readonly="readonly">
+                        <span class="input-group-button">
+                            <button aria-label="Copy to clipboard" class="js-zeroclipboard minibutton zeroclipboard-button" data-clipboard-text="@repository.httpUrl" data-copied-hint="Copied!" type="button">
+                                <span class="octicon octicon-clippy"></span>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+
+
+                <p class="clone-options">You can clone with
+                    <a href="#" class="js-clone-selector" data-protocol="http">HTTPS</a>,
+                    <a href="#" class="js-clone-selector" data-protocol="ssh">SSH</a>,
+                    or <a href="#" class="js-clone-selector" data-protocol="subversion">Subversion</a>.
+                    <a href="https://help.github.com/articles/which-remote-url-should-i-use" class="help tooltipped tooltipped-n" aria-label="Get help on which URL is right for you.">
+                        <span class="octicon octicon-question"></span>
+                    </a>
+                </p>
+
+                <a href="http://mac.github.com" data-url="github-mac://openRepo/@{repository.httpUrl}" class="minibutton sidebar-button js-conduit-rewrite-url" title="Save mqshen/gitbucket to your computer and use it in GitHub Desktop." aria-label="Save mqshen/gitbucket to your computer and use it in GitHub Desktop.">
+                    <span class="octicon octicon-device-desktop"></span>
+                    Clone in Desktop
+                </a>
+
+
+                @id.map { id =>
+                    <a href="@{url(repository)}/archive/@{encodeRefName(id)}.zip" class="minibutton sidebar-button" aria-label="Download the contents of mqshen/gitbucket as a zip file" title="Download the contents of mqshen/gitbucket as a zip file" rel="nofollow">
+                        <span class="octicon octicon-cloud-download"></span>
+                        Download ZIP
+                    </a>
+                }
+            </div>
+        </div>
+        <div id="js-repo-pjax-container" class="repository-content context-loader-container" data-pjax-container="">
+        @if(expand) {
+            <span id="js-show-full-navigation"></span>
+            @repository.repository.description.map { description =>
+                <div class="repository-meta js-details-container ">
+                    <div class="repository-description">
+                        @description
+                    </div>
+                </div>
+            }
+
+
+            <div class="overall-summary ">
+
+                <div class="stats-switcher-viewport js-stats-switcher-viewport">
+                    <div class="stats-switcher-wrapper">
+                        <ul class="numbers-summary">
+                            <li class="commits">
+                                <a data-pjax="" href="@url(repository)/commits/@encodeRefName(id.getOrElse(""))">
+                                    <span class="octicon octicon-history"></span>
+                                    <span class="num text-emphasized">
+                                    @repository.commitCount
+                                    </span>
+                                    commits
+                                </a>
+                            </li>
+                            <li>
+                                <a data-pjax="" href="@url(repository)/branches">
+                                    <span class="octicon octicon-git-branch"></span>
+                                    <span class="num text-emphasized">
+                                    @repository.branchList.length
+                                    </span>
+                                    branches
+                                </a>
+                            </li>
+
+                            <li>
+                                <a data-pjax="" href="@url(repository)/tags">
+                                    <span class="octicon octicon-tag"></span>
+                                    <span class="num text-emphasized">
+                                    @repository.tags.length
+                                    </span>
+                                    releases
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        }
+    }
+    @body
+@if(!isPJax) {
+    </div>
+</div>
+</div>
+}
+

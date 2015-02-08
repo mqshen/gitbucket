@@ -1,0 +1,14 @@
+@(account: model.Account, groupNames: List[String], activities: List[model.Activity])(implicit context: app.Context)
+@import context._
+@import view.helpers._
+@main(account, groupNames, "activity", bodyClass = "page-profile"){
+<div class="activity-tab">
+    <span class="feed-icon tooltipped tooltipped-sw" aria-label="Follow @{account.userName}'s activity feed">
+        <a href="@path/@{account.userName}.atom"><span class="octicon octicon-rss"></span></a>
+    </span>
+    <div class="clearfix"></div>
+    <div class="news public_news">
+        @helper.html.activities(activities)
+    </div>
+</div>
+}

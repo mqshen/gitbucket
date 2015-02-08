@@ -1,0 +1,42 @@
+@(users: List[String],
+q: String,
+currentUser: Option[String],
+repository: service.RepositoryService.RepositoryInfo)(implicit context: app.Context)
+@import view.helpers._
+
+<div class="select-menu-filters">
+    <div class="select-menu-text-filter">
+        <input type="text" id="author-filter-field" class="js-filterable-field js-navigation-enable" placeholder="Filter users" autocomplete="off">
+    </div>
+</div>
+
+<div class="select-menu-list" data-filter="assignee">
+    <div data-filterable-for="assigns-filter-field" data-filterable-type="substring">
+        <a href="/mqshen/WeTalk/issues?q=is%3Aissue+milestone%3A0.1+is%3Aclosed+no%3Aassignee" class="select-menu-item js-navigation-item js-navigation-open ">
+            <span class="select-menu-item-icon octicon octicon-check"></span>
+            <div class="select-menu-item-text">
+                <strong>Assigned to nobody</strong>
+            </div>
+        </a>
+        @users.map { userName =>
+        <a href="@url(repository)/issues?q=@q%20assignee%3A@userName" class="select-menu-item js-navigation-item js-navigation-open last-visible navigation-focus">
+            <span class="select-menu-item-icon octicon octicon-check" @currentUser.map { _ => "checked" }></span>
+            @userTips(userName)
+        </a>
+        }
+    </div>
+
+    <form accept-charset="UTF-8" action="@url(repository)/issues?q=@q" class="select-menu-new-item-form js-issues-custom-filter" data-name="author" method="get">
+        <div style="margin:0;padding:0;display:inline">
+            <input name="utf8" type="hidden" value="&#x2713;" />
+        </div>
+        <div class="select-menu-item js-navigation-item js-new-item-form">
+            <span class="select-menu-item-icon octicon octicon-check"></span>
+            <div class="select-menu-item-text">
+                <h4>author:<span class="js-new-item-name"></span></h4>
+                <span class="description">Filter by this user</span>
+                <input type="hidden" name="q" value="is:issue is:open">
+            </div>
+        </div>
+    </form>
+</div>

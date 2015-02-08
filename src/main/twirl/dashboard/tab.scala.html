@@ -1,0 +1,20 @@
+@(active: String = "")(implicit context: app.Context)
+@import context._
+@import view.helpers._
+
+
+
+<div class="pagehead">
+    <div class="container">
+        <nav class="pagehead-nav" role="navigation">
+            <a href="@path/" class="selected js-selected-navigation-item pagehead-nav-item" data-selected-links=" /"><span class="octicon octicon-rss"></span> News Feed</a>
+            @if(loginAccount.isDefined) {
+            <a href="@path/dashboard/pulls" class="js-selected-navigation-item pagehead-nav-item" data-hotkey="g p" data-selected-links="/pulls /pulls/assigned /pulls/mentioned /pulls"><span class="octicon octicon-git-pull-request"></span>
+                Pull Requests</a>
+            <a href="@path/dashboard/issues/repos" class="js-selected-navigation-item pagehead-nav-item" data-hotkey="g i" data-selected-links="/issues /issues/assigned /issues/mentioned /issues"><span class="octicon octicon-issue-opened"></span>
+                Issues</a>
+            }
+        </nav>
+
+    </div>
+</div>

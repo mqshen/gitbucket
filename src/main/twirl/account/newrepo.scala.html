@@ -1,0 +1,140 @@
+@(groupNames: List[String], isCreateRepoOptionPublic: Boolean)(implicit context: app.Context)
+@import context._
+@import view.helpers._
+@html.main("Create a New Repository", bodyClass="page-new-repo"){
+<div class="new-repo-container">
+    <form accept-charset="UTF-8" action="@path/new" class="js-braintree-encrypt" data-braintree-key="" id="new_repository" method="post">
+        <div class="owner-reponame clearfix">
+            <div class="icon-preview icon-preview-public js-icon-preview-public" style="display: block;">
+                <span class="mega-octicon octicon-repo"></span>
+            </div>
+            <div class="icon-preview js-icon-preview-private" style="display: none;">
+                <span class="repo-private-label">private</span>
+                <span class="mega-octicon octicon-lock"></span>
+            </div>
+            <dl class="form left">
+                <dt><label for="owner_mqshen">Owner</label></dt>
+                <dd>
+                    <div class="select-menu js-menu-container js-select-menu js-owner-container">
+                        <span class="minibutton select-menu-button with-gravatar js-menu-target" role="button" aria-haspopup="true">
+                            <div class="select-menu-button-gravatar js-select-button-gravatar">
+                                @avatar(loginAccount.get.userName, 20)
+                            </div>
+                            <span class="js-select-button">@loginAccount.get.userName</span>
+                        </span>
+
+                        <div class="select-menu-modal-holder js-menu-content js-navigation-container" aria-hidden="true">
+                            <div class="select-menu-modal">
+                                <div class="select-menu-header">
+                                    <span class="select-menu-title">Choose another owner</span>
+                                    <span class="octicon octicon-x js-menu-close" role="button" aria-label="Close"></span>
+                                </div> <!-- /.select-menu-header -->
+
+                                <div class="select-menu-list" role="menu">
+
+                                    <div class="select-menu-item js-navigation-item selected" data-default="public" data-permission="yes">
+                                        <input checked="checked" id="owner_mqshen" name="owner" type="radio" value="@loginAccount.get.userName">
+                                        <span class="select-menu-item-icon octicon octicon-check"></span>
+                                        <div class="select-menu-item-gravatar js-select-menu-item-gravatar">
+                                            @avatar(loginAccount.get.userName, 20)
+                                        </div>
+                                        <div class="select-menu-item-text js-select-button-text">
+                                            @loginAccount.get.userName
+                                        </div>
+                                    </div> <!-- /.select-menu-item -->
+
+                                    @groupNames.map { groupName =>
+                                    <div class="select-menu-item js-navigation-item " data-default="public" data-permission="yes" role="menuitem">
+                                        <span class="select-menu-item-icon octicon octicon-check"></span>
+
+                                        <input id="owner_@groupName" name="owner" type="radio" value="@groupName">
+                                        <div class="select-menu-item-gravatar js-select-menu-item-gravatar">
+                                            @avatar(groupName, 20)
+                                        </div>
+                                        <div class="select-menu-item-text js-select-button-text">
+                                            @groupName
+                                        </div>
+                                    </div> <!-- /.select-menu-item -->
+                                    }
+
+                                </div> <!-- /.select-menu-list -->
+
+                            </div> <!-- /.select-menu-modal -->
+                        </div> <!-- /.select-menu-modal-holder -->
+                    </div> <!-- /.select-menu -->
+
+                </dd>
+            </dl>
+            <span class="slash with-permission-fields">/</span>
+            <dl class="form left">
+                <dt class="input-label">
+                <label autocapitalize="off" autofocus="autofocus" class="js-repo-name short with-permission-fields"
+                       data-autocheck-url="/repositories/check-name" for="repository_name" maxlength="100" tabindex="2">Repository name</label>
+                </dt>
+                <dd>
+                    <input autocapitalize="off" autofocus="autofocus" class="js-repo-name short with-permission-fields"
+                           data-autocheck-url="/repositories/check-name" id="repository_name" maxlength="100" name="name"
+                           size="100" tabindex="2" type="text">
+                </dd>
+            </dl>
+        </div>
+        <div class="with-permission-fields">
+            <p>
+                Great repository names are short and memorable. Need inspiration? How about
+                <strong class="reponame-suggestion js-reponame-suggestion">finna-be-octo-tribble</strong>.
+            </p>
+            <dl class="form">
+                <dt><label for="repository_description">Description</label> <span class="note">(optional)</span></dt>
+                <dd>
+                    <input class="long" id="repository_description" name="description" size="30" tabindex="4" type="text">
+                </dd>
+            </dl>
+            <hr>
+            <!-- team select box -->
+            <!-- privacy options -->
+            <div class="form-checkbox">
+                <label>
+                    <input checked="checked" class="js-privacy-toggle" id="repository_public_true" name="repository[public]" tabindex="5" type="radio" value="true">
+                    Public
+                </label>
+                <span class="mega-octicon octicon-repo"></span>
+                <span class="note"> Anyone can see this repository. You choose who can commit. </span>
+            </div>
+
+            <div class="form-checkbox">
+                <label>
+                    <input class="js-privacy-toggle" id="repository_public_false" name="repository[public]" tabindex="5" type="radio" value="false">
+                    Private
+                </label>
+                <span class="mega-octicon octicon-lock"></span>
+                <span class="note"> You choose who can see and commit to this repository. </span>
+            </div>
+
+            <!-- upgrade upsell -->
+            <hr>
+            <!-- auto init -->
+
+            <div class="form-checkbox unchecked">
+                <label>
+                    <input id="repository_auto_init" name="createReadme" tabindex="6" type="checkbox" value="1">
+                    Initialize this repository with a README
+                </label>
+                <span class="note">
+                    This will let you immediately clone the repository to your computer. Skip this step if you're importing an existing repository.
+                </span>
+            </div>
+            <hr>
+            <button type="submit" class="button primary first-in-line" data-disable-with="Creating repository…" tabindex="7" disabled="">
+                Create repository
+            </button>
+        </div><!-- /.with-permission-fields -->
+
+        <div class="without-permission-fields" style="display: none;">
+            <div class="callout">
+                You don't appear to have permission to create repositories for this organization. Sorry about that.
+            </div>
+        </div>
+    </form>
+</div>
+}
+

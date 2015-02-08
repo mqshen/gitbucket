@@ -1,0 +1,115 @@
+@(issue: model.Issue,
+  reopenable: Boolean,
+  hasWritePermission: Boolean,
+  repository: service.RepositoryService.RepositoryInfo)(implicit context: app.Context)
+@import context._
+@import view.helpers._
+@if(loginAccount.isDefined){
+
+    <div class="discussion-timeline-actions">
+
+
+        <div class="timeline-comment-wrapper timeline-new-comment js-comment-container ">
+            <a href="@path/loginAccount.get.userName">
+                @avatar(loginAccount.get.userName, 48, avatarClass = "timeline-comment-avatar")
+            </a>
+
+            <form accept-charset="UTF-8" action="@url(repository)/issue_comments" class="js-new-comment-form" data-remote="true" data-type="json" method="post">
+                <div class="timeline-comment">
+                    <input type="hidden" name="issueId" value="@issue.issueId">
+                    <div class="js-previewable-comment-form js-suggester-container previewable-comment-form write-selected" data-preview-url="/preview?repository=21924882">
+                        <div class="comment-form-head tabnav">
+                            <ul class="tabnav-tabs">
+                                <li><a href="#" class="tabnav-tab write-tab js-write-tab selected">Write</a></li>
+                                <li><a href="#" class="tabnav-tab preview-tab js-preview-tab">Preview</a></li>
+                            </ul>
+                            <span class="tabnav-right">
+                                <a class="tabnav-widget text tabnav-extras" href="https://guides.github.com/features/mastering-markdown/" target="_blank">
+                                    <span class="octicon octicon-markdown"></span>
+                                    Parsed as Markdown
+                                </a>
+
+                                <a href="#fullscreen_new_comment_field" class="enable-fullscreen js-enable-fullscreen tooltipped-n tabnav-widget text tabnav-extras">
+                                    <span class="octicon octicon-screen-full"></span>
+                                    Edit in fullscreen
+                                </a>
+
+                            </span>
+                        </div>
+
+                        <div class="comment-form-error js-comment-form-error" style="display:none">    There was an error creating your Issue.
+                        </div>
+                        <div class="write-content js-write-bucket js-uploadable-container js-upload-markdown-image upload-enabled is-default" data-upload-policy-url="/upload/policies/assets">
+                            <textarea name="content" tabindex="1" id="new_comment_field" placeholder="Leave a comment" class="input-contrast comment-form-textarea js-comment-field js-quick-submit js-size-to-fit js-quote-selection-target js-session-resumable js-suggester-field"></textarea>
+                            <p class="drag-and-drop">
+                                <span class="default">
+                                    Attach images by dragging &amp; dropping,
+                                    <input type="file" multiple="multiple" class="manual-file-chooser js-manual-file-chooser">
+                                    <a class="manual-file-chooser-text" href="#">selecting them</a>, or pasting
+                                    from the clipboard.
+                                </span>
+                                <span class="loading">
+                                    <img alt="" height="16" src="@assets/spinners/octocat-spinner-32.gif" width="16"> Uploading your images…
+                                </span>
+                                <span class="error bad-file">
+                                    Unfortunately, we don't support that file type.
+                                    <input type="file" multiple="multiple" class="manual-file-chooser js-manual-file-chooser">
+                                    <span class="drag-and-drop-error-info">
+                                        <a class="manual-file-chooser-text" href="#">Try again</a> with a PNG, GIF, or JPG.
+                                    </span>
+                                </span>
+                                <span class="error too-big">
+                                    Yowza, that's a big file.
+                                    <input type="file" multiple="multiple" class="manual-file-chooser js-manual-file-chooser">
+                                    <span class="drag-and-drop-error-info">
+                                        <a class="manual-file-chooser-text" href="#">Try again</a> with an image file smaller than 10MB.
+                                    </span>
+                                </span>
+                                <span class="error empty">
+                                    This file is empty.
+                                    <input type="file" multiple="multiple" class="manual-file-chooser js-manual-file-chooser">
+                                    <span class="drag-and-drop-error-info">
+                                        <a class="manual-file-chooser-text" href="#">Try again</a> with a file that's not empty.
+                                    </span>
+                                </span>
+                                <span class="error bad-browser">
+                                    This browser doesn't support image attachments.
+                                    <span class="drag-and-drop-error-info">
+                                        We recommend updating to the latest
+                                        <a href="http://windows.microsoft.com/ie">Internet Explorer</a>,
+                                        <a href="https://chrome.google.com">Google Chrome</a>, or
+                                        <a href="https://www.mozilla.org/firefox">Firefox</a>.
+                                    </span>
+                                </span>
+                                <span class="error failed-request">
+                                    Something went really wrong, and we can't process that image.
+                                    <input type="file" multiple="multiple" class="manual-file-chooser js-manual-file-chooser">
+                                    <span class="drag-and-drop-error-info">
+                                        <a class="manual-file-chooser-text" href="#">Try again.</a>
+                                    </span>
+                                </span>
+                            </p>
+
+                        </div>
+                        <div class="preview-content">
+                            <div class="comment">
+                                <div class="comment-content">
+                                    <div class="comment-body markdown-body">
+                                        <p>Nothing to preview</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="suggester-container">
+                            <div class="suggester js-suggester js-navigation-container" data-url="@url(repository)/suggestions/issue/@issue.issueId">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        @commentButton(issue, true, hasWritePermission, repository)
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+}

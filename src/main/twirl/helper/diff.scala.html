@@ -1,0 +1,139 @@
+@(diffs: Seq[util.JGitUtil.DiffInfo],
+ repository: service.RepositoryService.RepositoryInfo,
+ newCommitId: Option[String],
+ oldCommitId: Option[String],
+ showIndex: Boolean,
+ issueId: Option[Int],
+ hasWritePermission: Boolean,
+ showLineNotes: Boolean)(implicit context: app.Context)
+@import context._
+@import view.helpers._
+@import org.eclipse.jgit.diff.DiffEntry.ChangeType
+@if(showIndex){
+<div id="toc" class="details-collapse table-of-contents js-details-container">
+    <div class="button-group right" data-ga-load="Diff, view, Viewed Unified Diff">
+        <a class="minibutton selected" href="?diff=unified">
+            Unified
+        </a>
+        <a class="minibutton" href="?diff=split">
+            Split
+        </a>
+    </div>
+    <div class="toc-diff-stats">
+        <span class="octicon octicon-diff"></span>
+        Showing
+        <button type="button" class="button-link js-details-target">
+            @diffs.size changed file
+        </button>
+        with
+        @plural(diffs.size, "file")
+    </div>
+
+    <ol class="content collapse js-transitionable">
+        <li>
+            <span class="diffstat">
+                <span class="lines-added">
+                    <span class="diffstat-icon">+</span>1
+                </span>
+                <span class="lines-deleted">
+                    <span class="diffstat-icon">−</span>1
+                </span>
+                <a href="#diff-0" class="tooltipped tooltipped-s" aria-label="2 lines changed">
+                    <span class="diffstat-bar"> <i class="plus"></i><i class="minus"></i> </span>
+                </a>
+            </span>
+            <span class="octicon octicon-diff-modified" title="modified"></span>
+            <a href="#diff-0">README.md</a>
+        </li>
+    </ol>
+</div>
+}
+<div id="files" class="file-box diff-view commentable">
+    @diffs.zipWithIndex.map { case (diff, i) =>
+    <div id="diff-@i" class="file js-details-container soft-wrap file-type-prose show-inline-notes">
+        <div class="meta" data-path="README.md">
+            <div class="info">
+                <span class="diffstat tooltipped tooltipped-e" aria-label="1 addition &amp; 1 deletion">2
+                    <span class="diffstat-bar">
+                        <i class="plus"></i><i class="minus"></i>
+                    </span>
+                </span>
+                @if(diff.changeType == ChangeType.DELETE){
+                    <span class="js-selectable-text" title="@diff.oldPath">
+                        @diff.oldPath
+                    </span>
+                } else {
+                    <span class="js-selectable-text" title="@diff.newPath">
+                        @diff.newPath
+                    </span>
+                }
+
+            </div>
+            <div class="actions">
+              <span class="show-file-notes">
+                <label>
+                    <input type="checkbox" checked="checked" class="js-toggle-file-notes">
+                    Show notes
+                </label>
+              </span>
+
+                <!--
+              <span class="button-group">
+                <a class="minibutton tooltipped tooltipped tooltipped-n source selected" href="#diff-04c6e90faac2675aa89e2176d2eec7d8" aria-label="Display the source diff"><span class="octicon octicon-code"></span></a>
+                <a class="minibutton tooltipped tooltipped-n rendered" href="@url(repository)/commit/b9b6589bd728048a137a546c8ecab4318e4e0fe6?short_path=04c6e90#diff-04c6e90faac2675aa89e2176d2eec7d8" aria-label="Display the rich diff"><span class="octicon octicon-file-text"></span></a>
+              </span>
+              -->
+              @if(diff.changeType == ChangeType.COPY || diff.changeType == ChangeType.RENAME){
+                @if(newCommitId.isDefined){
+                    <a href="@url(repository)/blob/@newCommitId.get/@diff.newPath" class="minibutton tooltipped tooltipped-n" rel="nofollow" aria-label="View the whole file at version @newCommitId.get.substring(0, 10)">View</a>
+                }
+              }
+              @if(diff.changeType == ChangeType.ADD || diff.changeType == ChangeType.MODIFY){
+                @if(newCommitId.isDefined){
+                    <a href="@url(repository)/blob/@newCommitId.get/@diff.newPath" class="minibutton tooltipped tooltipped-n" rel="nofollow" aria-label="View the whole file at version @newCommitId.get.substring(0, 10)">View</a>
+                }
+              }
+              @if(diff.changeType == ChangeType.DELETE){
+                @if(oldCommitId.isDefined){
+                    <a href="@url(repository)/blob/@oldCommitId.get/@diff.newPath" class="minibutton tooltipped tooltipped-n" rel="nofollow" aria-label="View the whole file at version @oldCommitId.get.substring(0, 10)">View</a>
+                }
+              }
+            </div>
+        </div>
+        <div class="data highlight blob-wrapper">
+            <table class="diff-table  tab-size-8 ">
+                <tbody>
+                @if(diff.newContent != None || diff.oldContent != None){
+                    @compare.Compare.compare(diff.oldContent, diff.newContent).map {
+                        case e: compare.EqualDiff => {
+                        <tr>
+                            <td id="diff-@{i}L@e.left" data-line-number="@e.left" class="blob-num blob-num-context js-linkable-line-number"></td>
+                            <td id="diff-@{i}R@e.right" data-line-number="@e.right" class="blob-num blob-num-context js-linkable-line-number"></td>
+                            <td class="blob-code blob-code-context"><b class="add-line-comment octicon octicon-plus js-add-line-comment js-add-single-line-comment" data-path="README.md" data-anchor="diff-@i" data-position="3" data-line="3" role="button" aria-label="Add line comment"></b>@e.leftText</td>
+                        </tr>
+                        }
+                        case e: compare.DeleteDiff => {
+                        <tr>
+                            <td id="diff-@{i}L@e.left" data-line-number="@e.left" class="blob-num blob-num-deletion js-linkable-line-number"></td>
+                            <td class="blob-num blob-num-deletion empty-cell"></td>
+                            <td class="blob-code blob-code-deletion"><b class="add-line-comment octicon octicon-plus js-add-line-comment js-add-single-line-comment" data-path="README.md" data-anchor="diff-04c6e90faac2675aa89e2176d2eec7d8" data-position="4" data-line="4" role="button" aria-label="Add line comment"></b>-@e.leftText</td>
+                        </tr>
+                        }
+                        case e: compare.InsertDiff => {
+                        <tr>
+                            <td class="blob-num blob-num-addition empty-cell"></td>
+                            <td id="diff-@{i}R@e.right" data-line-number="@e.right" class="blob-num blob-num-addition js-linkable-line-number"></td>
+                            <td class="blob-code blob-code-addition"><b class="add-line-comment octicon octicon-plus js-add-line-comment js-add-single-line-comment" data-path="README.md" data-anchor="diff-04c6e90faac2675aa89e2176d2eec7d8" data-position="5" data-line="4" role="button" aria-label="Add line comment"></b>+@e.rightText</td>
+                        </tr>
+                        }
+                    }
+                } else {
+                    Not supported
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    }
+</div>
+

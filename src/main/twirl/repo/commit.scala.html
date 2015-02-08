@@ -1,0 +1,67 @@
+@(commitId: String,
+  commit: util.JGitUtil.CommitInfo,
+  branches: List[String],
+  tags: List[String],
+  comments: List[model.Comment],
+  repository: service.RepositoryService.RepositoryInfo,
+  diffs: Seq[util.JGitUtil.DiffInfo],
+  oldCommitId: Option[String],
+  hasWritePermission: Boolean)(implicit context: app.Context)
+@import context._
+@import view.helpers._
+@import util.Implicits._
+@html.main(commit.shortMessage, Some(repository)){
+  @html.menu("code", repository){
+<div class="commit full-commit ">
+    <a href="@url(repository)/tree/@commit.id" class="button-outline right" title="Browse the repository at this point in the history" rel="nofollow">Browse files</a>
+
+    <p class="commit-title">
+        @commit.summary
+    </p>
+
+
+    <div class="commit-branches">
+
+        <span class="octicon octicon-git-branch"></span>
+        @if(branches.nonEmpty){
+        <ul class="branches-list">
+            @branches.zipWithIndex.map { case (branch, i) =>
+                <li class="branch"><a href="@url(repository)/tree/@encodeRefName(branch)">@branch</a></li>
+            }
+        </ul>
+        }
+        @if(tags.nonEmpty){
+            <span class="octicon octicon-tag"></span>
+            <ul class="branches-tag-list js-details-container">
+                <img src="@assets/common/images/tag.png"/>
+                @tags.zipWithIndex.map { case (tag, i) =>
+                    <li><a href="@url(repository)/tree/@tag">@tag</a></li>
+                }
+            </ul>
+        }
+    </div>
+
+    <div class="commit-meta clearfix">
+        <span class="sha-block">commit <span class="sha js-selectable-text">@commit.id</span></span>
+
+    <span class="sha-block" data-pjax="">
+        @if(commit.parents.size == 0){
+            0 parent
+        }
+        @if(commit.parents.size == 1){
+            <span class="muted">1 parent</span>
+            <a href="@url(repository)/commit/@commit.parents(0)" class="sha">@commit.parents(0).substring(0, 7)</a>
+        }
+    </span>
+
+        <div class="authorship">
+            @avatar(commit, 24)
+            <span class="author-name"><a href="/@commit.authorName" rel="author">@commit.authorName</a></span>
+            authored @datetime(commit.authorTime)
+        </div>
+    </div>
+</div>
+    @helper.html.diff(diffs, repository, Some(commit.id), oldCommitId, true, None, hasWritePermission, true)
+  }
+}
+

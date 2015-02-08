@@ -1,0 +1,108 @@
+@(pathList: List[String],
+  branch: String,
+  repository: service.RepositoryService.RepositoryInfo,
+  commits: Seq[Seq[util.JGitUtil.CommitInfo]],
+  page: Int,
+  hasNext: Boolean,
+  hasWritePermission: Boolean)(implicit context: app.Context)
+@import context._
+@import view.helpers._
+@html.main(s"${repository.owner}/${repository.name}", Some(repository)) {
+  @html.menu("code", repository){
+<div class="file-navigation">
+    <div class="head">
+      @helper.html.dropdown(
+        value  = if(branch.length == 40) branch.substring(0, 10) else branch,
+        prefix = if(branch.length == 40) "tree" else if(repository.branchList.contains(branch)) "branch" else "tree",
+        mini   = true
+      ){
+        @repository.branchList.map { x =>
+          <li><a href="@url(repository)/commits/@encodeRefName(x)">@helper.html.checkicon(x == branch) @x</a></li>
+        }
+      }
+      @if(pathList.isEmpty){
+        <!--
+        <a href="@url(repository)/tree/@encodeRefName(branch)">@repository.name</a> / Commit History
+        -->
+      }
+      @if(pathList.nonEmpty){
+        <span class="muted">History for</span>
+        <a href="@url(repository)/tree/@encodeRefName(branch)">@repository.name</a> /
+        @pathList.zipWithIndex.map { case (section, i) =>
+          @if(i == pathList.length - 1){
+            @section
+          } else {
+            <a href="@url(repository)/tree/@encodeRefName(branch)/@pathList.take(i + 1).mkString("/")">@section</a> /
+          }
+        }
+      }
+    </div>
+</div>
+<div class="commits-listing commits-listing-padded js-navigation-container js-active-navigation-container" data-navigation-scroll="page">
+    @commits.map { day =>
+    <div class="commit-group-title">
+        <span class="octicon octicon-git-commit"></span>Commits on @date(day.head.commitTime)
+    </div>
+    <ol class="commit-group table-list table-list-bordered">
+    @day.map { commit =>
+        <li class="commit commits-list-item table-list-item js-navigation-item js-details-container js-socket-channel js-updatable-content"
+            data-channel="" data-url="@url(repository)/commit/@commit.id/show_partial?partial=commits%2Fcommits_list_item">
+            <div class="table-list-cell commit-avatar-cell">
+                <div class="avatar-parent-child">
+                    <a href="/@commit.authorName" data-skip-pjax="true" rel="author">
+                        @avatar(commit, 36)
+                    </a>
+                </div>
+            </div>
+            <div class="table-list-cell">
+                <p class="commit-title ">
+                    <a href="@url(repository)/commit/@commit.id" class="message" data-pjax="true" title="diff update">@commit.summary</a>
+                    @if(commit.description.isDefined){
+                        <span class="hidden-text-expander inline"><a href="#" class="js-details-target">…</a></span>
+                    }
+                </p>
+
+                <div class="commit-meta">
+                    <a href="@url(repository)/commits/master?author=@commit.authorName" aria-label="View all commits by @commit.authorName" class="commit-author tooltipped tooltipped-s" rel="author">@commit.authorName</a>
+                    authored @datetime(commit.authorTime)
+                    @if(commit.isDifferentFromAuthor) {
+                    <span class="committer">
+                        <span class="octicon octicon-arrow-right"></span>
+                        <a href="@url(repository)/commits/@branch?author=@commit.committerName" aria-label="View all commits by Reynold Xin" class="commit-author tooltipped tooltipped-s" rel="contributor">@commit.committerName</a>
+                        committed @datetime(commit.commitTime)
+                    </span>
+                    }
+                </div>
+            </div>
+            <div class="commit-links-cell table-list-cell">
+                <div class="commit-links-group button-group">
+                    <button aria-label="Copy the full SHA" class="js-zeroclipboard button-outline zeroclipboard-button" data-clipboard-text="@commit.id" data-copied-hint="Copied!" type="button"><span class="octicon octicon-clippy"></span></button>
+                    <a href="@url(repository)/commit/@commit.id" class="sha button-outline">
+                        @commit.id.substring(0, 10)
+                    </a>
+                </div>
+                <a href="@url(repository)/tree/@commit.id" aria-label="Browse the repository at this point in the history" class="button-outline tooltipped tooltipped-s" rel="nofollow"><span class="octicon octicon-code"></span></a>
+            </div>
+        </li>
+    }
+    </ol>
+    }
+</div>
+@if(page > 1 || hasNext) {
+<div class="paginate-container" data-pjax="">
+    <div class="pagination">
+        @if(page <= 1) {
+            <span class="disabled">Newer</span>
+        } else {
+            <a href="@url(repository)/commits/@branch?page=@{page - 1}" rel="nofollow">Older</a></div>
+        }
+        @if(!hasNext) {
+            <a href="@url(repository)/commits/@branch?page=@{page + 1}" rel="nofollow">Older</a></div>
+        } else {
+            <span class="disabled">Older</span>
+        }
+    </div>
+</div>
+}
+}
+}

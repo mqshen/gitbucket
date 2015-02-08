@@ -1,0 +1,24 @@
+@(fileName: String)
+<h2 class="facebox-header">Crop your new profile picture</h2>
+<form accept-charset="UTF-8" action="/settings/avatars/@fileName" class="js-croppable-container" method="post">
+    <div style="margin:0;padding:0;display:inline">
+        <input name="utf8" type="hidden" value="&#x2713;" />
+        <input name="authenticity_token" type="hidden" value="GWv6fCVshExjIkXIvF1YgBNgA8ZBTmTvqVOaf5RH1onNKPyhLFoM2JR93BE0RGrB66diWbRInqBTQMkrzO4NpA==" />
+    </div>
+    <div class="profile-picture-cropper">
+    <div class="profile-picture-spinner" style="width:235px; height:154px"></div>
+    <img src="http://mqshen.qiniudn.com/@fileName" class="js-croppable-avatar croppable-avatar"
+         data-true-width="235" data-true-height="154" alt="">
+
+    <input class="js-crop-cropped_x" id="avatar-@fileName-cropped_x" name="cropped_x" type="hidden" value="40" />
+    <input class="js-crop-cropped_y" id="avatar-@fileName-cropped_y" name="cropped_y" type="hidden" value="0" />
+    <input class="js-crop-cropped_width" id="avatar-@fileName-cropped_width" name="cropped_width" type="hidden" value="154" />
+    <input class="js-crop-cropped_height" id="avatar-@fileName-cropped_height" name="cropped_height" type="hidden" value="154" />
+</div>
+
+    <div class="facebox-footer">
+        <button type="submit" name="op" value="save" class="button primary">
+            Set new profile picture
+        </button>
+    </div>
+</form>

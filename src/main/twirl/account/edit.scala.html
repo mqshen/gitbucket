@@ -1,0 +1,80 @@
+@(account: model.Account, info: Option[Any])(implicit context: app.Context)
+@import context._
+@import view.helpers._
+@import util.LDAPUtil
+@html.main("Edit your profile"){
+
+@helper.html.information(info)
+<div class="container">
+    <div class="columns">
+        <div class="column one-fourth" role="navigation">
+            @menu("profile", settings.ssh)
+        </div>
+        <div class="column three-fourths">
+            <div class="boxed-group">
+                <h3>Public profile</h3>
+                @if(LDAPUtil.isDummyMailAddress(account)){<div class="alert alert-danger">Please register your mail address.</div>}
+                <div class="boxed-group-inner clearfix js-uploadable-container js-upload-avatar-image is-default" data-upload-policy-url="/upload/policies/avatars">
+                    <form action="@path/settings/profile" method="POST" validate="true">
+                        <div class="column two-thirds">
+                            <dl class="form edit-profile-avatar">
+                                <dt><label for="upload-profile-picture">Profile picture</label></dt>
+                                <dd class="avatar-upload-container clearfix">
+                                    @avatar(account.userName, 70, avatarClass = "avatar left")
+                                    <div class="avatar-upload">
+                                        <a href="#" class="button button-change-profile-picture">
+                                            <label for="upload-profile-picture">
+                                                Upload new picture
+                                                <input id="upload-profile-picture" type="file" multiple="multiple" class="manual-file-chooser js-manual-file-chooser js-avatar-field">
+                                            </label>
+                                        </a>
+
+                                        <div class="upload-state default">
+                                            <p>You can also drag and drop a picture from your computer.</p>
+                                        </div>
+
+                                        <div class="upload-state loading">
+                                            <span class="button disabled">
+                                                <img alt="" height="16" src="@assets/spinners/octocat-spinner-32.gif" width="16"> Uploading...
+                                            </span>
+                                        </div>
+                                        <div class="upload-state danger too-big">
+                                            Please upload a picture smaller than 1 MB.
+                                        </div>
+                                        <div class="upload-state danger bad-dimensions">
+                                            Please upload a picture smaller than 10,000x10,000.
+                                        </div>
+                                        <div class="upload-state danger bad-file">
+                                            Unfortunately, we only support PNG, GIF, or JPG pictures.
+                                        </div>
+                                        <div class="upload-state danger bad-browser">
+                                            This browser doesn't support uploading pictures.
+                                        </div>
+                                        <div class="upload-state danger failed-request">
+                                            Something went really wrong and we can't process that picture.
+                                        </div>
+                                    </div> <!-- /.avatar-upload -->
+                                </dd>
+                            </dl>
+                            <dl class="form">
+                                <dt><label for="user_profile_name">Name</label></dt>
+                                <dd><input id="user_profile_name" name="fullName" size="30" type="text" value="@account.fullName"></dd>
+                            </dl>
+                            <dl class="form">
+                                <dt><label for="user_profile_mail">Mail Address</label></dt>
+                                <dd><input id="user_profile_mail" name="mailAddress" size="30" type="email" value="@if(!LDAPUtil.isDummyMailAddress(account)){@account.mailAddress}"></dd>
+                            </dl>
+                            <dl class="form">
+                                <dt><label for="user_profile_blog">URL</label></dt>
+                                <dd><input id="user_profile_blog" name="url" size="30" type="url" value="@account.url"></dd>
+                            </dl>
+                            <p><button type="submit" class="button primary">Update profile</button></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+}
+

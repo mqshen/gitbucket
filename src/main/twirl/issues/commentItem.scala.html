@@ -1,0 +1,185 @@
+@(issue: model.Issue,
+comment: model.IssueComment,
+hasWritePermission: Boolean,
+repository: service.RepositoryService.RepositoryInfo,
+pullreq: Option[model.PullRequest] = None,
+showTimestamp: Boolean = false)(implicit context: app.Context)
+@import context._
+@import view.helpers._
+@if(comment.action != "close" && comment.action != "reopen" && comment.action != "delete_branch"){
+<div class="timeline-comment-wrapper js-comment-container">
+    <a href="@path/@comment.commentedUserName">
+        @avatar(comment.commentedUserName, 48, avatarClass = "timeline-comment-avatar")
+    </a>
+    <div id="issuecomment-@comment.commentId" class="comment timeline-comment js-comment js-task-list-container owner-comment current-user" data-body-version="">
+        <div class="timeline-comment-header ">
+            @if(hasWritePermission || loginAccount.map(_.userName == comment.commentedUserName).getOrElse(false)) {
+            <div class="timeline-comment-actions">
+                <a class="timeline-comment-action js-comment-edit-button" data-skip-pjax="" href="#" title="Edit comment" aria-label="Edit comment">
+                    <span class="octicon octicon-pencil"></span>
+                </a>
+                <a class="timeline-comment-action delete-button js-comment-delete" data-remote=""
+                   data-method="delete" data-confirm="Are you sure you want to delete this?"
+                   href="@url(repository)/issue_comments/@comment.commentId" title="Delete comment" aria-label="Delete comment">
+                    <span class="octicon octicon-x"></span>
+                </a>
+            </div>
+            }
+            @if(comment.commentedUserName == repository.owner) {
+                <span class="timeline-comment-label">Owner</span>
+            }
+            <div class="timeline-comment-header-text">
+                <strong>
+                    <a href="@path/@comment.commentedUserName" class="author">@comment.commentedUserName</a>
+                </strong>
+                commented
+                <a href="#issuecomment-@comment.commentId" class="timestamp">
+                    @datetime(comment.registeredDate)
+                </a>
+            </div>
+        </div>
+
+
+        <div class="comment-content">
+            <p class="comment-form-stale">
+                The content you are editing has changed. Reload the page and try again.
+            </p>
+
+            <div class="edit-comment-hide">
+                <div class="comment-body markdown-body markdown-format js-comment-body">
+                    @if(comment.action == "commit" && comment.content.split(" ").last.matches("[a-f0-9]{40}")){
+                    @defining(comment.content.substring(comment.content.length - 40)){ id =>
+                    <div class="pull-right"><a href="@url(repository)/commit/@id" class="monospace">@id.substring(0, 7)</a></div>
+                    @markdown(comment.content.substring(0, comment.content.length - 41), repository, false, true)
+                    }
+                    } else {
+                    @if(comment.action == "refer"){
+                    @defining(comment.content.split(":")){ case Array(issueId, rest @ _*) =>
+                    <strong><a href="@url(repository)/issues/@issueId">Issue #@issueId</a>: @rest.mkString(":")</strong>
+                    }
+                    } else {
+                    @markdown(comment.content, repository, false, true)
+                    }
+                    }
+                </div>
+            </div>
+
+            <div class="context-loader">Sending request…</div>
+
+            @if(hasWritePermission || loginAccount.map(_.userName == comment.commentedUserName).getOrElse(false)) {
+            <div class="form-content js-write-bucket js-suggester-container js-uploadable-container js-upload-markdown-image upload-enabled is-default" data-upload-policy-url="/upload/policies/assets">
+                <form accept-charset="UTF-8" action="@url(repository)/issue_comments/@comment.commentId" class="js-comment-update" data-remote="" data-type="json" method="post">
+                    <textarea class="comment-form-textarea js-comment-field js-quick-submit js-task-list-field js-size-to-fit js-suggester-field"
+                              id="issuecomment-@comment.commentId-body" name="content" tabindex="1">@comment.content</textarea>
+                    <p class="drag-and-drop">
+                        <span class="default">
+                            Attach images by dragging &amp; dropping,
+                            <input type="file" multiple="multiple" class="manual-file-chooser js-manual-file-chooser">
+                            <a class="manual-file-chooser-text" href="#">selecting them</a>, or pasting from the clipboard.
+                        </span>
+                        <span class="loading">
+                            <img alt="" height="16" src="@assets/spinners/octocat-spinner-32.gif" width="16"> Uploading your images…
+                        </span>
+                        <span class="error bad-file">
+                            Unfortunately, we don't support that file type.
+                            <input type="file" multiple="multiple" class="manual-file-chooser js-manual-file-chooser">
+                            <span class="drag-and-drop-error-info">
+                                <a class="manual-file-chooser-text" href="#">Try again</a> with a PNG, GIF, or JPG.
+                            </span>
+                        </span>
+                        <span class="error too-big"> Yowza, that's a big file.
+                            <input type="file" multiple="multiple" class="manual-file-chooser js-manual-file-chooser">
+                            <span class="drag-and-drop-error-info">
+                                <a class="manual-file-chooser-text" href="#">Try again</a> with an image file smaller than 10MB.
+                            </span>
+                        </span>
+                        <span class="error empty">
+                            This file is empty.
+                            <input type="file" multiple="multiple" class="manual-file-chooser js-manual-file-chooser">
+                            <span class="drag-and-drop-error-info">
+                                <a class="manual-file-chooser-text" href="#">Try again</a> with a file that's not empty.
+                            </span>
+                        </span>
+                        <span class="error bad-browser">
+                            This browser doesn't support image attachments.
+                            <span class="drag-and-drop-error-info">
+                                We recommend updating to the latest
+                                <a href="http://windows.microsoft.com/ie">Internet Explorer</a>,
+                                <a href="https://chrome.google.com">Google Chrome</a>, or
+                                <a href="https://www.mozilla.org/firefox">Firefox</a>.
+                            </span>
+                        </span>
+                        <span class="error failed-request">
+                            Something went really wrong, and we can't process that image.
+                            <input type="file" multiple="multiple" class="manual-file-chooser js-manual-file-chooser">
+                            <span class="drag-and-drop-error-info">
+                                <a class="manual-file-chooser-text" href="#">Try again.</a>
+                            </span>
+                        </span>
+                    </p>
+
+
+                    <div class="form-actions">
+                        <button class="button" type="submit" tabindex="1" data-disable-with="">Update comment</button>
+                        <button type="button" tabindex="1" class="button danger js-comment-cancel-button" data-confirm-text="Are you sure you want to cancel? You have unsaved changes that will be reverted.">
+                            Cancel
+                        </button>
+                    </div>
+
+                    <div class="suggester-container">
+                        <div class="suggester js-suggester js-navigation-container" data-url="@url(repository)/suggestions/commit/88fcb44266eac5e9a475dd4a307961ffd383154f">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            }
+            <div class="comment-form-error comment-form-bottom js-comment-update-error"></div>
+        </div>
+    </div>
+</div>
+}
+
+@if(comment.action == "merge"){
+<div class="small" style="margin-top: 10px; margin-bottom: 10px;">
+    <span class="label label-info">Merged</span>
+    @userTips(comment.commentedUserName, hasContainer = false) merged commit <code>@pullreq.map(_.commitIdTo.substring(0, 7))</code> into
+    @if(pullreq.get.requestUserName == repository.owner){
+    <span class="label label-info monospace">@pullreq.map(_.branch)</span> from <span class="label label-info monospace">@pullreq.map(_.requestBranch)</span>
+    } else {
+    <span class="label label-info monospace">@pullreq.map(_.userName):@pullreq.map(_.branch)</span> to <span class="label label-info monospace">@pullreq.map(_.requestUserName):@pullreq.map(_.requestBranch)</span>
+    }
+    @datetime(comment.registeredDate)
+</div>
+}
+@if(comment.action == "close" || comment.action == "close_comment"){
+
+<div class="discussion-item discussion-item-closed">
+    <div class="discussion-item-header" id="event-@comment.commentId">
+        <span class="octicon octicon-circle-slash discussion-item-icon"></span>
+        @userTips(comment.commentedUserName, hasContainer = false) closed this   @datetime(comment.registeredDate)
+    </div>
+</div>
+
+}
+@if(comment.action == "reopen" || comment.action == "reopen_comment"){
+
+<div class="discussion-item discussion-item-reopened">
+    <div class="discussion-item-header" id="event-@comment.commentId">
+        <span class="octicon octicon-primitive-dot discussion-item-icon"></span>
+        @userTips(comment.commentedUserName, hasContainer = false) reopened this @datetime(comment.registeredDate)
+    </div>
+</div>
+
+}
+@if(comment.action == "delete_branch"){
+<div class="small issue-comment-action">
+    <span class="label">Deleted</span>
+    @userTips(comment.commentedUserName, hasContainer = false) deleted the <span class="label label-info monospace">@pullreq.map(_.requestBranch)</span> branch @datetime(comment.registeredDate)
+</div>
+}
+
+@if(showTimestamp) {
+<div id="partial-timeline-marker" class="js-timeline-marker js-socket-channel js-updatable-content" data-channel="@url(repository):issue:55980302" data-url="/@url(repository)/issues/@{issue.issueId}/show_partial?partial=timeline_marker&amp;since=1422844128"
+     data-mark-as-read-url="@url(repository)/notifications/mark?ids=56958396" data-last-modified="@{issue.updatedDate}">
+</div>
+}

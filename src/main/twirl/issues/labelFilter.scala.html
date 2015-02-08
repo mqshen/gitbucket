@@ -1,0 +1,33 @@
+@(labels: List[model.Label],
+q: String,
+repository: service.RepositoryService.RepositoryInfo)(implicit context: app.Context)
+@import view.helpers._
+
+<div class="select-menu-filters">
+    <div class="select-menu-text-filter">
+        <input type="text" id="label-filter-field" class="js-filterable-field js-navigation-enable" placeholder="Filter labels" autocomplete="off">
+    </div>
+</div>
+<div class="select-menu-list">
+    <div data-filterable-for="label-filter-field" data-filterable-type="substring">
+        <a href="@url(repository)/issues?q=@q%20no%3Alabel" class="select-menu-item js-navigation-item js-navigation-open ">
+            <span class="select-menu-item-icon octicon octicon-check"></span>
+            <div class="select-menu-item-text">
+                <strong>Unlabeled</strong>
+            </div>
+        </a>
+        @labels.map { label =>
+        <a href="@url(repository)/issues?q=@q%20label%3A@label.labelName" class="select-menu-item js-navigation-item js-navigation-open ">
+            <span class="select-menu-item-icon octicon octicon-check"></span>
+            <div class="select-menu-item-text css-truncate">
+                <div class="color-label-wrapper css-truncate-target">
+                    <span class="color" style="background-color: #@label.color">&nbsp;</span>
+                    <span class="name" >@label.labelName</span>
+                </div>
+            </div>
+        </a>
+        }
+    </div>
+    <div class="select-menu-no-results">No labels found. Sorry about that.</div>
+</div>
+

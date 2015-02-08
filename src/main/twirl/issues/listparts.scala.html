@@ -1,0 +1,237 @@
+@(target: String,
+  issues: List[service.IssuesService.IssueInfo],
+  page: Int,
+  openCount: Int,
+  closedCount: Int,
+  condition: service.IssuesService.IssueSearchCondition,
+  collaborators: List[String] = Nil,
+  milestones: List[model.Milestone] = Nil,
+  labels: List[model.Label] = Nil,
+  repository: Option[service.RepositoryService.RepositoryInfo] = None,
+  hasWritePermission: Boolean = false)(implicit context: app.Context)
+@import context._
+@import view.helpers._
+@import service.IssuesService.IssueInfo
+@if(condition.nonEmpty){
+    <a href="@service.IssuesService.IssueSearchCondition().toURL" class="issues-reset-query">
+        <span class="octicon octicon-x"></span>
+        Clear current search query, filters, and sorts
+    </a>
+}
+@if(openCount == 0 && closedCount == 0) {
+    <div class="blankslate spacious large-format">
+        <span class="mega-octicon octicon-issue-opened"></span>
+        <h3>Welcome to Issues!</h3>
+        <p>Issues are used to track todos, bugs, feature requests, and more. As issues are created, they'll appear
+            here in a searchable and filterable list. To get started, you should
+            <a href="@url(repository.get)/issues/new">create an issue</a>.
+        </p>
+    </div>
+} else {
+<div class="table-list-header" id="js-issues-toolbar">
+    <div class="table-list-filters">
+
+        <div class="table-list-header-toggle states left">
+            <a href="@condition.copy(state = "open").toURL" class="button-link @if(condition.state == "open"){ selected}">
+                <span class="octicon octicon-issue-opened"></span>
+                @openCount Open
+            </a>
+
+            <a href="@condition.copy(state = "closed").toURL" class="button-link @if(condition.state == "closed"){ selected}">
+                <span class="octicon octicon-check"></span>
+                @closedCount Closed
+            </a>
+        </div>
+
+
+        <div class="table-list-header-toggle right">
+            <div class="left select-menu js-menu-container js-select-menu js-load-contents" data-contents-url="@url(repository.get)/issues/show_menu_content?partial=filters%2Fauthors_content&amp;q=is%3Aopen+is%3Aissue">
+                <span class="button-link select-menu-button js-menu-target" role="button" aria-haspopup="true" data-hotkey="u">
+                    Author
+                </span>
+
+                <div class="select-menu-modal-holder js-menu-content js-navigation-container" aria-hidden="true">
+
+                    <div class="select-menu-modal">
+                        <div class="select-menu-header">
+                            <span class="select-menu-title">Filter by author</span>
+                            <span class="octicon octicon-x js-menu-close" role="button" aria-label="Close"></span>
+                        </div>
+
+                        <div class="js-select-menu-deferred-content"></div>
+                        <div class="select-menu-loading-overlay">Loading…</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="left select-menu label-select-menu js-menu-container js-select-menu js-load-contents" data-contents-url="@url(repository.get)/issues/show_menu_content?partial=filters%2Flabels_content&amp;q=is%3Aopen+is%3Aissue">
+                <span class="button-link select-menu-button js-menu-target" role="button" aria-haspopup="true" data-hotkey="l">
+                    Labels
+                </span>
+
+                <div class="select-menu-modal-holder js-menu-content js-navigation-container" aria-hidden="true">
+                    <div class="select-menu-modal">
+                        <div class="select-menu-header">
+                            <span class="select-menu-title">Filter by label</span>
+                            <span class="octicon octicon-x js-menu-close" role="button" aria-label="Close"></span>
+                        </div>
+
+                        <div class="js-select-menu-deferred-content"></div>
+                        <div class="select-menu-loading-overlay">Loading…</div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="left select-menu js-menu-container js-select-menu js-load-contents" data-contents-url="@url(repository.get)/issues/show_menu_content?partial=filters%2Fmilestones_content&amp;q=is%3Aopen+is%3Aissue">
+                <span class="button-link select-menu-button js-menu-target" role="button" aria-haspopup="true" data-hotkey="m">
+                    Milestones
+                </span>
+
+                <div class="select-menu-modal-holder js-menu-content js-navigation-container" aria-hidden="true">
+                    <div class="select-menu-modal">
+                        <div class="select-menu-header">
+                            <span class="select-menu-title">Filter by milestone</span>
+                            <span class="octicon octicon-x js-menu-close" role="button" aria-label="Close"></span>
+                        </div>
+
+                        <div class="js-select-menu-deferred-content"></div>
+                        <div class="select-menu-loading-overlay">Loading…</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="left select-menu js-menu-container js-select-menu js-load-contents" data-contents-url="@url(repository.get)/issues/show_menu_content?partial=filters%2Fassigns_content&amp;q=is%3Aopen+is%3Aissue">
+                <span class="button-link select-menu-button js-menu-target" role="button" aria-haspopup="true" data-hotkey="a">
+                    Assignee
+                </span>
+
+                <div class="select-menu-modal-holder js-menu-content js-navigation-container" aria-hidden="true">
+
+                    <div class="select-menu-modal">
+                        <div class="select-menu-header">
+                            <span class="select-menu-title">Filter by who's assigned</span>
+                            <span class="octicon octicon-x js-menu-close" role="button" aria-label="Close"></span>
+                        </div>
+
+                        <div class="js-select-menu-deferred-content"></div>
+                        <div class="select-menu-loading-overlay">Loading…</div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="left select-menu js-menu-container js-select-menu">
+                <span class="button-link select-menu-button icon-only js-menu-target" role="button" aria-haspopup="true">
+                    Sort<span class="sort-label"></span>
+                </span>
+
+                <div class="select-menu-modal-holder js-menu-content js-navigation-container" aria-hidden="true">
+
+                    <div class="select-menu-modal">
+                        <div class="select-menu-header">
+                            <span class="select-menu-title">Sort by</span>
+                            <span class="octicon octicon-x js-menu-close" role="button" aria-label="Close"></span>
+                        </div>
+
+
+                        <div class="select-menu-list" role="menu">
+                            <div>
+                                <a href="@condition.copy(sort="created",  direction="desc").toURL" class="select-menu-item js-navigation-item js-navigation-open selected" role="menuitem">
+                                    <span class="select-menu-item-icon octicon octicon-check"></span>
+                                    <div class="select-menu-item-text">Newest</div>
+                                </a>
+                                <a href="@condition.copy(sort="created",  direction="asc").toURL" class="select-menu-item js-navigation-item js-navigation-open " role="menuitem">
+                                    <span class="select-menu-item-icon octicon octicon-check"></span>
+                                    <div class="select-menu-item-text">Oldest</div>
+                                </a>
+                                <a href="@condition.copy(sort="comments", direction="desc").toURL" class="select-menu-item js-navigation-item js-navigation-open " role="menuitem">
+                                    <span class="select-menu-item-icon octicon octicon-check"></span>
+                                    <div class="select-menu-item-text">Most commented</div>
+                                </a>
+                                <a href="@condition.copy(sort="comments", direction="asc" ).toURL" class="select-menu-item js-navigation-item js-navigation-open " role="menuitem">
+                                    <span class="select-menu-item-icon octicon octicon-check"></span>
+                                    <div class="select-menu-item-text">Least commented</div>
+                                </a>
+                                <a href="@condition.copy(sort="updated",  direction="desc").toURL" class="select-menu-item js-navigation-item js-navigation-open " role="menuitem">
+                                    <span class="select-menu-item-icon octicon octicon-check"></span>
+                                    <div class="select-menu-item-text">Recently updated</div>
+                                </a>
+                                <a href="@condition.copy(sort="updated",  direction="asc" ).toURL" class="select-menu-item js-navigation-item js-navigation-open " role="menuitem">
+                                    <span class="select-menu-item-icon octicon octicon-check"></span>
+                                    <div class="select-menu-item-text">Least recently updated</div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+@if(issues.isEmpty) {
+    <div class="blankslate spacious large-format capped">
+        <span class="mega-octicon octicon-issue-opened"></span>
+        <h3>There aren't any issues.</h3>
+        <p> <a href="@url(repository.get)/issues/new">Create a new issue</a>. </p>
+    </div>
+} else {
+    <ul class="table-list table-list-bordered table-list-issues js-navigation-container js-active-navigation-container">
+    @issues.map { case IssueInfo(issue, labels, milestone, commentCount) =>
+    <li id="issue_16" data-issue-id="16" class="unread table-list-item js-navigation-item js-issue-row navigation-focus">
+
+        <div class="table-list-cell table-list-cell-type">
+            <a href="@condition.copy(state = "open").toURL" aria-label="View all issues" class="tooltipped tooltipped-n">
+                <span class="octicon octicon-issue-opened open"></span>
+            </a>
+        </div>
+
+        <div class="table-list-cell issue-title">
+
+            <a href="@path/@issue.userName/@issue.repositoryName/issues/@issue.issueId" class="issue-title-link js-navigation-open">
+            @issue.title
+            </a>
+            <span class="labels">
+                @labels.map { label =>
+                    <a href="@url(repository.get)/issues?q=is%3Aopen+label%3A@label.labelName" aria-label="View all bug issues" class="label labelstyle-@label.color linked-labelstyle-@label.color lightertooltipped" style="background-color: #@label.color ; color: #@{label.fontColor};">@label.labelName</a>
+                }
+            </span>
+            <div class="issue-meta">
+                <span class="issue-meta-section opened-by">
+                    #@issue.issueId
+                    opened @datetime(issue.registeredDate)
+                    by
+                    <a href="@path/@issue.openedUserName" class="tooltipped tooltipped-s muted-link">@issue.openedUserName</a>
+                </span>
+
+                @milestone.map { milestone =>
+                <span class="issue-meta-section css-truncate issue-milestone">
+                    <a class="milestone-link muted-link css-truncate tooltipped tooltipped-n" aria-label="View all issues in this milestone" href="@url(repository.get)/milestones/@milestone">
+                        <span class="octicon octicon-milestone"></span> 
+                        <span class="css-truncate-target">@milestone</span>
+                    </a>
+                </span>
+                }
+            </div>
+        </div>
+
+        <div class="table-list-cell table-list-cell-avatar">
+        </div>
+
+        <div class="table-list-cell issue-comments">
+            <a href="@path/@issue.userName/@issue.repositoryName/issues/@issue.issueId#comments" class="muted-link ">
+                <span class="octicon octicon-comment"></span> @commentCount
+            </a>
+        </div>
+    </li>
+    }
+    </ul>
+}
+}
+
+<div class="pull-right">
+  @helper.html.paginator(page, (if(condition.state == "open") openCount else closedCount), service.IssuesService.IssueLimit, 10, condition.toURL)
+</div>
+

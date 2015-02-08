@@ -1,0 +1,47 @@
+@(issue: Option[model.Issue],
+  comments: List[model.Comment],
+  hasWritePermission: Boolean,
+  repository: service.RepositoryService.RepositoryInfo,
+  pullreq: Option[model.PullRequest] = None)(implicit context: app.Context)
+@import context._
+@import view.helpers._
+
+@issue.map { issue =>
+
+<div class="js-discussion js-socket-channel" data-channel="@url(repository):marked-as-read:44042728">
+    <div class="timeline-comment-wrapper js-comment-container">
+        <a href="@path/@issue.openedUserName">
+            @avatar(issue.openedUserName, 48, avatarClass = "timeline-comment-avatar")
+        </a>
+        <div id="issue-@issue.issueId" class="comment timeline-comment js-comment js-task-list-container " data-body-version="">
+            <div class="timeline-comment-header ">
+                <div class="timeline-comment-header-text">
+                    <strong>
+                        <a href="@path/@issue.openedUserName" class="author">@issue.openedUserName</a>
+                    </strong>
+                    commented
+                    <a href="#issue-@issue.issueId" class="timestamp">
+                        @datetime(issue.registeredDate)
+                    </a>
+                </div>
+            </div>
+            <div class="comment-content">
+
+                <div class="edit-comment-hide">
+                    <div class="comment-body markdown-body markdown-format js-comment-body">
+                    @markdown(issue.content getOrElse "No description provided.", repository, false, true)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @comments.map {
+        case comment: model.IssueComment => {
+            @commentItem(issue, comment, hasWritePermission, repository, pullreq)
+        }
+    }
+    <div id="partial-timeline-marker" class="js-timeline-marker js-socket-channel js-updatable-content" data-channel="@url(repository):issue:55980302" data-url="/@url(repository)/issues/@{issue.issueId}/show_partial?partial=timeline_marker&amp;since=1422844128"
+         data-mark-as-read-url="@url(repository)/notifications/mark?ids=56958396" data-last-modified="@{issue.updatedDate}">
+    </div>
+</div>
+}

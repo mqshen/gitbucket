@@ -1,0 +1,185 @@
+@(issue: model.Issue,
+  comments: List[model.Comment],
+  issueLabels: List[model.Label],
+  collaborators: List[String],
+  milestones: List[(model.Milestone, Int, Int)],
+  labels: List[model.Label],
+  hasWritePermission: Boolean,
+  repository: service.RepositoryService.RepositoryInfo)(implicit context: app.Context)
+@import view.helpers._
+<div class="discussion-sidebar-item sidebar-labels">
+    <div class="select-menu label-select-menu js-issue-show-label-select-menu js-menu-container js-select-menu" data-url="@url(repository)/issues/labels/modify_assignment" data-multiple="">
+        <form accept-charset="UTF-8" action="@url(repository)/issues/labels/modify_assignment" method="post">
+            @labelstyle(labels)
+            @if(hasWritePermission) {
+            <div class="select-menu-modal-holder js-menu-content js-navigation-container" aria-hidden="true">
+                <div class="select-menu-modal">
+                    <div class="select-menu-header">
+                        <span class="select-menu-title">Apply labels to this issue</span>
+                        <span class="octicon octicon-x js-menu-close" role="button" aria-label="Close"></span>
+                    </div>
+                    <div class="select-menu-filters">
+                        <div class="select-menu-text-filter">
+                            <input type="text" id="label-filter-field" class="js-filterable-field js-navigation-enable" placeholder="Filter labels" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="select-menu-list" data-filterable-for="label-filter-field" data-filterable-type="substring">
+                        @labels.map { label =>
+                        @let(issueLabels.exists(_.labelId == label.labelId) ) { flag =>
+                        <div class="select-menu-item js-navigation-item labelstyle-@label.color @if(flag){ selected } ">
+                            <span class="select-menu-item-icon octicon octicon-check"></span>
+                            <div class="select-menu-item-text">
+                                <div class="color-label-wrapper">
+                                    <div data-name="bug" class="color-label @label.color">
+                                        <input style="display: none" type="checkbox" @if(flag){ checked } value="@label.labelId" name="labels[@label.labelId]">
+                                        <span class="color" style="background-color: #@label.color"></span>
+                                        <span class="name">@label.labelName</span>
+                                        <span class="octicon octicon-x"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        }
+                        }
+                    </div>
+                    <div class="select-menu-no-results">Nothing to show</div>
+                    <div class="select-menu-loading-overlay">Loading…</div>
+                </div>
+            </div>
+
+            <input type="hidden" class="js-issue-number" name="issueId" value="@issue.issueId">
+
+            <button class="discussion-sidebar-heading discussion-sidebar-toggle js-menu-target" aria-label="Manage labels" aria-haspopup="true" data-hotkey="l">
+                <span class="octicon octicon-gear"></span>
+                Labels
+            </button>
+            } else {
+            <h3 class="discussion-sidebar-heading">
+                Labels
+            </h3>
+            }
+        </form>
+    </div>
+    <div class="labels css-truncate js-timeline-label-list">
+        @issueLabels.map { label =>
+            <a href="@url(repository)/labels/@label.labelName" class="label css-truncate-target linked-labelstyle-@label.color" title="@label.labelName">@label.labelName</a>
+        }
+    </div>
+</div>
+
+
+<div class="discussion-sidebar-item sidebar-milestone">
+    <div class="select-menu js-menu-container js-select-menu js-milestone-picker is-showing-clear-item" data-contents-url="@url(repository)/issues/5/show_partial?partial=milestone_select_menu">
+        @if(hasWritePermission) {
+        <button class="discussion-sidebar-heading discussion-sidebar-toggle js-menu-target" aria-label="Set milestone" aria-haspopup="true" data-hotkey="m">
+            <span class="octicon octicon-gear"></span>
+            Milestone
+        </button>
+        <div class="select-menu-modal-holder js-menu-content js-navigation-container" aria-hidden="true">
+            <div class="select-menu-modal">
+                <div class="select-menu-header">
+                    <span class="select-menu-title">Set milestone</span>
+                    <span class="octicon octicon-x js-menu-close" role="button" aria-label="Close"></span>
+                </div>
+
+                <form accept-charset="UTF-8" action="@url(repository)/milestone" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="✓"><input name="_method" type="hidden" value="put"><input name="authenticity_token" type="hidden" value="9I0/IpLANbFVO25ug+xPBx/FyOjKmTa0SsE/zy4qYCXh7uwQN5gvHzcnXeeHrYreLRZESpn9k5nPYNzJ6j2ZdQ=="></div>
+                    <div class="js-milestone-picker-body">
+                        <div class="js-select-menu-deferred-content">
+                            @issues.milestones.html.selector(milestones, issue.milestoneId.getOrElse(0))
+                        </div>
+                        <div class="select-menu-loading-overlay">Loading…</div>
+                    </div>
+                    <input type="hidden" class="js-issue-number" name="issueId" value="@issue.issueId">
+                </form>
+            </div>
+        </div>
+        } else {
+        <h3 class="discussion-sidebar-heading">
+            Milestone
+        </h3>
+        }
+    </div>
+
+  <span class="js-milestone-infobar-item-wrapper">
+      @issue.milestoneId.map { milestoneId =>
+        @milestones.collect { case (milestone, openCount, closeCount) if(milestone.milestoneId == milestoneId) =>
+          @issues.milestones.html.item(milestone, openCount, closeCount, repository)
+        }
+      }.getOrElse {
+        <span class="text-muted">No milestone</span>
+      }
+  </span>
+</div>
+
+
+
+<div class="discussion-sidebar-item sidebar-assignee">
+    <div class="select-menu @if(issue.assignedUserName.isDefined){ is-showing-clear-item } js-menu-container js-select-menu js-assignee-picker " data-contents-url="@url(repository)/issues/5/show_partial?partial=assignee_select_menu">
+
+        @if(hasWritePermission) {
+        <button class="discussion-sidebar-heading discussion-sidebar-toggle js-menu-target" aria-label="Assign someone to this issue" aria-haspopup="true" data-hotkey="a">
+            <span class="octicon octicon-gear"></span>
+            Assignee
+        </button>
+
+        <div class="select-menu-modal-holder js-menu-content js-navigation-container" aria-hidden="true">
+            <div class="select-menu-modal">
+                <div class="select-menu-header">
+                    <span class="select-menu-title">Assign someone to this issue</span>
+                    <span class="octicon octicon-x js-menu-close" role="button" aria-label="Close"></span>
+                </div>
+                <div class="js-select-menu-deferred-content">
+                    <div class="select-menu-filters">
+                        <div class="select-menu-text-filter">
+                            <input type="text" id="assignee-filter-field" class="js-filterable-field js-navigation-enable" placeholder="Filter people" aria-label="Type or choose a name" autocomplete="off">
+                        </div>
+                    </div>
+
+                    <form accept-charset="UTF-8" action="@url(repository)/issues/@issue.issueId/assignee" class="edit_issue" id="edit_assignee" method="post">
+                        <div style="margin:0;padding:0;display:inline">
+                            <input name="utf8" type="hidden" value="✓">
+                            <input name="_method" type="hidden" value="put">
+                            <input name="authenticity_token" type="hidden" value="Xa2s5e4HSJxlsb73a0z4cvr6Pnh1Ltnba8Kg5KpliL1vLW/0VCRJ7kXhpXBHNNgZ6MIxBxEz2c/7BvRHN8CM0Q==">
+                        </div>
+                        <div class="select-menu-list">
+
+                            <div class="select-menu-clear-item select-menu-item js-navigation-item js-clear-assignee" role="button" aria-label="Clear assignee">
+                                <input name="assignee" type="radio" value="">
+                                <span class="select-menu-item-icon octicon octicon-x"></span>
+                                <div class="select-menu-item-text">Clear assignee</div>
+                            </div> <!-- /.select-menu-item -->
+                            <div data-filterable-for="assignee-filter-field" data-filterable-type="fuzzy" role="menu">
+                                @collaborators.map { collaborator =>
+                                    @let( issue.assignedUserName.map(_ == collaborator).getOrElse(false) ) { flag =>
+                                    <div class="select-menu-item js-navigation-item @if(flag){ selected }" role="menuitem">
+                                        <input name="assignee" type="radio" value="@collaborator" @if(flag){ checked } >
+                                        <span class="select-menu-item-icon octicon octicon-check"></span>
+                                        @userTips(collaborator)
+                                    </div>
+                                    }
+                                }
+                            </div>
+                            <div class="select-menu-no-results">Nothing to show</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="select-menu-loading-overlay">Loading…</div>
+            </div>
+        </div>
+        } else {
+        <h3 class="discussion-sidebar-heading">
+            Assignee
+        </h3>
+        }
+    </div>
+
+    @issue.assignedUserName.map { userName =>
+        <span class="css-truncate js-assignee-infobar-item-wrapper">
+            @userTips(userName, false)
+        </span>
+    }.getOrElse{
+        <span class="css-truncate js-assignee-infobar-item-wrapper">No one assigned</span>
+    }
+</div>
+
+@participants(issue, comments)

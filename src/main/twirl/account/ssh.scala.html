@@ -3,45 +3,80 @@
 @import view.helpers._
 @html.main("SSH Keys"){
 <div class="container">
-  <div class="row-fluid">
-    <div class="span3">
-      @menu("ssh", settings.ssh)
-    </div>
-    <div class="span9">
-      <div class="box">
-        <div class="box-header">SSH Keys</div>
-        <div class="box-content">
-          @if(sshKeys.isEmpty){
-            No keys
-          }
-          @sshKeys.zipWithIndex.map { case (key, i) =>
-            @if(i != 0){
-              <hr>
-            }
-            <strong>@key.title</strong> (@_root_.ssh.SshUtil.fingerPrint(key.publicKey).getOrElse("Key is invalid."))
-            <a href="@path/@account.userName/_ssh/delete/@key.sshKeyId" class="btn btn-mini btn-danger pull-right">Delete</a>
-          }
+    <div class="columns">
+        <div class="column one-fourth" role="navigation">
+            @menu("profile", settings.ssh)
         </div>
-      </div>
-      <form method="POST" action="@path/@account.userName/_ssh" validate="true">
-        <div class="box">
-          <div class="box-header">Add an SSH Key</div>
-          <div class="box-content">
-            <fieldset>
-              <label for="title" class="strong">Title</label>
-              <div><span id="error-title" class="error"></span></div>
-              <input type="text" name="title" id="title" style="width: 400px;"/>
-            </fieldset>
-            <fieldset>
-              <label for="publicKey" class="strong">Key</label>
-              <div><span id="error-publicKey" class="error"></span></div>
-              <textarea name="publicKey" id="publicKey" style="width: 600px; height: 250px;"></textarea>
-            </fieldset>
-            <input type="submit" class="btn btn-success" value="Add"/>
-          </div>
+        <div class="column three-fourths">
+            <p><strong>Need help?</strong> Check out our guide to
+                <a href="https://help.github.com/articles/generating-ssh-keys">generating SSH keys</a> or troubleshoot
+                <a href="https://help.github.com/ssh-issues/">common SSH Problems</a>
+            </p>
+            <div class="boxed-group">
+                <div class="boxed-group js-ssh-keys-box">
+                    <a href="#" id="add_key_action" class="js-show-new-ssh-key-form minibutton boxed-group-action ">
+                        Add SSH key
+                    </a>
+                    <h3>SSH Keys</h3>
+                    <div class="boxed-group-inner">
+                        @if(sshKeys.isEmpty){
+                        <div class="js-no-ssh-keys" style="">
+                            <p>There are no SSH keys with access to your account.</p>
+                        </div>
+                        } else {
+                        <p>
+                            This is a list of SSH keys associated with your account.
+                            Remove any keys that you do not recognize.
+                        </p>
+                        <ul class="boxed-group-list">
+                            @sshKeys.zipWithIndex.map { case (key, i) =>
+                            <li class="ssh-key">
+                                <span class="ssh-key-state-indicator recent"></span>
+
+                                <form accept-charset="UTF-8" action="@path/settings/ssh/delete/@key.sshKeyId" class="js-remove-key" data-remote="true" method="post">
+                                    <button type="submit" class="minibutton danger">Delete</button>
+                                </form>
+                                <span class="ssh-key-icon"><span class="mega-octicon octicon-key"></span></span>
+
+                                <div class="ssh-key-details js-details-container">
+                                    <strong class="ssh-key-title">
+                                        @key.title
+                                    </strong>
+                                    <code class="ssh-key-fingerprint">@_root_.ssh.SshUtil.fingerPrint(key.publicKey).getOrElse("Key is invalid.")</code>
+                                    <small class="ssh-key-accessed">
+                                    </small>
+                                </div>
+                            </li>
+                            }
+                        </ul>
+                        }
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="boxed-group js-new-ssh-key-box" style="display:none">
+                <h3>Add an SSH Key</h3>
+                <div class="boxed-group-inner">
+                    <div id="new_key_form_wrap" class="body">
+                        <form accept-charset="UTF-8" action="/settings/ssh" class="new_public_key" id="new_key" method="post">
+                            <dl class="form">
+                                <dt><label for="public_key_title">Title</label></dt>
+                                <dd><input class="js-ssh-key-title" id="public_key_title" name="title" size="30" type="text"></dd>
+                            </dl>
+                            <dl class="form">
+                                <dt><label for="public_key_key">Key</label></dt>
+                                <dd><textarea class="key_value" cols="40" id="public_key_key" name="publicKey" rows="20"></textarea></dd>
+                            </dl>
+
+                            <p>
+                                <button type="submit" class="button primary">Add key</button>
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-      </form>
     </div>
-  </div>
 </div>
 }

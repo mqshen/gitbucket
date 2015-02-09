@@ -8,11 +8,12 @@
                     System settings
                 </h3>
                 <a href="@path/admin/users" class="@if(active=="users"){ selected } js-selected-navigation-item menu-item" data-selected-links="avatar_settings /admin/users">User Management</a>
-                <a href="@path/admin/users" class="@if(active=="system"){ selected } js-selected-navigation-item menu-item" data-selected-links="avatar_settings /admin/system">System Management</a>
-                <a href="@path/console/login.jsp" js-selected-navigation-item menu-item"  data-selected-links="avatar_settings /admin/users">User Management</a>
+                <a href="@path/admin/system" class="@if(active=="system"){ selected } js-selected-navigation-item menu-item" data-selected-links="avatar_settings /admin/system">System Management</a>
+                <a href="@path/console/login.jsp" js-selected-navigation-item menu-item"  data-selected-links="avatar_settings /admin/users">H2 Console</a>
             </nav>
         </div>
         <div class="column three-fourths">
             @body
         </div>
     </div>
+</div>

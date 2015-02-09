@@ -538,6 +538,7 @@ trait IssuesControllerBase extends ControllerBase {
           }
         } else session.getAs[IssueSearchCondition](sessionKey).getOrElse(IssueSearchCondition())
       )
+      val issuest = searchIssue(condition, false, (page - 1) * IssueLimit, IssueLimit, owner -> repoName)
 
       issues.html.list(
           "issues",

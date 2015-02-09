@@ -243,24 +243,25 @@ trait AccountControllerBase extends AccountManagementControllerBase {
     redirect("/")
   })
 
-  get("/:userName/_ssh")(oneselfOnly {
-    val userName = params("userName")
-    getAccountByUserName(userName).map { x =>
-      account.html.ssh(x, getPublicKeys(x.userName))
+  get("/settings/ssh")(oneselfOnly {
+    context.loginAccount.map { user =>
+      account.html.ssh(user, getPublicKeys(user.userName))
     } getOrElse NotFound
   })
 
-  post("/:userName/_ssh", sshKeyForm)(oneselfOnly { form =>
-    val userName = params("userName")
-    addPublicKey(userName, form.title, form.publicKey)
-    redirect(s"/${userName}/_ssh")
+  post("/settings/ssh", sshKeyForm)(oneselfOnly { form =>
+    context.loginAccount.map { user =>
+      addPublicKey(user.userName, form.title, form.publicKey)
+      redirect(s"/settings/ssh")
+    }
   })
 
-  get("/:userName/_ssh/delete/:id")(oneselfOnly {
-    val userName = params("userName")
-    val sshKeyId = params("id").toInt
-    deletePublicKey(userName, sshKeyId)
-    redirect(s"/${userName}/_ssh")
+  get("/setting/ssh/delete/:id")(oneselfOnly {
+    context.loginAccount.map { user =>
+      val sshKeyId = params("id").toInt
+      deletePublicKey(user.userName, sshKeyId)
+      redirect(s"/settings/ssh")
+    }
   })
 
   get("/register"){

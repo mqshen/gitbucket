@@ -107,7 +107,9 @@
                     <div class="input-group">
                         <input type="text" class="input-mini input-monospace js-url-field" value="@repository.sshUrl(settings.sshPort.getOrElse(service.SystemSettingsService.DefaultSshPort), loginAccount.get.userName)" readonly="readonly">
                         <span class="input-group-button">
-                            <button aria-label="Copy to clipboard" class="js-zeroclipboard minibutton zeroclipboard-button" data-clipboard-text="gitgithub.com:mqshen/gitbucket.git" data-copied-hint="Copied!" type="button"><span class="octicon octicon-clippy"></span></button>
+                            <button aria-label="Copy to clipboard" class="js-zeroclipboard minibutton zeroclipboard-button" data-clipboard-text="@repository.sshUrl(settings.sshPort.getOrElse(service.SystemSettingsService.DefaultSshPort), loginAccount.get.userName)" data-copied-hint="Copied!" type="button">
+                                <span class="octicon octicon-clippy"></span>
+                            </button>
                         </span>
                     </div>
                 </div>

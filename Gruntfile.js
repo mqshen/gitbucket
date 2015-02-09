@@ -44,7 +44,7 @@ module.exports = function(grunt) {
       js: {
         files: {
           'src/main/webapp/assets/common/js/framework.test.js': ['src/main/webapp/assets/vendors/fastclick/lib/fastclick.js'
-            ,'src/main/webapp/assets/vendors/setimmediate/setImmediate.js', 'src/main/webapp/assets/vendors/promise/promise.js'
+            ,'src/main/webapp/assets/vendors/setimmediate/setImmediate.js'
             ,'src/main/webapp/assets/vendors/webcomponents.js/webcomponents.js'
             ,'src/main/webapp/assets/vendors/requestAnimationFrame/app/requestAnimationFrame.js'
             ,'src/main/webapp/assets/vendors/zeroclipboard/dist/ZeroClipboard.js'
@@ -60,6 +60,7 @@ module.exports = function(grunt) {
             ,'src/main/webapp/assets/common/js/fileHelper.js'
             ,'src/main/webapp/assets/common/js/navigation.js'
             ,'src/main/webapp/assets/common/js/menu.js'
+            ,'src/main/webapp/assets/common/js/throttledInput.js'
             ,'src/main/webapp/assets/common/js/performTransition.js'
             ,'src/main/webapp/assets/common/js/helper.js']
         }

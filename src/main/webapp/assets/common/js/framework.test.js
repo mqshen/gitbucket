@@ -1008,111 +1008,6 @@ if (typeof define !== 'undefined' && define.amd) {
     }
 }(typeof global === "object" && global ? global : this));
 
-(function() {
-
-  'use strict';
-
-  var Promise = function() {
-    this.thenTargets = [];
-    this.pending = true;
-  };
-
-  var isPromise = function(promise) {
-    return promise && promise instanceof Promise;
-  }
-
-  var isPseudoPromise = function(promise) {
-    return promise && typeof promise.then == 'function';
-  }
-
-  Promise.prototype.resolve = function(promise, value) {
-    if (promise === value) {
-      throw new TypeError('resolve: arguments cannot be the same object')
-    }
-    if (promise === value) {
-      throw new TypeError('resolve: arguments cannot be the same object')
-    }
-    if (isPromise(value) || isPseudoPromise(value)) {
-      value.then(promise.fulfil.bind(promise), promise.reject.bind(promise))
-    } else {
-      promise.fulfil(value);
-    }
-  };
-
-  Promise.prototype.handleThenTargets = function() {
-    var callbackResult;
-    var callback;
-    var value;
-    var i;
-
-    for (i=0;i<this.thenTargets.length;++i) {
-      if (this.fulfilled) {
-        callback = this.thenTargets[i].onFulfilled;
-        value = this.value;
-      }
-      if (this.rejected) {
-        callback = this.thenTargets[i].onRejected;
-        value = this.reason;
-      }
-      try {
-        if (callback && typeof callback === 'function') {
-          callbackResult = callback.apply(undefined, value);
-        } else {
-          callbackResult = this;
-        }
-        this.resolve(this.thenTargets[i], callbackResult);
-      }
-      catch(err) {
-        this.thenTargets[i].reject(err);
-      }
-    }
-    this.thenTargets = [];
-  };
-
-  Promise.prototype.handleThen = function() {
-    if (!this.pending) {
-      this.handleThenTargets();
-    }
-  };
-
-  Promise.prototype.then = function(onFulfilled, onRejected) {
-    var thenResult = new Promise();
-    // The execution of then is asynchronous so we need to have this info available later.
-    thenResult.onFulfilled = onFulfilled;
-    thenResult.onRejected = onRejected;
-    this.thenTargets.push(thenResult);
-    setTimeout(this.handleThen.bind(this),0);
-    return thenResult;
-  };
-
-  Promise.prototype.fulfil = function() {
-    var i;
-    var linkedPromise;
-    if (this.rejected) {
-      return;
-    }
-    this.fulfilled = true;
-    this.pending = false;
-    this.value = arguments;
-
-    this.handleThenTargets();
-  };
-
-  Promise.prototype.reject = function() {
-    var i;
-    var linkedPromise;
-    if (this.fulfilled) {
-      return;
-    }
-    this.reason = arguments;
-    this.rejected = true;
-    this.pending = false;
-    this.handleThenTargets();
-  }
-
-  this.Promise = Promise;
-
-}).call(this);
 /**
  * @license
  * Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
@@ -22076,9 +21971,6 @@ $.support.pjax ? enable() : disable()
          return -1
      };
      t = null, e = function(e) {
-        console.log(e);
-        console.log($(e))
-        $(e).fire("menu:active");
          t && n(t), $(e).fire("menu:activate", function() {
              return $(document).on("keydown.menu", i), $(document).on("click.menu", r), t = e, $(e).performTransition(function() {
                  return document.body.classList.add("menu-active"), e.classList.add("active"), $(e).find(".js-menu-content[aria-hidden]").attr("aria-hidden", "false")
@@ -22119,6 +22011,33 @@ $.support.pjax ? enable() : disable()
          }, "function" == typeof i[t] ? i[t]() : void 0) : void 0
      }
  }).call(jQuery);
+(function() {
+    var e, t;
+    e = function() {
+        var e, t, n, r, i;
+        return n = !1, t = !1, i = null, e = 100, r = function(n) {
+            return function(r) {
+                i && clearTimeout(i), i = setTimeout(function() {
+                    var e;
+                    i = null, t = !1, e = new $.Event("throttled:input", {
+                        target: r
+                    }), $.event.trigger(e, null, n, !0)
+                }, e)
+            }
+        }(this), $(this).on("keydown.throttledInput", function() {
+            n = !0, i && clearTimeout(i)
+        }), $(this).on("keyup.throttledInput", function(e) {
+            n = !1, t && r(e.target)
+        }), $(this).on("input.throttledInput", function(e) {
+            t = !0, n || r(e.target)
+        })
+    }, t = function() {
+        return $(this).off("keydown.throttledInput"), $(this).off("keyup.throttledInput"), $(this).off("input.throttledInput")
+    }, $.event.special["throttled:input"] = {
+        setup: e,
+        teardown: t
+    }
+}).call(this);
 (function() {
     var e, t, n;
     t = "ontransitionend" in window, $.fn.performTransition = function(r) {

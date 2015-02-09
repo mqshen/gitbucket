@@ -332,7 +332,11 @@
                 })
             }
             return t.prototype.bindEvents = function(t, e) {
-                return $(t).on("blur", this.onInputBlur), $(t).on("throttled:input", this.onInputChange), $(e).on("mousedown", this.onResultsMouseDown), $(e).on("navigation:open", "[data-autocomplete-value]", this.onNavigationOpen), $(e).on("navigation:keydown", "[data-autocomplete-value]", this.onNavigationKeyDown)
+                $(t).on("blur", this.onInputBlur);
+                $(t).on("throttled:input", this.onInputChange);
+                $(e).on("mousedown", this.onResultsMouseDown);
+                $(e).on("navigation:open", "[data-autocomplete-value]", this.onNavigationOpen);
+                $(e).on("navigation:keydown", "[data-autocomplete-value]", this.onNavigationKeyDown);
             }, t.prototype.unbindEvents = function(t, e) {
                 return $(t).off("blur", this.onInputBlur), $(t).off("throttled:input", this.onInputChange), $(e).off("mousedown", this.onResultsMouseDown), $(e).off("navigation:open", "[data-autocomplete-value]", this.onNavigationOpen), $(e).off("navigation:keydown", "[data-autocomplete-value]", this.onNavigationKeyDown)
             }, t.prototype.onInputFocus = function(t) {
@@ -352,14 +356,33 @@
                 var e;
                 e = t.currentTarget, this.inputValue !== e.value && ($(e).removeAttr("data-autocompleted"), $(e).trigger("autocomplete:autocompleted:changed")), this.fetchResults(e.value)
             }, t.prototype.fetchResults = function(t) {
-                var e, n, i, s;
-                return (s = this.focusedResults.getAttribute("data-search-url")) ? (e = $(this.focusedInput).closest(".js-autocomplete-container"), i = t.trim() ? (s += ~s.indexOf("?") ? "&" : "?", s += "q=" + encodeURIComponent(t), e.addClass("is-sending"), $.fetchText(s)) : Promise.resolve(""), n = function() {
-                    return e.removeClass("is-sending")
-                }, this.fetchQueue.push(i).then(function(e) {
-                    return function(n) {
-                        return $(e.focusedResults).find(".js-autocomplete-results").html(n), e.onResultsChange(t)
+                var s = this.focusedResults.getAttribute("data-search-url");
+                if(s) {
+                    var e = $(this.focusedInput).closest(".js-autocomplete-container");
+                    var i;
+                    if(t.trim()) {
+                        if(~s.indexOf("?")) {
+                            s += "&"
+                        }
+                        else {
+                            s += "?"
+                        }
+                        s += "q=" + encodeURIComponent(t);
+                        e.addClass("is-sending");
+                        i = $.fetchText(s);
                     }
-                }(this)).then(n, n)) : void 0
+                    else {
+                        i = Promise.resolve("");
+                    }
+                    var n = function() {
+                        return e.removeClass("is-sending")
+                    }
+                    this.fetchQueue.push(i).then(function(e) {
+                        return function(n) {
+                            return $(e.focusedResults).find(".js-autocomplete-results").html(n), e.onResultsChange(t)
+                        }
+                    }(this)).then(n, n)
+                }
             }, t.prototype.onResultsChange = function(t) {
                 var e;
                 e = $(this.focusedResults).find("[data-autocomplete-value]"), 0 === e.length ? this.hideResults() : this.inputValue !== t && (this.inputValue = t, this.showResults(), $(this.focusedInput).is("[data-autocomplete-autofocus]") && $(this.focusedResults).find(".js-navigation-container").navigation("focus"))

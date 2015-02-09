@@ -2,9 +2,8 @@
 @import context._
 @import view.helpers._
 @html.main("Manage Users"){
+@admin.html.menu("users"){
 <div class="boxed-group">
-    <h3>User Management</h3>
-    @admin.html.menu("users"){
     <div class="subnav org-toolbar">
         <div class="right">
             <a href="@path/admin/users/_newuser" class="button primary">
@@ -71,8 +70,8 @@
             }
         </ul>
     </div>
-  }
 </div>
+}
 }
 <script>
 $(function(){

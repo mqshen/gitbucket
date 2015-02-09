@@ -37,6 +37,7 @@
     "jquery-selector-set": "0.1.8",
     "jquery-pjax": "1.9.4",
     "jquery-timeago": "1.4.1",
-    "zeroclipboard": "2.2.0"
+    "zeroclipboard": "2.2.0",
+    "octicons": "2.1.2"
   }
 }

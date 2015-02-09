@@ -285,6 +285,9 @@ class AutoUpdateListener extends ServletContextListener {
             //FileUtils.writeStringToFile(versionFile, headVersion.versionString, "UTF-8")
             updateVersion(conn, headVersion)
             logger.debug(s"Updated from ${currentVersion.versionString} to ${headVersion.versionString}")
+            if (!conn.getAutoCommit()) {
+              conn.commit()
+            }
           }
         }
       } catch {

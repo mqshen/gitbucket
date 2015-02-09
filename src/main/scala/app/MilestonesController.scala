@@ -54,23 +54,28 @@ trait MilestonesControllerBase extends ControllerBase {
     } getOrElse NotFound
   })
 
-  get("/:owner/:repository/issues/milestones/:milestoneId/close")(collaboratorsOnly { repository =>
+  post("/:owner/:repository/issues/milestones/:milestoneId/toggle")(collaboratorsOnly { repository =>
     params("milestoneId").toIntOpt.flatMap{ milestoneId =>
       getMilestone(repository.owner, repository.name, milestoneId).map { milestone =>
-        closeMilestone(milestone)
+        if(milestone.closedDate.isDefined) {
+          openMilestone(milestone)
+        }
+        else {
+          closeMilestone(milestone)
+        }
         redirect(s"/${repository.owner}/${repository.name}/issues/milestones")
       }
     } getOrElse NotFound
   })
 
-  get("/:owner/:repository/issues/milestones/:milestoneId/open")(collaboratorsOnly { repository =>
-    params("milestoneId").toIntOpt.flatMap{ milestoneId =>
-      getMilestone(repository.owner, repository.name, milestoneId).map { milestone =>
-        openMilestone(milestone)
-        redirect(s"/${repository.owner}/${repository.name}/issues/milestones")
-      }
-    } getOrElse NotFound
-  })
+//  get("/:owner/:repository/issues/milestones/:milestoneId/open")(collaboratorsOnly { repository =>
+//    params("milestoneId").toIntOpt.flatMap{ milestoneId =>
+//      getMilestone(repository.owner, repository.name, milestoneId).map { milestone =>
+//        openMilestone(milestone)
+//        redirect(s"/${repository.owner}/${repository.name}/issues/milestones")
+//      }
+//    } getOrElse NotFound
+//  })
 
   get("/:owner/:repository/issues/milestones/:milestoneId/delete")(collaboratorsOnly { repository =>
     params("milestoneId").toIntOpt.flatMap{ milestoneId =>

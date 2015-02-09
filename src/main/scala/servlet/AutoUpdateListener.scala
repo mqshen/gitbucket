@@ -214,7 +214,7 @@ object AutoUpdate {
    * Returns the current version from the version file.
    */
   def getCurrentVersion(conn: Connection): Version = {
-    conn.withStatement("SELECT * FROM INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA = 'gitbucket'  and TABLE_NAME = 'VERSIONS' LIMIT 1") { statement =>
+    conn.withStatement("SELECT * FROM INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA = 'gitbucketTest'  and TABLE_NAME = 'VERSIONS' LIMIT 1") { statement =>
       statement.withResult { rs =>
         if(rs.next()) {
           conn.withStatement("SELECT MAJOR, MINOR FROM VERSIONS ORDER BY MAJOR, MINOR LIMIT 1") { st =>

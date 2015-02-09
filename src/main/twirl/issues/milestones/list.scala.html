@@ -101,7 +101,7 @@
                             </p>
                             <p>Once you delete this milestone you will not be able to see it again. If you would like to close the milestone, remove any issues from the milestone and it will automatically close.</p>
                             <p>Deleting this milestone will not delete or close the associated issues.</p>
-                            <form accept-charset="UTF-8" action="@url(repository)/issues/milestones/@milestone.milestoneId" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="✓"><input name="_method" type="hidden" value="delete"><input name="authenticity_token" type="hidden" value="8WFAKmD11UpQOye3+1bLhuzqoRYGRbrPoDvlOeo0EJtelioWnAJWn7rfRvwuud9LI7/NhwFM3O6sP0xtSZoVPw=="></div>
+                            <form accept-charset="UTF-8" action="@url(repository)/issues/milestones/@milestone.milestoneId/delete" method="get">
                                 <button type="submit" class="button button-block danger">Delete this milestone</button>
                             </form>
                         </div>

@@ -335,7 +335,8 @@ trait RepositoryViewerControllerBase extends ControllerBase {
       // retrieve latest update date of each branch
       val branchInfo = repository.branchList.map { branchName =>
         val revCommit = git.log.add(git.getRepository.resolve(branchName)).setMaxCount(1).call.iterator.next
-        (branchName, revCommit.getCommitterIdent.getWhen)
+        val committerIdent = revCommit.getCommitterIdent
+        (branchName, committerIdent.getWhen, committerIdent.getName)
       }
       repo.html.branches(branchInfo, hasWritePermission(repository.owner, repository.name, context.loginAccount), repository)
     }

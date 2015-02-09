@@ -7,69 +7,68 @@
 @import service.WikiService._
 @import view.helpers._
 @html.main(s"${pageName} - ${repository.owner}/${repository.name}", Some(repository)){
-  @html.menu("wiki", repository){
-    <ul class="nav nav-tabs fill-width pull-left">
-      <li>
-        <h1 class="wiki-title">@pageName</h1>
-        <div class="small">
-          <span class="muted"><strong>@page.committer</strong> edited this page at @datetime(page.time)</span>
+@html.menu("wiki", repository){
+<div id="wiki-wrapper" class="wiki-wrapper page">
+    <div class="gh-header">
+        <div class="gh-header-show">
+            <div class="gh-header-actions">
+                <a href="@url(repository)/wiki/@urlEncode(pageName)/_edit" class="minibutton ">Edit</a>
+                <a href="@url(repository)/wiki/_new" class="minibutton primary">New Page</a>
+            </div>
+            <h1 class="gh-header-title instapaper_title">@pageName</h1>
+            <div class="gh-header-meta">
+                @page.committer edited this page @datetime(page.time)
+                ·
+                <a href="@url(repository)/wiki/@urlEncode(pageName)/_history" class="history">
+                    revision
+                </a>
+            </div>
         </div>
-      </li>
-      <li class="pull-right">
-        <div class="btn-group">
-          @if(hasWritePermission){
-            <a class="btn btn-small" href="@url(repository)/wiki/_new">New Page</a>
-            <a class="btn btn-small" href="@url(repository)/wiki/@urlEncode(pageName)/_edit">Edit Page</a>
-          }
-          <a class="btn btn-small" href="@url(repository)/wiki/@urlEncode(pageName)/_history">Page History</a>
-        </div>
-      </li>
-    </ul>
-    <div style="width: 200px;" class="pull-right">
-      <table class="table table-bordered">
-        <tr>
-          <th class="metal">Pages <span class="label">@pages.length</span></th>
-        </tr>
-        <tr>
-          <td>
-            <ul style="margin-left: 0px; margin-bottom: 0px;">
-            @pages.map { page =>
-              <li style="margin-left:0px; list-style-type: none;"><a href="@url(repository)/wiki/@urlEncode(page)">@page</a></li>
-            }
-            </ul>
-          </td>
-        </tr>
-      </table>
-      <div class="small">
-        <strong>Clone this wiki locally</strong>
-      </div>
-      @helper.html.copy("repository-url-copy", httpUrl(repository)){
-        <input type="text" value="@httpUrl(repository)" id="repository-url" style="width: 160px;" readonly>
-      }
-      @if(settings.ssh && loginAccount.isDefined){
-        <div class="small">
-          <span class="mute">You can clone <a href="javascript:void(0);" id="repository-url-http">HTTP</a> or <a href="javascript:void(0);" id="repository-url-ssh">SSH</a>.</span>
-        </div>
-      }
     </div>
-    <div style="width: 650px;" class="pull-left">
-      <div class="markdown-body">
-        @markdown(page.content, repository, true, false)
-      </div>
+
+    <div id="wiki-content">
+        <div class="wrap has-rightbar">
+            <div id="wiki-rightbar">
+                <div class="wiki-pages-box readability-sidebar boxed-group flush js-wiki-pages-box " role="navigation">
+                    <h3 class="js-wiki-toggle-collapse wiki-auxiliary-content">
+                        <span class="octicon octicon-triangle-down caret-expanded"></span>
+                        <span class="octicon octicon-triangle-right caret-collapsed"></span>
+                        Pages <span class="counter">@pages.length</span>
+                    </h3>
+                    <div class="boxed-group-inner wiki-auxiliary-content wiki-auxiliary-content-no-bg">
+                        <ul class="wiki-pages" data-filterable-for="wiki-pages-filter" data-filterable-type="substring">
+                            @pages.map { page =>
+                            <li>
+                                <strong><a href="@url(repository)/wiki/@urlEncode(page)" class="wiki-page-link">@page</a></strong>
+                            </li>
+                            }
+                        </ul>
+                    </div>
+
+                </div>
+
+                <div class="clone-url">
+                    <h5>Clone this wiki locally</h5>
+                    <div class="input-group js-zeroclipboard-container">
+                        <input type="text" class="input-mini input-monospace js-url-field js-zeroclipboard-target" value="@httpUrl(repository)" readonly="readonly">
+                        <span class="input-group-button">
+                            <button aria-label="Copy to clipboard" class="js-zeroclipboard minibutton zeroclipboard-button" data-copied-hint="Copied!" type="button">
+                                <span class="octicon octicon-clippy"></span>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="wiki-body" class="gollum-markdown-content instapaper_body">
+                <div class="markdown-body">
+                    @markdown(page.content, repository, true, false)
+                </div>
+            </div>
+        </div>
     </div>
+</div>
+
   }
-}
-@if(settings.ssh && loginAccount.isDefined){
-  <script>
-  $(function(){
-    $('#repository-url-http').click(function(){
-      $('#repository-url').val('@httpUrl(repository)');
-      $('#repository-url-copy').attr('data-clipboard-text', $('#repository-url').val());
-    });
-    $('#repository-url-ssh').click(function(){
-      $('#repository-url').val('@sshUrl(repository, settings, loginAccount.get.userName)');
-      $('#repository-url-copy').attr('data-clipboard-text', $('#repository-url').val());
-    });
-  });
-  </script>
 }

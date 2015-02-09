@@ -5,35 +5,163 @@
 @import view.helpers._
 @html.main(s"${if(pageName.isEmpty) "New Page" else pageName} - ${repository.owner}/${repository.name}", Some(repository)){
   @html.menu("wiki", repository){
-    <ul class="nav nav-tabs fill-width pull-left">
-      <li>
-        <h1 class="wiki-title"><span class="muted">Editing</span> @if(pageName.isEmpty){New Page} else {@pageName}</h1>
-      </li>
-      <li class="pull-right">
-        <div class="btn-group">
-        @if(page.isDefined){
-          <a class="btn btn-small" href="@url(repository)/wiki/@urlEncode(pageName)">View Page</a>
-          <a class="btn btn-small" href="@url(repository)/wiki/@urlEncode(pageName)/_delete" id="delete">Delete Page</a>
-          <a class="btn btn-small" href="@url(repository)/wiki/@urlEncode(pageName)/_history">Page History</a>
-        }
+<div id="wiki-wrapper" class="wiki-wrapper page">
+    <div class="gh-header">
+        <h1 class="gh-header-title">Create new page</h1>
+    </div>
+</div>
+
+<div id="wiki-content">
+    <div class="wrap has-rightbar">
+        <div id="gollum-editor" data-escaped-name="" class="create">
+            <form accept-charset="UTF-8" action="@url(repository)/wiki/@if(page.isEmpty){_new} else {_edit}" method="post" name="gollum-editor">
+                <div id="gollum-editor-title-field" class="active">
+                    <input class="gollum-editor-page-title input-block"
+                           id="gollum-editor-page-title" name="pageName" placeholder="Title" required="required"
+                           type="text" value="@pageName">
+                </div>
+
+
+                <div class="js-previewable-comment-form js-suggester-container previewable-comment-form write-selected" data-preview-url="/shenmq/test/wiki/_preview">
+                    <div class="comment-form-head tabnav">
+                        <ul class="tabnav-tabs">
+                            <li><a href="#" class="tabnav-tab write-tab js-write-tab selected">Write</a></li>
+                            <li><a href="#" class="tabnav-tab preview-tab js-preview-tab">Preview</a></li>
+                        </ul>
+
+                        <span class="tabnav-right">
+                            <span class="tabnav-widget text"></span>
+                        </span>
+                    </div>
+
+                    <div class="write-content js-write-bucket">
+                        <div id="gollum-editor-function-bar" class="active">
+                            <div id="gollum-editor-function-buttons">
+                                <div class="button-group">
+                                    <a href="#" id="function-h1" class="minibutton function-button" role="button" title="Header 1" tabindex="-1">
+                                        <b>h1</b>
+                                    </a>
+                                    <a href="#" id="function-h2" class="minibutton function-button" role="button" title="Header 2" tabindex="-1">
+                                        <b>h2</b>
+                                    </a>
+                                    <a href="#" id="function-h3" class="minibutton function-button" role="button" title="Header 3" tabindex="-1">
+                                        <b>h3</b>
+                                    </a>
+                                </div>
+                                <div class="button-group">
+                                    <a href="#" id="function-link" class="minibutton function-button" role="button" aria-label="Add link" title="Link" tabindex="-1">
+                                        <span class="octicon octicon-link"></span>
+                                    </a>
+                                    <a href="#" id="function-image" class="minibutton function-button" role="button" aria-label="Add image" title="Image" tabindex="-1">
+                                        <span class="octicon octicon-file-media"></span>
+                                    </a>
+                                </div>
+
+                                <div class="button-group">
+                                    <a href="#" id="function-bold" class="minibutton function-button" role="button" aria-label="Add bold text" title="Bold" tabindex="-1">
+                                        <b>B</b>
+                                    </a>
+                                    <a href="#" id="function-italic" class="minibutton function-button" role="button" aria-label="Add italic text" title="Italic" tabindex="-1">
+                                        <em>i</em>
+                                    </a>
+                                    <a href="#" id="function-code" class="minibutton function-button" role="button" aria-label="Insert code" title="Code" tabindex="-1">
+                                        <span class="octicon octicon-code"></span>
+                                    </a>
+                                </div>
+
+                                <div class="button-group">
+                                    <a href="#" id="function-ul" class="minibutton function-button" role="button" aria-label="Add unordered list" title="Unordered List" tabindex="-1">
+                                        <span class="octicon octicon-list-unordered"></span>
+                                    </a>
+                                    <a href="#" id="function-ol" class="minibutton function-button" role="button" aria-label="Add ordered list" title="Ordered List" tabindex="-1">
+                                        <span class="octicon octicon-list-ordered"></span>
+                                    </a>
+                                    <a href="#" id="function-blockquote" class="minibutton function-button" role="button" aria-label="Insert blockquote" title="Blockquote" tabindex="-1">
+                                        <span class="octicon octicon-quote"></span>
+                                    </a>
+                                    <a href="#" id="function-hr" class="minibutton function-button" role="button" aria-label="Insert horizontal rule" title="Horizontal Rule" tabindex="-1">
+                                        <span class="octicon octicon-horizontal-rule"></span>
+                                    </a>
+                                </div>
+
+                                <a href="#" id="function-help" class="minibutton function-button" role="button" aria-label="Help" title="Help" tabindex="-1">
+                                    <span class="octicon octicon-question"></span>
+                                </a>
+                            </div>
+
+
+                            <div id="gollum-editor-format-selector">
+                                <label for="wiki_format">Edit mode:</label>
+                                <select id="wiki_format" name="wiki[format]"><option value="asciidoc">AsciiDoc</option>
+                                    <option value="creole">Creole</option>
+                                    <option value="markdown">Markdown</option>
+                                    <option value="mediawiki">MediaWiki</option>
+                                    <option value="org">Org-mode</option>
+                                    <option value="pod">Pod</option>
+                                    <option value="rdoc">RDoc</option>
+                                    <option value="textile">Textile</option>
+                                    <option value="rest">reStructuredText</option></select>
+                            </div>
+                        </div>
+                        <div id="gollum-editor-help" class="" data-autodisplay="" style="opacity: 1; display: block;">
+                            <ul id="gollum-editor-help-parent">
+                                <li><a href="#" rel="0" class="selected">Block Elements</a></li>
+                                <li><a href="#" rel="1">Span Elements</a></li>
+                                <li><a href="#" rel="2">Miscellaneous</a></li>
+                            </ul>
+                            <ul id="gollum-editor-help-list">
+                                <li><a href="#" rel="0:0" class="selected">Paragraphs &amp; Breaks</a></li>
+                                <li><a href="#" rel="0:1">Headers</a></li>
+                                <li><a href="#" rel="0:2">Blockquotes</a></li>
+                                <li><a href="#" rel="0:3">Lists</a></li>
+                                <li><a href="#" rel="0:4">Code Blocks</a></li>
+                                <li><a href="#" rel="0:5">Horizontal Rules</a></li>
+                            </ul>
+                            <div id="gollum-editor-help-wrapper">
+                                <div id="gollum-editor-help-content">
+                                    <p>To create a paragraph, simply create a block of text that is not separated by one or more blank lines. Blocks of text separated by one or more blank lines will be parsed as paragraphs.</p>
+                                    <p>If you want to create a line break, end a line with two or more spaces, then hit Return/Enter.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="gollum-error-message"></div>
+
+
+                        <a href="#fullscreen" class="enable-fullscreen js-enable-fullscreen tooltipped-w " aria-label="Edit in fullscreen">
+                            <span class="octicon octicon-screen-full"></span>
+                        </a>
+
+
+                        <textarea class="input-block comment-form-textarea js-comment-field js-quick-submit js-suggester-field input-with-fullscreen-icon"
+                                  format="markdown" id="gollum-editor-body" name="content" required="required">@page.map(_.content).getOrElse("")</textarea>
+                    </div>
+
+                    <div class="preview-content">
+                        <div class="comment-body js-comment-body"></div>
+                    </div>
+
+                    <div class="suggester-container">
+                        <div class="suggester js-suggester js-navigation-container" data-url="/shenmq/test/suggestions/wiki">
+                        </div>
+                    </div>
+                </div>
+
+
+                <div id="gollum-editor-edit-summary" class="singleline">
+                    <label class="jaws" for="gollum-editor-message-field">Edit Message</label>
+                    <input class="input-block" id="gollum-editor-message-field" name="message" placeholder="Write a small message here explaining this change. (Optional)" type="text" value="">
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="button primary" id="gollum-editor-submit" data-disable-with="">Save Page</button>
+                </div>
+                <input type="hidden" name="currentPageName" value="@pageName"/>
+                <input type="hidden" name="id" value="@page.map(_.id)"/>
+            </form>
         </div>
-      </li>
-    </ul>
-    <form action="@url(repository)/wiki/@if(page.isEmpty){_new} else {_edit}" method="POST" validate="true">
-      <span id="error-pageName" class="error"></span>
-      <input type="text" name="pageName" value="@pageName" style="width: 850px; font-weight: bold;" placeholder="Input a page name."/>
-      @helper.html.preview(repository, page.map(_.content).getOrElse(""), true, false, "width: 850px; height: 400px;", "")
-      <input type="text" name="message" value="" style="width: 850px;" placeholder="Write a small message here explaining this change. (Optional)"/>
-      <input type="hidden" name="currentPageName" value="@pageName"/>
-      <input type="hidden" name="id" value="@page.map(_.id)"/>
-      <input type="submit" value="Save" class="btn btn-success">
-    </form>
+    </div>
+</div>
   }
 }
-<script>
-$(function(){
-  $('#delete').click(function(){
-    return confirm('Are you sure you want to delete this page?'); 
-  });
-});
-</script>
+<script src="@assets/common/js/wiki.js"></script>

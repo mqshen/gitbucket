@@ -2241,11 +2241,9 @@
             if(i) {
                 return document.querySelector(i);
             }
-            console.log(target.closest("[data-pjax-container]"));
             return target.closest("[data-pjax-container]")[0]
         }, $(document).on("click", "[data-pjax] a, a[data-pjax]", function(n) {
             var s = this;
-            console.log(s);
             if(!s.getAttribute("data-skip-pjax") && !s.getAttribute("data-remote") ) {
                 var i = t(s);
                 $.pjax.click(n, {

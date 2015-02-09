@@ -42,7 +42,7 @@
                         @userRepositories.map { repository =>
                         <li class="public @helper.html.repositoryCss(repository, false)">
                             <a class="mini-repo-list-item css-truncate" href="@url(repository)">
-                                <span class="repo-icon octicon octicon-repo-forked"></span>
+                                @helper.html.repositoryicon(repository, false)
                                 <span class="repo-and-owner css-truncate-target" title="@repository.owner/@repository.name">
                                     @repository.owner/<span class="strong">@repository.name</span>
                                 </span>

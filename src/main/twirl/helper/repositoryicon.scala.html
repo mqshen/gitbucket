@@ -1,12 +1,25 @@
 @(repository: service.RepositoryService.RepositoryInfo, large: Boolean)(implicit context: app.Context)
 @import context._
 @import view.helpers._
-@if(repository.repository.isPrivate){
-  <span class="mega-octicon octicon-lock"></span>
-} else {
-  @if(repository.repository.originUserName.isDefined){
-    <span class="mega-octicon octicon-repo-forked"></span>
+@if(large) {
+  @if(repository.repository.isPrivate){
+    <span class="mega-octicon octicon-lock"></span>
+    <span class="repo-icon octicon octicon-repo-forked"></span>
   } else {
-    <span class="mega-octicon octicon-repo"></span>
+    @if(repository.repository.originUserName.isDefined){
+      <span class="mega-octicon octicon-repo-forked"></span>
+    } else {
+      <span class="mega-octicon octicon-repo"></span>
+    }
+  }
+} else {
+  @if(repository.repository.isPrivate){
+    <span class="repo-icon octicon octicon-lock"></span>
+  } else {
+    @if(repository.repository.originUserName.isDefined){
+      <span class="repo-icon octicon octicon-repo-forked"></span>
+    } else {
+      <span class="repo-icon octicon octicon-repo"></span>
+    }
   }
 }

@@ -203,13 +203,13 @@ object Compare {
   //TODO change it to function style
   def halfMatchI(longLines: Array[String], shortLines: Array[String], index: Int): Option[(Array[String], Array[String], Array[String], Array[String], Array[String])] = {
     val seed = longLines.slice(index, index + longLines.size / 4)
-    var j = -1
     var bestCommon = Array[String]()
     var bestLongLines1 = Array[String]()
     var bestLongLines2 = Array[String]()
     var bestShortLines1 = Array[String]()
     var bestShortLines2 = Array[String]()
-    while((j = shortLines.indexOf(seed, j + 1)) != -1) {
+    var j = shortLines.indexOf(seed, 0)
+    while(j != -1) {
       val prefixLength: Int = commonPrefix(longLines.slice(index, longLines.size), shortLines.slice(j, shortLines.size), 0)
       val suffixLength: Int = commonSuffix(longLines.slice(0, index), shortLines.slice(0, j), 0)
       if (bestCommon.length < suffixLength + prefixLength) {
@@ -219,6 +219,7 @@ object Compare {
         bestShortLines1 = shortLines.slice(0, j - suffixLength)
         bestShortLines2 = shortLines.slice(j + prefixLength, shortLines.size)
       }
+      j = shortLines.indexOf(seed, j + 1)
     }
 
     if (bestCommon.length * 2 >= longLines.length) {

@@ -292,4 +292,33 @@ object helpers extends AvatarImageProvider with LinkConverter with RequestCache 
 
   def let[A,B](a:A)(f:A=>B):B = f(a)
 
+  def diffTipsHtml(insertCount: Int, deleteCount: Int): Html = {
+    val normalize = 5
+    val total = insertCount + deleteCount
+    val (insertNormal, deleteNormal) = if(total > 5) {
+      (insertCount * normalize / total,  deleteCount * normalize / total   )
+    }
+    else {
+      (insertCount, deleteCount)
+    }
+    val stringBuffer = new StringBuffer()
+
+    if(insertNormal > 0) {
+      stringBuffer.append("<i class=\"plus\">")
+      (0 until insertNormal).foreach{ index => stringBuffer.append("\uF053")}
+      stringBuffer.append("</i>")
+    }
+
+    if(deleteNormal > 0) {
+      stringBuffer.append("<i class=\"minus\">")
+      (0 until deleteNormal).foreach { index => stringBuffer.append("\uF053")}
+      stringBuffer.append("</i>")
+    }
+    val remaind = normalize - insertNormal - deleteNormal
+    if(remaind > 0) {
+      (0 until remaind).foreach { index => stringBuffer.append("\uF053")}
+    }
+    Html(stringBuffer.toString)
+  }
+
 }

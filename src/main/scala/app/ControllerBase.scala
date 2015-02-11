@@ -221,7 +221,7 @@ trait AccountManagementControllerBase extends ControllerBase {
   }
 
   protected def uniqueMailAddressUserName(userName: String, value: String): Boolean = {
-      getAccountByMailAddress(value, true).map{ x => if(userName.isEmpty) true else Some(x.userName) != userName }.getOrElse(true)
+      getAccountByMailAddress(value, true).map{ x => if(userName.isEmpty) true else x.userName != userName }.getOrElse(true)
   }
 
 }

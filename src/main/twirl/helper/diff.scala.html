@@ -50,12 +50,14 @@
 }
 <div id="files" class="file-box diff-view commentable">
     @diffs.zipWithIndex.map { case (diff, i) =>
+    @if(diff.newContent != None || diff.oldContent != None){
+    @compare.DiffUtil.diffString(diff.oldContent, diff.newContent).map { case (orig, insertCount, deleteCount, deltas) =>
     <div id="diff-@i" class="file js-details-container soft-wrap file-type-prose show-inline-notes">
         <div class="meta" data-path="README.md">
             <div class="info">
-                <span class="diffstat tooltipped tooltipped-e" aria-label="1 addition &amp; 1 deletion">2
+                <span class="diffstat tooltipped tooltipped-e" aria-label="@insertCount addition &amp; @deleteCount deletion">@{insertCount + deleteCount}
                     <span class="diffstat-bar">
-                        <i class="plus"></i><i class="minus"></i>
+                        @diffTipsHtml(insertCount, deleteCount)
                     </span>
                 </span>
                 @if(diff.changeType == ChangeType.DELETE){
@@ -103,37 +105,79 @@
         <div class="data highlight blob-wrapper">
             <table class="diff-table  tab-size-8 ">
                 <tbody>
-                @if(diff.newContent != None || diff.oldContent != None){
-                    @compare.Compare.compare(diff.oldContent, diff.newContent).map {
-                        case e: compare.EqualDiff => {
-                        <tr>
-                            <td id="diff-@{i}L@e.left" data-line-number="@e.left" class="blob-num blob-num-context js-linkable-line-number"></td>
-                            <td id="diff-@{i}R@e.right" data-line-number="@e.right" class="blob-num blob-num-context js-linkable-line-number"></td>
-                            <td class="blob-code blob-code-context"><b class="add-line-comment octicon octicon-plus js-add-line-comment js-add-single-line-comment" data-path="README.md" data-anchor="diff-@i" data-position="3" data-line="3" role="button" aria-label="Add line comment"></b>@e.leftText</td>
-                        </tr>
-                        }
-                        case e: compare.DeleteDiff => {
-                        <tr>
-                            <td id="diff-@{i}L@e.left" data-line-number="@e.left" class="blob-num blob-num-deletion js-linkable-line-number"></td>
-                            <td class="blob-num blob-num-deletion empty-cell"></td>
-                            <td class="blob-code blob-code-deletion"><b class="add-line-comment octicon octicon-plus js-add-line-comment js-add-single-line-comment" data-path="README.md" data-anchor="diff-04c6e90faac2675aa89e2176d2eec7d8" data-position="4" data-line="4" role="button" aria-label="Add line comment"></b>-@e.leftText</td>
-                        </tr>
-                        }
-                        case e: compare.InsertDiff => {
-                        <tr>
-                            <td class="blob-num blob-num-addition empty-cell"></td>
-                            <td id="diff-@{i}R@e.right" data-line-number="@e.right" class="blob-num blob-num-addition js-linkable-line-number"></td>
-                            <td class="blob-code blob-code-addition"><b class="add-line-comment octicon octicon-plus js-add-line-comment js-add-single-line-comment" data-path="README.md" data-anchor="diff-04c6e90faac2675aa89e2176d2eec7d8" data-position="5" data-line="4" role="button" aria-label="Add line comment"></b>+@e.rightText</td>
-                        </tr>
+                        @deltas.map {
+                            case (e: compare.ChangeDelta, interval: Int, endInterval: Int) => {
+
+
+                                @e.original.lines.zipWithIndex.map { case (text, index) =>
+                                <tr>
+                                    <td id="diff-@{i}L@{e.original.position + index + 1}" data-line-number="@{e.original.position + index + 1}" class="blob-num blob-num-deletion js-linkable-line-number"></td>
+                                    <td class="blob-num blob-num-deletion empty-cell"></td>
+                                    <td class="blob-code blob-code-deletion"><b class="add-line-comment octicon octicon-plus js-add-line-comment js-add-single-line-comment" data-path="README.md" data-anchor="diff-" data-position="4" data-line="4" role="button" aria-label="Add line comment"></b>-@text</td>
+                                </tr>
+                                }
+
+                                @e.revised.lines.zipWithIndex.map { case (text, index) =>
+                                <tr>
+                                    <td class="blob-num blob-num-addition empty-cell"></td>
+                                    <td id="diff-@{i}R@{e.revised.position + index + 1 + interval}" data-line-number="@{e.revised.position + index + 1 + interval}" class="blob-num blob-num-addition js-linkable-line-number"></td>
+                                    <td class="blob-code blob-code-addition"><b class="add-line-comment octicon octicon-plus js-add-line-comment js-add-single-line-comment" data-path="README.md" data-anchor="diff-" data-position="5" data-line="4" role="button" aria-label="Add line comment"></b>+@text</td>
+                                </tr>
+                                }
+
+
+                            }
+                            case (e: compare.DeleteDelta, interval: Int, endInterval: Int) => {
+
+                                @e.original.lines.zipWithIndex.map { case (text, index) =>
+                                <tr>
+                                    <td id="diff-@{i}L@{e.original.position + index + 1}" data-line-number="@{e.original.position + index + 1}" class="blob-num blob-num-deletion js-linkable-line-number"></td>
+                                    <td class="blob-num blob-num-deletion empty-cell"></td>
+                                    <td class="blob-code blob-code-deletion"><b class="add-line-comment octicon octicon-plus js-add-line-comment js-add-single-line-comment" data-path="README.md" data-anchor="diff-" data-position="4" data-line="4" role="button" aria-label="Add line comment"></b>-@text</td>
+                                </tr>
+                                }
+
+                            }
+                            case (e: compare.InsertDelta, interval: Int, endInterval: Int) => {
+
+
+                                @e.revised.lines.zipWithIndex.map { case (text, index) =>
+                                <tr>
+                                    <td class="blob-num blob-num-addition empty-cell"></td>
+                                    <td id="diff-@{i}R@{e.revised.position + index + 1 + interval}" data-line-number="@{e.revised.position + index + 1 + interval}" class="blob-num blob-num-addition js-linkable-line-number"></td>
+                                    <td class="blob-code blob-code-addition"><b class="add-line-comment octicon octicon-plus js-add-line-comment js-add-single-line-comment" data-path="README.md" data-anchor="diff-" data-position="5" data-line="4" role="button" aria-label="Add line comment"></b>+@text</td>
+                                </tr>
+                                }
+
+                            }
+                            case (loop: Range, interval: Int, endInterval: Int) => {
+                            @loop.map { index =>
+                            <tr>
+                                <td id="diff-@{i}L@(index + 1)" data-line-number="@(index + 1)" class="blob-num blob-num-context js-linkable-line-number"></td>
+                                <td id="diff-@{i}R@(index + endInterval + 1)" data-line-number="@(index + endInterval + 1)" class="blob-num blob-num-context js-linkable-line-number"></td>
+                                <td class="blob-code blob-code-context"><b class="add-line-comment octicon octicon-plus js-add-line-comment js-add-single-line-comment" data-path="README.md" data-anchor="diff-@i" data-position="3" data-line="3" role="button" aria-label="Add line comment"></b>@{orig(index)}</td>
+                            </tr>
+                            }
+                            }
+                            case (e: compare.ExpandableRange, interval: Int, endInterval: Int) => {
+                            <tr class="js-expandable-line" data-position="0">
+                                <td class="blob-num blob-num-expandable" colspan="2">
+                                    <a href="#diff-@i" class="diff-expander " title="Expand" aria-label="Expand" data-url="" data-left-range="@{e.start + 1}-@{e.end+ 1}" data-right-range="@{e.start + endInterval + 1}-@{e.end + endInterval + 1}">
+                                        <span class="octicon octicon-unfold"></span>
+                                    </a>
+                                </td>
+                                <td class="blob-code blob-code-hunk">@@ -@{e.start + 1}, @{e.end - e.start} +@{e.start + 1 + endInterval}, @{e.end - e.start} @@ object Compare </td>
+                            </tr>
+                            }
                         }
                     }
-                } else {
-                    Not supported
-                }
                 </tbody>
             </table>
         </div>
     </div>
+    } else {
+        Not supported
+    }
     }
 </div>
 

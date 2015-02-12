@@ -36,6 +36,8 @@ object MyBuild extends Build {
     scalaVersion := ScalaVersion,
     resolvers ++= Seq(
       "Local Maven Repository" at "file://"+ Path.userHome.absolutePath + "/.m2/repository",
+      "Sonatype OSS Releases" at "https://oss.sonatype.org/content/repositories/releases",
+      "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
       Classpaths.typesafeReleases,
       "amateras-repo" at "http://amateras.sourceforge.jp/mvn/"
     ),

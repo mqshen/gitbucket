@@ -1,8 +1,12 @@
 package service
 
+import com.redis.RedisClient
 import model.Profile._
+import org.json4s.{DefaultFormats, Formats}
 import profile.simple._
-import model.{Account, GroupMember}
+import model.{Issue, Account, GroupMember}
+import servlet.RedisClientPool
+
 // TODO [Slick 2.0]NOT import directly?
 import model.Profile.dateColumnType
 import service.SystemSettingsService.SystemSettings
@@ -103,7 +107,8 @@ trait AccountService {
       isGroupAccount = false,
       isRemoved      = false)
 
-  def updateAccount(account: Account)(implicit s: Session): Unit =
+  def updateAccount(account: Account)(implicit s: Session): Unit = {
+
     Accounts
       .filter { a =>  a.userName === account.userName.bind }
       .map    { a => (a.password, a.fullName, a.mailAddress, a.isAdmin, a.url.?, a.registeredDate, a.updatedDate, a.lastLoginDate.?, a.removed) }
@@ -118,8 +123,14 @@ trait AccountService {
         account.lastLoginDate,
         account.isRemoved)
 
-  def updateAvatarImage(userName: String, image: Option[String])(implicit s: Session): Unit =
+    updateAccountRedis(account.userName)
+  }
+
+  def updateAvatarImage(userName: String, image: Option[String])(implicit s: Session): Unit = {
     Accounts.filter(_.userName === userName.bind).map(_.image.?).update(image)
+    updateAccountRedis(userName)
+  }
+
 
   def updateLastLoginDate(userName: String)(implicit s: Session): Unit =
     Accounts.filter(_.userName === userName.bind).map(_.lastLoginDate).update(currentDate)
@@ -171,6 +182,39 @@ trait AccountService {
   def getGroupNames(userName: String)(implicit s: Session): List[String] = {
     List(userName) ++
       Collaborators.filter(_.collaboratorName === userName.bind).sortBy(_.userName).map(_.userName).list
+  }
+
+  def getAccountRedisByName(userName: String)(implicit client: RedisClient) = {
+    val key = s"account.name.${userName}"
+    client.get(key).map { value =>
+      implicit val jsonFormats: Formats = DefaultFormats
+      Some(org.json4s.jackson.Serialization.read[Account](value))
+    }
+  }
+
+  def setAccountRedis(account: Account)(implicit client: RedisClient) = {
+    implicit val jsonFormats: Formats = DefaultFormats
+    val value = org.json4s.jackson.Serialization.write(account)
+    val key = s"account.name.${account.userName}"
+    val mailKey = s"account.mail.${account.mailAddress}"
+    client.set(key, value)
+    client.set(mailKey, account.userName)
+  }
+
+  def getAccountRedisByMail(mailAdress: String)(implicit client: RedisClient) = {
+    val key = s"account.mail.${mailAdress}"
+    client.get(key).map { value =>
+      getAccountRedisByName(value)
+    }.getOrElse(None)
+  }
+
+
+  def updateAccountRedis(userName: String)(implicit s: Session) = {
+    getAccountByUserName(userName).map { account =>
+      RedisClientPool.clients.withClient { implicit client =>
+        setAccountRedis(account)
+      }
+    }
   }
 
 }

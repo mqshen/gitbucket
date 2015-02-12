@@ -2,7 +2,7 @@ package service
 
 import model.{Account, Issue, Session}
 import org.json4s.{DefaultFormats, Formats}
-import servlet.RedisClient
+import servlet.RedisClientPool
 import util.Implicits.request2Session
 
 /**
@@ -19,7 +19,7 @@ trait RequestCache extends SystemSettingsService with AccountService with Issues
 
   def getIssue(userName: String, repositoryName: String, issueId: String)
               (implicit context: app.Context): Option[Issue] = {
-    RedisClient.clients.withClient { client =>
+    RedisClientPool.clients.withClient { client =>
       val key = s"issue.${userName}/${repositoryName}#${issueId}"
       client.get(key).map { value =>
         Some(org.json4s.jackson.Serialization.read[Issue](value))
@@ -36,15 +36,11 @@ trait RequestCache extends SystemSettingsService with AccountService with Issues
 
   def getAccountByUserName(userName: String)
                           (implicit context: app.Context): Option[Account] = {
-    RedisClient.clients.withClient { client =>
-      val key = s"account.name.${userName}"
-      client.get(key).map { value =>
-        Some(org.json4s.jackson.Serialization.read[Account](value))
-      }.getOrElse {
+    RedisClientPool.clients.withClient { implicit client =>
+      getAccountRedisByName(userName).getOrElse {
         val account = super.getAccountByUserName(userName)
         account.map { account =>
-          val value = org.json4s.jackson.Serialization.write(account)
-          client.set(key, value)
+          setAccountRedis(account)
         }
         account
       }
@@ -54,15 +50,11 @@ trait RequestCache extends SystemSettingsService with AccountService with Issues
   def getAccountByMailAddress(mailAddress: String)
                              (implicit context: app.Context): Option[Account] = {
 
-    RedisClient.clients.withClient { client =>
-      val key = s"account.mail.${mailAddress}"
-      client.get(key).map { value =>
-        Some(org.json4s.jackson.Serialization.read[Account](value))
-      }.getOrElse {
-        val account = super.getAccountByMailAddress(mailAddress)
+    RedisClientPool.clients.withClient { implicit client =>
+      getAccountRedisByMail(mailAddress).getOrElse {
+        val account = super.getAccountByUserName(mailAddress)
         account.map { account =>
-          val value = org.json4s.jackson.Serialization.write(account)
-          client.set(key, value)
+          setAccountRedis(account)
         }
         account
       }

@@ -2,6 +2,7 @@ package servlet
 
 import javax.servlet._
 import com.redis.RedisClientPool
+import org.json4s.{DefaultFormats, Formats}
 import org.slf4j.LoggerFactory
 import javax.servlet.http.HttpServletRequest
 import util.Keys
@@ -45,6 +46,7 @@ object Database {
 
 }
 
-object RedisClient {
+object RedisClientPool {
+  val jsonFormats: Formats = DefaultFormats
   val clients = new RedisClientPool("dev1", 6379)
 }

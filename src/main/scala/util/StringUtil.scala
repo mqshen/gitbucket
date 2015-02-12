@@ -195,4 +195,14 @@ object StringUtil {
   def extractCloseId(message: String): Iterator[String] =
     "(?i)(?<!\\w)(?:fix(?:e[sd])?|resolve[sd]?|close[sd]?)\\s+#(\\d+)(?!\\w)".r.findAllIn(message).matchData.map(_.group(1))
 
+
+  def getFileExtension(fileName: String) = {
+    val index = fileName.lastIndexOf(".")
+    if(index > -1) {
+      fileName.substring(index)
+    }
+    else {
+      "txt"
+    }
+  }
 }

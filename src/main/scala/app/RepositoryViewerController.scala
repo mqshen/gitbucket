@@ -1,6 +1,7 @@
 package app
 
 import _root_.util.JGitUtil.CommitInfo
+import syntax.SyntaxUtil
 import util.Directory._
 import util.Implicits._
 import _root_.util.ControlUtil._
@@ -226,7 +227,10 @@ trait RepositoryViewerControllerBase extends ControllerBase {
             bytes
           }
         } else {
-          repo.html.blob(id, repository, path.split("/").toList, JGitUtil.getContentInfo(git, path, objectId),
+          val content = JGitUtil.getContentInfo(git, path, objectId)
+          val contentLines = content.content.getOrElse("")
+          val formattedContent = SyntaxUtil.getSyntax(path, contentLines)
+          repo.html.blob(id, repository, path.split("/").toList, content, formattedContent,
             new JGitUtil.CommitInfo(lastModifiedCommit), hasWritePermission(repository.owner, repository.name, context.loginAccount))
         }
       } getOrElse NotFound

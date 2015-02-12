@@ -36,7 +36,7 @@
               </span>
           </span>
           @pathList.zipWithIndex.map { case (section, i) =>
-            <a href="@url(repository)/tree/@encodeRefName(branch)/@pathList.take(i + 1).mkString("<span class=\"separator\"> / </span>")">@section</a> /
+            <a href="@url(repository)/tree/@encodeRefName(branch)/@pathList.take(i + 1).mkString("/")">@section</a> /
           }
           @if(hasWritePermission){
           <form action="@url(repository)/new/@encodeRefName(branch)/@pathList.mkString("/")" aria-label="Fork this project and create a new file" class="js-new-blob-form tooltipped tooltipped-e new-file-link" method="post">

@@ -3,8 +3,7 @@ package compare
 /**
  * Created by goldratio on 2/10/15.
  */
-class Chunk(val position: Int, val lines: Seq[String]) {
-  def size = lines.size
+class Chunk(val position: Int, val size: Int) {
 }
 
 object Type extends Enumeration {
@@ -23,7 +22,7 @@ class ChangeDelta(val original: Chunk, val revised: Chunk) extends Delta {
   val opType = Type.Change
 
   override def toString: String = {
-    return "[ChangeDelta, position: " + original.position + ", lines: " + original.lines + " to " + revised.lines + "]"
+    "[ChangeDelta, position: " + original.position + ", size: " + original.size + " to " + revised.size + "]"
   }
 }
 
@@ -31,7 +30,7 @@ class DeleteDelta(val original: Chunk, val revised: Chunk) extends Delta {
   val opType = Type.Delete
 
   override def toString: String = {
-    return "[DeleteDelta, position: " + original.position + ", lines: " + original.lines + "]"
+    "[DeleteDelta, position: " + original.position + ", lines: " + original.size + "]"
   }
 }
 
@@ -39,7 +38,7 @@ class InsertDelta(val original: Chunk, val revised: Chunk) extends Delta {
   val opType = Type.Insert
 
   override def toString: String = {
-    return "[InsertDelta, position: " + original.position + ", lines: " + revised.lines + "]"
+    "[InsertDelta, position: " + original.position + ", lines: " + revised.size + "]"
   }
 }
 

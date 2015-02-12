@@ -61,6 +61,7 @@ object MyBuild extends Build {
       "com.novell.ldap" % "jldap" % "2009-10-07",
       "org.quartz-scheduler" % "quartz" % "2.2.1",
       "com.h2database" % "h2" % "1.4.180",
+      "com.github.mqshen" %% "scala-pygments" % "0.1.0-SNAPSHOT",
       "ch.qos.logback" % "logback-classic" % "1.0.13" % "runtime",
       "org.eclipse.jetty" % "jetty-webapp" % "9.3.0-SNAPSHOT" % "container;provided",
       "org.eclipse.jetty" % "jetty-plus" % "9.3.0-SNAPSHOT" % "container;provided",
@@ -78,7 +79,7 @@ object MyBuild extends Build {
       val customJars = (baseDirectories ** "*.jar")
       customJars.classpath
     },
-    unmanagedResourceDirectories in Compile := List(file("src/main/webapp"))
+    unmanagedResourceDirectories in Compile := List(file("src/main/webapp"), file("src/main/resources"))
     ).enablePlugins(SbtTwirl)
 }
 

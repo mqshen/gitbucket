@@ -88,8 +88,8 @@ class MyersDiff {
           val nextPath = currentPath.prev.get
           val iAnchor: Int = nextPath.i
           val jAnchor: Int = nextPath.j
-          val original = new Chunk(iAnchor, copyOfRange(orig, iAnchor, i))
-          val revised = new Chunk(jAnchor, copyOfRange(rev, jAnchor, j))
+          val original = new Chunk(iAnchor, i - iAnchor)
+          val revised = new Chunk(jAnchor, j - jAnchor)
           var delta: Delta = null
           if (original.size == 0 && revised.size != 0) {
             delta = new InsertDelta(original, revised)
@@ -114,9 +114,7 @@ class MyersDiff {
     patch
   }
 
-  def copyOfRange (original: Seq[String], fromIndex: Int, to: Int) = {
-    original.slice(fromIndex, to)
-  }
+
 
   def buildPath(orig: Seq[String], rev: Seq[String]) = {
     val N = orig.size

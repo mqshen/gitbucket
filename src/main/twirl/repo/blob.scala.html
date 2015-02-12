@@ -2,6 +2,7 @@
   repository: service.RepositoryService.RepositoryInfo,
   pathList: List[String],
   content: util.JGitUtil.ContentInfo,
+  formattedContent: List[Html],
   latestCommit: util.JGitUtil.CommitInfo,
   hasWritePermission: Boolean)(implicit context: app.Context)
 @import context._
@@ -32,7 +33,7 @@
                 @if(i == pathList.length - 1){
                     @section
                 } else {
-                    <a href="@url(repository)/tree/@encodeRefName(branch)/@pathList.take(i + 1).mkString("<span class=\"separator\"> / </span>")">@section</a>
+                    <a href="@url(repository)/tree/@encodeRefName(branch)/@pathList.take(i + 1).mkString("/")">@section</a>
                 }
             }
         </div>
@@ -101,7 +102,7 @@
                           } else {
                               <table class="highlight tab-size-8 js-file-line-container">
                                   <tbody>
-                                  @content.content.get.split("\\r?\\n").zipWithIndex.map { case (line, index) =>
+                                  @formattedContent.zipWithIndex.map { case (line, index) =>
                                   <tr>
                                       <td id="L@index" class="blob-num js-line-number" data-line-number="@index"></td>
                                       <td id="LC@index" class="blob-code js-file-line">@line</td>

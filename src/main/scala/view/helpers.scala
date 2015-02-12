@@ -202,10 +202,10 @@ object helpers extends AvatarImageProvider with LinkConverter with RequestCache 
     getAccountByUserName(userName).map { account =>
       val html = if(showFullName)  s"""<span class="description">${account.fullName}</span>""" else ""
       if (hasContainer) {
-        Html(s"""<div class="select-menu-item-gravatar js-select-menu-item-gravatar"><img alt="" class="avatar" data-user="${account.userName}" height="20" src="${userAvatar(account.mailAddress)}" width="20"></div><div class="select-menu-item-text"><h4>${account.userName} ${html}</h4></div>""")
+        Html(s"""<div class="select-menu-item-gravatar js-select-menu-item-gravatar">${getAvatarImage(userName, 20, "", false, "avatar")}</div><div class="select-menu-item-text"><h4>${account.userName} ${html}</h4></div>""")
       }
       else {
-        Html(s"""<img alt="" class="avatar" data-user="${account.userName}" height="20" src="${userAvatar(account.mailAddress)}" width="20"><a href="${context.path}/${account.userName}" class="author">${account.userName}</a>""")
+        Html(s"""${getAvatarImage(userName, 20, "", false, "avatar")}<a href="${context.path}/${account.userName}" class="author">${account.userName}</a>""")
       }
     } getOrElse content
 
@@ -228,7 +228,8 @@ object helpers extends AvatarImageProvider with LinkConverter with RequestCache 
     } else {
       getAccountByMailAddress(mailAddress)
     }).map { account =>
-      Html(s"""<a class="participant-avatar tooltipped tooltipped-s" aria-label="${account.userName}" href="${url(account.userName)}"> <img alt="${account.fullName}" class="avatar" height="20" src="${userAvatar(account.mailAddress)}" width="20"> </a>""")
+      Html(
+        s"""<a class="participant-avatar tooltipped tooltipped-s" aria-label="${account.userName}" href="${url(account.userName)}"> ${getAvatarImage(userName, 20, "", false, "avatar")} </a>""".stripMargin)
 
     } getOrElse content
 

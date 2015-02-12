@@ -10,8 +10,10 @@ trait AvatarImageProvider { self: RequestCache =>
    * Returns &lt;img&gt; which displays the avatar icon.
    * Looks up Gravatar if avatar icon has not been configured in user settings.
    */
-  protected def getAvatarImageHtml(userName: String, size: Int,
-                                   mailAddress: String = "", tooltip: Boolean = false, avatarClass: String = "avatar")(implicit context: app.Context): Html = {
+
+
+  protected def getAvatarImage(userName: String, size: Int,
+                                   mailAddress: String = "", tooltip: Boolean = false, avatarClass: String = "avatar")(implicit context: app.Context): String = {
 
     val src = if(mailAddress.isEmpty){
       // by user name
@@ -42,10 +44,18 @@ trait AvatarImageProvider { self: RequestCache =>
     }
 
     if(tooltip){
-      Html(s"""<img src="${src}" class="${avatarClass}" style="width: ${size}px; height: ${size}px;" data-toggle="tooltip" title="${userName}"/>""")
+      s"""<img src="${src}" class="${avatarClass}" style="width: ${size}px; height: ${size}px;" data-toggle="tooltip" title="${userName}"/>"""
     } else {
-      Html(s"""<img src="${src}" class="${avatarClass}" style="width: ${size}px; height: ${size}px;" />""")
+      s"""<img src="${src}" class="${avatarClass}" style="width: ${size}px; height: ${size}px;" />"""
     }
+  }
+
+  protected def getAvatarImageHtml(userName: String, size: Int,
+                                   mailAddress: String = "", tooltip: Boolean = false, avatarClass: String = "avatar")(implicit context: app.Context): Html = {
+
+    val string = getAvatarImage(userName, size, mailAddress, tooltip, avatarClass)
+    Html(string)
+
   }
 
   protected def getAvatarImageHtmlWithHref(userName: String, size: Int,

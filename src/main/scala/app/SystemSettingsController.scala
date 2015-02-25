@@ -1,5 +1,6 @@
 package app
 
+import org.scalatra.servlet.ScalatraAsyncSupport
 import service.{AccountService, SystemSettingsService}
 import SystemSettingsService._
 import util.AdminAuthenticator
@@ -7,7 +8,7 @@ import jp.sf.amateras.scalatra.forms._
 import ssh.SshServer
 
 class SystemSettingsController extends SystemSettingsControllerBase
-  with AccountService with AdminAuthenticator
+  with AccountService with AdminAuthenticator with ScalatraAsyncSupport
 
 trait SystemSettingsControllerBase extends ControllerBase {
   self: AccountService with AdminAuthenticator =>

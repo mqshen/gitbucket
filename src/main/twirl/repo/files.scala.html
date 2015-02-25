@@ -12,6 +12,7 @@
 @import view.helpers._
 @html.main(s"${repository.owner}/${repository.name}", Some(repository), selectedLink = "repo_source") {
   @html.menu("code", repository, Some(branch), pathList.isEmpty){
+    <include-fragment src="@url(repository)/show_partial?partial=recently_touched_branches_list"></include-fragment>
     <div class="file-navigation in-mid-page">
       @helper.html.dropdown(
         value  = if(branch.length == 40) branch.substring(0, 10) else branch,

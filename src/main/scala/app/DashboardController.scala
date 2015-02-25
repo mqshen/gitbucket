@@ -1,5 +1,6 @@
 package app
 
+import org.scalatra.servlet.ScalatraAsyncSupport
 import service._
 import util.{StringUtil, UsersAuthenticator, Keys}
 import util.Implicits._
@@ -7,7 +8,7 @@ import service.IssuesService.IssueSearchCondition
 
 class DashboardController extends DashboardControllerBase
   with IssuesService with PullRequestService with RepositoryService with AccountService
-  with UsersAuthenticator
+  with UsersAuthenticator with ScalatraAsyncSupport
 
 trait DashboardControllerBase extends ControllerBase {
   self: IssuesService with PullRequestService with RepositoryService with AccountService

@@ -1,16 +1,24 @@
+import _root_.akka.actor.ActorSystem
 import _root_.servlet.{BasicAuthenticationFilter, TransactionFilter}
 import app._
+import org.scalatra.servlet.RichServletContext
+
 //import jp.sf.amateras.scalatra.forms.ValidationJavaScriptProvider
 import org.scalatra._
 import javax.servlet._
 import java.util.EnumSet
 
 class ScalatraBootstrap extends LifeCycle {
+  val system = ActorSystem("scalatra")
+
   override def init(context: ServletContext) {
     // Register TransactionFilter and BasicAuthenticationFilter at first
-    context.addFilter("transactionFilter", new TransactionFilter)
+    val transactionFilterHolder = context.addFilter("transactionFilter", new TransactionFilter)
+    transactionFilterHolder.setAsyncSupported(true)
     context.getFilterRegistration("transactionFilter").addMappingForUrlPatterns(EnumSet.allOf(classOf[DispatcherType]), true, "/*")
-    context.addFilter("basicAuthenticationFilter", new BasicAuthenticationFilter)
+
+    val authFilterHolder = context.addFilter("basicAuthenticationFilter", new BasicAuthenticationFilter)
+    authFilterHolder.setAsyncSupported(true)
     context.getFilterRegistration("basicAuthenticationFilter").addMappingForUrlPatterns(EnumSet.allOf(classOf[DispatcherType]), true, "/git/*")
 
     // Register controllers
@@ -29,6 +37,10 @@ class ScalatraBootstrap extends LifeCycle {
     context.mount(new IssuesController, "/*")
     context.mount(new PullRequestsController, "/*")
     context.mount(new RepositorySettingsController, "/*")
+    //context.mount(new SocketController, "/socket")
+    context.mount(new SocketController, "/socket")
+
+
 
     // Create GITBUCKET_HOME directory if it does not exist
     val dir = new java.io.File(_root_.util.Directory.GitBucketHome)

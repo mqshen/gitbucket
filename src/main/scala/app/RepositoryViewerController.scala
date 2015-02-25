@@ -1,6 +1,8 @@
 package app
 
 import _root_.util.JGitUtil.CommitInfo
+import org.scalatra.i18n.Messages
+import org.scalatra.servlet.ScalatraAsyncSupport
 import syntax.SyntaxUtil
 import util.Directory._
 import util.Implicits._
@@ -22,7 +24,7 @@ import service.WebHookService.WebHookPayload
 
 class RepositoryViewerController extends RepositoryViewerControllerBase
   with RepositoryService with AccountService with ActivityService with IssuesService with WebHookService with CommitsService
-  with ReadableUsersAuthenticator with ReferrerAuthenticator with CollaboratorsAuthenticator
+  with ReadableUsersAuthenticator with ReferrerAuthenticator with CollaboratorsAuthenticator with ScalatraAsyncSupport
 
 
 /**
@@ -149,6 +151,15 @@ trait RepositoryViewerControllerBase extends ControllerBase {
     val (branch, path) = splitPath(repository, multiParams("splat").head)
     repo.html.editor(branch, repository, if(path.length == 0) Nil else path.split("/").toList,
       None, JGitUtil.ContentInfo("text", None, Some("UTF-8")))
+  })
+
+  get("/:owner/:repository/show_partial")(referrersOnly { repository =>
+    params("partial") match {
+      case "recently_touched_branches_list" =>
+      case partial if partial == ""=>
+        repo.html.partial(repository, partial)
+    }
+
   })
 
   get("/:owner/:repository/edit/*")(collaboratorsOnly { repository =>
@@ -575,4 +586,9 @@ trait RepositoryViewerControllerBase extends ControllerBase {
 
   private def isEditable(owner: String, repository: String, author: String)(implicit context: app.Context): Boolean =
     hasWritePermission(owner, repository, context.loginAccount) || author == context.loginAccount.get.userName
+
+
+
+
+
 }

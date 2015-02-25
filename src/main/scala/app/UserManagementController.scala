@@ -1,5 +1,6 @@
 package app
 
+import org.scalatra.servlet.ScalatraAsyncSupport
 import service._
 import util.AdminAuthenticator
 import util.StringUtil._
@@ -11,7 +12,7 @@ import org.scalatra.i18n.Messages
 import org.apache.commons.io.FileUtils
 
 class UserManagementController extends UserManagementControllerBase
-  with AccountService with RepositoryService with AdminAuthenticator
+  with AccountService with RepositoryService with AdminAuthenticator with ScalatraAsyncSupport
 
 trait UserManagementControllerBase extends AccountManagementControllerBase {
   self: AccountService with RepositoryService with AdminAuthenticator =>

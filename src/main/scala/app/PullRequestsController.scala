@@ -1,5 +1,6 @@
 package app
 
+import org.scalatra.servlet.ScalatraAsyncSupport
 import util._
 import util.Directory._
 import util.Implicits._
@@ -22,7 +23,8 @@ import util.JGitUtil.CommitInfo
 
 class PullRequestsController extends PullRequestsControllerBase
   with RepositoryService with AccountService with IssuesService with PullRequestService with MilestonesService with LabelsService
-  with CommitsService with ActivityService with WebHookService with ReferrerAuthenticator with CollaboratorsAuthenticator
+  with CommitsService with ActivityService with WebHookService with ReferrerAuthenticator
+  with CollaboratorsAuthenticator with ScalatraAsyncSupport
 
 trait PullRequestsControllerBase extends ControllerBase {
   self: RepositoryService with AccountService with IssuesService with MilestonesService with LabelsService

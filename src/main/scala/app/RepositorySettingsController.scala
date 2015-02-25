@@ -1,5 +1,6 @@
 package app
 
+import org.scalatra.servlet.ScalatraAsyncSupport
 import service._
 import util.Directory._
 import util.Implicits._
@@ -15,7 +16,7 @@ import org.eclipse.jgit.lib.Constants
 
 class RepositorySettingsController extends RepositorySettingsControllerBase
   with RepositoryService with AccountService with WebHookService
-  with OwnerAuthenticator with UsersAuthenticator
+  with OwnerAuthenticator with UsersAuthenticator with ScalatraAsyncSupport
 
 trait RepositorySettingsControllerBase extends ControllerBase {
   self: RepositoryService with AccountService with WebHookService

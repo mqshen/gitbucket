@@ -1,12 +1,13 @@
 package app
 
+import org.scalatra.servlet.ScalatraAsyncSupport
 import util._
 import util.Implicits._
 import service._
 import jp.sf.amateras.scalatra.forms._
 
 class IndexController extends IndexControllerBase 
-  with RepositoryService with ActivityService with AccountService with UsersAuthenticator
+  with RepositoryService with ActivityService with AccountService with UsersAuthenticator with ScalatraAsyncSupport
 
 trait IndexControllerBase extends ControllerBase {
   self: RepositoryService with ActivityService with AccountService with UsersAuthenticator =>

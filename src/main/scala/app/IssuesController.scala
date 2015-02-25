@@ -1,6 +1,8 @@
 package app
 
 import jp.sf.amateras.scalatra.forms._
+import kafka.GitbucketProducer
+import org.scalatra.servlet.ScalatraAsyncSupport
 
 import service._
 import IssuesService._
@@ -12,7 +14,7 @@ import model.Issue
 
 class IssuesController extends IssuesControllerBase
   with IssuesService with RepositoryService with AccountService with LabelsService with MilestonesService with ActivityService
-  with ReadableUsersAuthenticator with ReferrerAuthenticator with CollaboratorsAuthenticator
+  with ReadableUsersAuthenticator with ReferrerAuthenticator with CollaboratorsAuthenticator with ScalatraAsyncSupport
 
 trait IssuesControllerBase extends ControllerBase {
   self: IssuesService with RepositoryService with AccountService with LabelsService with MilestonesService with ActivityService
@@ -501,6 +503,7 @@ trait IssuesControllerBase extends ControllerBase {
           createReferComment(owner, name, issue, content)
         }
 
+        GitbucketProducer.produceIssues(owner, name, issueId)
         // notifications
         Notifier() match {
           case f =>

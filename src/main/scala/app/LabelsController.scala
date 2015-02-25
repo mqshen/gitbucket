@@ -1,6 +1,7 @@
 package app
 
 import jp.sf.amateras.scalatra.forms._
+import org.scalatra.servlet.ScalatraAsyncSupport
 import service._
 import util.{ReferrerAuthenticator, CollaboratorsAuthenticator}
 import util.Implicits._
@@ -9,7 +10,7 @@ import org.scalatra.Ok
 
 class LabelsController extends LabelsControllerBase
   with LabelsService with IssuesService with RepositoryService with AccountService
-with ReferrerAuthenticator with CollaboratorsAuthenticator
+with ReferrerAuthenticator with CollaboratorsAuthenticator with ScalatraAsyncSupport
 
 trait LabelsControllerBase extends ControllerBase {
   self: LabelsService with IssuesService with RepositoryService

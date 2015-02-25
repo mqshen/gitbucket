@@ -46,6 +46,8 @@ object MyBuild extends Build {
       "org.eclipse.jgit" % "org.eclipse.jgit.http.server" % "3.4.1.201406201815-r",
       "org.eclipse.jgit" % "org.eclipse.jgit.archive" % "3.4.1.201406201815-r",
       "org.scalatra" %% "scalatra" % ScalatraVersion,
+      "org.scalatra" %% "scalatra-scalate" % ScalatraVersion,
+      "org.scalatra" %% "scalatra-atmosphere" % ScalatraVersion,
       "org.scalatra" %% "scalatra-specs2" % ScalatraVersion % "test",
       "org.scalatra" %% "scalatra-json" % ScalatraVersion,
       "org.json4s" %% "json4s-jackson" % "3.2.10",
@@ -69,7 +71,8 @@ object MyBuild extends Build {
       "org.eclipse.jetty" % "jetty-plus" % "9.3.0-SNAPSHOT" % "container;provided",
       "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "container;provided;test" artifacts Artifact("javax.servlet", "jar", "jar"),
       "junit" % "junit" % "4.11" % "test",
-      "com.typesafe.play" %% "twirl-compiler" % "1.0.2"
+      "com.typesafe.play" %% "twirl-compiler" % "1.0.2",
+      "org.apache.kafka" %% "kafka" % "0.8.2.0"
     ),
     EclipseKeys.withSource := true,
     javacOptions in compile ++= Seq("-target", "6", "-source", "6"),

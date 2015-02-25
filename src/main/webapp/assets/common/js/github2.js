@@ -2517,6 +2517,7 @@
                 /^wss?:\/\//.test(this.pollUrl) ? (this.source = new WebSocket(this.pollUrl), t = WebSocket.CLOSED) : (this.source = new EventSource(this.pollUrl), t = EventSource.CLOSED), this.source.addEventListener("message", function(t) {
                     return function(e) {
                         var n;
+                        console.log(e.data)
                         n = JSON.parse(e.data), t.fire("message", n)
                     }
                 }(this)), this.source.addEventListener("reopen", function(t) {
@@ -2566,14 +2567,24 @@
         $.socket && ($.fn.socket = function() {
             var t, e;
             if ((t = this[0]) && $(t).is("link[rel=xhr-socket]")) return e = $(t).data("socket"), e && e.readyState !== e.CLOSED ? e : (e = $.socket(t.href), e.on("open", function() {
+                console.log("open");
+                console.log(e);
                 return $(t).trigger("socket:open", [this])
             }), e.on("close", function() {
+                console.log("close");
+                console.log(e);
                 return $(t).trigger("socket:close", [this])
             }), e.on("reopen", function() {
+                console.log("reopen");
+                console.log(e);
                 return $(t).trigger("socket:reopen", [this])
             }), e.on("send", function(e) {
+                console.log("send");
+                console.log(e);
                 return $(t).trigger("socket:send", [e, this])
             }), e.on("message", function(e) {
+                console.log("message");
+                console.log(e);
                 return $(t).trigger("socket:message", [e, this])
             }), $(t).data("socket", e), e)
         })

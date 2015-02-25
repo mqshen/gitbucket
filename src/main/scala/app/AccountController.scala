@@ -6,6 +6,7 @@ import javax.crypto.spec.SecretKeySpec
 
 import org.json4s.{Formats, JValue}
 import org.scalatra.Created
+import org.scalatra.servlet.ScalatraAsyncSupport
 import service._
 import util._
 import util.StringUtil._
@@ -23,7 +24,8 @@ import model.{Account, GroupMember}
 
 class AccountController extends AccountControllerBase
   with AccountService with RepositoryService with ActivityService with WikiService with LabelsService with SshKeyService
-  with OneselfAuthenticator with UsersAuthenticator with GroupManagerAuthenticator with ReadableUsersAuthenticator {
+  with OneselfAuthenticator with UsersAuthenticator with GroupManagerAuthenticator with ReadableUsersAuthenticator
+  with ScalatraAsyncSupport{
 }
 
 trait AccountControllerBase extends AccountManagementControllerBase {

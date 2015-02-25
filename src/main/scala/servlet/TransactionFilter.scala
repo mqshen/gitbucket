@@ -3,6 +3,7 @@ package servlet
 import javax.servlet._
 import com.redis.RedisClientPool
 import org.json4s.{DefaultFormats, Formats}
+import org.scalatra.servlet.ScalatraAsyncSupport
 import org.slf4j.LoggerFactory
 import javax.servlet.http.HttpServletRequest
 import util.Keys

@@ -1,5 +1,6 @@
 package app
 
+import org.scalatra.servlet.ScalatraAsyncSupport
 import util._
 import ControlUtil._
 import Implicits._
@@ -7,7 +8,8 @@ import service._
 import jp.sf.amateras.scalatra.forms._
 
 class SearchController extends SearchControllerBase
-  with RepositoryService with AccountService with ActivityService with RepositorySearchService with IssuesService with ReferrerAuthenticator
+  with RepositoryService with AccountService with ActivityService
+  with RepositorySearchService with IssuesService with ReferrerAuthenticator with ScalatraAsyncSupport
 
 trait SearchControllerBase extends ControllerBase { self: RepositoryService
   with ActivityService with RepositorySearchService with ReferrerAuthenticator =>

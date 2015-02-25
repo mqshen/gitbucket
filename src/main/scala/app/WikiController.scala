@@ -1,5 +1,6 @@
 package app
 
+import org.scalatra.servlet.ScalatraAsyncSupport
 import service._
 import util._
 import util.Directory._
@@ -11,7 +12,8 @@ import org.scalatra.i18n.Messages
 import java.util.ResourceBundle
 
 class WikiController extends WikiControllerBase 
-  with WikiService with RepositoryService with AccountService with ActivityService with CollaboratorsAuthenticator with ReferrerAuthenticator
+  with WikiService with RepositoryService with AccountService with ActivityService
+  with CollaboratorsAuthenticator with ReferrerAuthenticator with ScalatraAsyncSupport
 
 trait WikiControllerBase extends ControllerBase {
   self: WikiService with RepositoryService with ActivityService with CollaboratorsAuthenticator with ReferrerAuthenticator =>

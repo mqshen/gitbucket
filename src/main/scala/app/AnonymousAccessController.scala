@@ -1,6 +1,8 @@
 package app
 
-class AnonymousAccessController extends AnonymousAccessControllerBase
+import org.scalatra.servlet.ScalatraAsyncSupport
+
+class AnonymousAccessController extends AnonymousAccessControllerBase with ScalatraAsyncSupport
 
 trait AnonymousAccessControllerBase extends ControllerBase {
   get(!context.settings.allowAnonymousAccess, context.loginAccount.isEmpty) {

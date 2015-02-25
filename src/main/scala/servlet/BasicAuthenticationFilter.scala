@@ -2,6 +2,7 @@ package servlet
 
 import javax.servlet._
 import javax.servlet.http._
+import org.scalatra.servlet.ScalatraAsyncSupport
 import service.{SystemSettingsService, AccountService, RepositoryService}
 import model._
 import org.slf4j.LoggerFactory
@@ -12,7 +13,7 @@ import util.Keys
 /**
  * Provides BASIC Authentication for [[servlet.GitRepositoryServlet]].
  */
-class BasicAuthenticationFilter extends Filter with RepositoryService with AccountService with SystemSettingsService {
+class BasicAuthenticationFilter extends Filter with RepositoryService with AccountService with SystemSettingsService with ScalatraAsyncSupport{
 
   private val logger = LoggerFactory.getLogger(classOf[BasicAuthenticationFilter])
 

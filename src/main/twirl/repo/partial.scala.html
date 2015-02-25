@@ -1,0 +1,9 @@
+@(repository: service.RepositoryService.RepositoryInfo,
+partial: String
+)(implicit context: app.Context)
+@import context._
+@import view.helpers._
+<div class="js-socket-channel js-updatable-content"
+     @loginAccount.map { user => data-channel="@{repository.owner}/@{repository.name}:post-receive:@user.userName" }
+     data-url="@url(repository)/show_partial?partial=@partial">
+</div>

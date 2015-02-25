@@ -1,6 +1,7 @@
 package app
 
 import jp.sf.amateras.scalatra.forms._
+import org.scalatra.servlet.ScalatraAsyncSupport
 
 import service._
 import util.{CollaboratorsAuthenticator, ReferrerAuthenticator}
@@ -8,7 +9,7 @@ import util.Implicits._
 
 class MilestonesController extends MilestonesControllerBase
   with MilestonesService with RepositoryService with AccountService
-  with ReferrerAuthenticator with CollaboratorsAuthenticator
+  with ReferrerAuthenticator with CollaboratorsAuthenticator with ScalatraAsyncSupport
 
 trait MilestonesControllerBase extends ControllerBase {
   self: MilestonesService with RepositoryService

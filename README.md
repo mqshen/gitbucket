@@ -6,6 +6,7 @@ GitBucket is the easily installable Github clone written with Scala.
 
 Features
 --------
+Test
 The current version of GitBucket provides a basic features below:
 
 - Public / Private Git repository (http and ssh access)

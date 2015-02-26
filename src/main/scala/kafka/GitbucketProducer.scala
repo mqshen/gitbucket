@@ -17,8 +17,8 @@ object GitbucketProducer {
   val issuesProducer = KafkaProducer("issues", "dev1:9092")
   val repositoryProducer = KafkaProducer("repository", "dev1:9092")
 
-  def produceIssues(userName: String, repositoryName: String, issueId: Int) = {
-    val issueMessage = s"""{userName: "$userName", repositoryName: "${repositoryName}", issueId: "${issueId}"}"""
+  def produceIssues(owner: String, repositoryName: String, issueId: Int, timestamp: Date) = {
+    val issueMessage = s"""{"owner": "$owner", "repositoryName": "${repositoryName}", "issueId": "${issueId}", "timestamp": "${timestamp}"}"""
 
     issuesProducer.send(issueMessage)
   }

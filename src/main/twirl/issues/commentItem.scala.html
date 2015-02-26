@@ -3,7 +3,8 @@ comment: model.IssueComment,
 hasWritePermission: Boolean,
 repository: service.RepositoryService.RepositoryInfo,
 pullreq: Option[model.PullRequest] = None,
-showTimestamp: Boolean = false)(implicit context: app.Context)
+showTimestamp: Boolean = false,
+unread: Boolean = false)(implicit context: app.Context)
 @import context._
 @import view.helpers._
 @if(comment.action != "close" && comment.action != "reopen" && comment.action != "delete_branch"){
@@ -11,7 +12,7 @@ showTimestamp: Boolean = false)(implicit context: app.Context)
     <a href="@path/@comment.commentedUserName">
         @avatar(comment.commentedUserName, 48, avatarClass = "timeline-comment-avatar")
     </a>
-    <div id="issuecomment-@comment.commentId" class="comment timeline-comment js-comment js-task-list-container owner-comment current-user" data-body-version="">
+    <div id="issuecomment-@comment.commentId" class="comment timeline-comment js-comment js-task-list-container owner-comment current-user @if(unread) {unread-item}" data-body-version="">
         <div class="timeline-comment-header ">
             @if(hasWritePermission || loginAccount.map(_.userName == comment.commentedUserName).getOrElse(false)) {
             <div class="timeline-comment-actions">
@@ -179,7 +180,10 @@ showTimestamp: Boolean = false)(implicit context: app.Context)
 }
 
 @if(showTimestamp) {
-<div id="partial-timeline-marker" class="js-timeline-marker js-socket-channel js-updatable-content" data-channel="@url(repository):issue:55980302" data-url="/@url(repository)/issues/@{issue.issueId}/show_partial?partial=timeline_marker&amp;since=1422844128"
+<div id="partial-timeline-marker" class="js-timeline-marker js-socket-channel js-updatable-content"
+     data-channel="@{repository.owner}/@{repository.name}:issue:@issue.issueId"
+     data-url="/@{repository.owner}/@{repository.name}/issues/@{issue.issueId}/show_partial?partial=timeline_marker&amp;since=@{comment.registeredDate.getTime()}"
      data-mark-as-read-url="@url(repository)/notifications/mark?ids=56958396" data-last-modified="@{issue.updatedDate}">
+
 </div>
 }

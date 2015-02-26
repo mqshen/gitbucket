@@ -8,7 +8,7 @@
 
 @issue.map { issue =>
 
-<div class="js-discussion js-socket-channel" data-channel="@url(repository):marked-as-read:44042728">
+<div class="js-discussion" >
     <div class="timeline-comment-wrapper js-comment-container">
         <a href="@path/@issue.openedUserName">
             @avatar(issue.openedUserName, 48, avatarClass = "timeline-comment-avatar")
@@ -40,8 +40,12 @@
             @commentItem(issue, comment, hasWritePermission, repository, pullreq)
         }
     }
-    <div id="partial-timeline-marker" class="js-timeline-marker js-socket-channel js-updatable-content" data-channel="@url(repository):issue:55980302" data-url="/@url(repository)/issues/@{issue.issueId}/show_partial?partial=timeline_marker&amp;since=1422844128"
+    @let( if(comments.isEmpty) issue.updatedDate.getTime() else comments.last.registeredDate.getTime() ) { lastTimestamp =>
+    <div id="partial-timeline-marker" class="js-timeline-marker js-socket-channel js-updatable-content"
+         data-channel="@{repository.owner}/@{repository.name}:issue:@{issue.issueId}"
+         data-url="/@{repository.owner}/@{repository.name}/issues/@{issue.issueId}/show_partial?partial=timeline_marker&amp;since=@{lastTimestamp}"
          data-mark-as-read-url="@url(repository)/notifications/mark?ids=56958396" data-last-modified="@{issue.updatedDate}">
     </div>
+    }
 </div>
 }

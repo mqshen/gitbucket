@@ -9235,7 +9235,7 @@ a.task-progress:hover .progress-bar .progress
 }
 .context-loader
 {
-    background: url(/assets/spinners/octocat-spinner-16px-02c482dbba2151bb2d7a30af56d0c7513f12449d504f7a57f200d9e534b112ff.gif) 10px 50% no-repeat #eee;
+    background: url(/assets/spinners/octocat-spinner-16px.gif) 10px 50% no-repeat #eee;
     border: 1px solid #ddd;
     border-radius: 5px;
     border-top: 1px solid #fff;
@@ -9256,7 +9256,7 @@ a.task-progress:hover .progress-bar .progress
 {
     .context-loader
     {
-        background: url(/assets/spinners/octocat-spinner-32-EAF2F5-0bdc57d34b85c4a4de9d0d1db10cd70e8a95f33ff4f46c5a8c48b4bf4e5a9abe.gif) 10px 50% no-repeat #eee;
+        background: url(/assets/spinners/octocat-spinner-32.gif) 10px 50% no-repeat #eee;
         background-size: 16px auto;
     }
 }

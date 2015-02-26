@@ -1,0 +1,42 @@
+@(issue: model.Issue,
+count: Int,
+repository: service.RepositoryService.RepositoryInfo)(implicit context: app.Context)
+@import context._
+@import view.helpers._
+<div id="partial-discussion-header" class="gh-header js-details-container js-socket-channel js-updatable-content issue"
+     data-channel="@{repository.owner}/@{repository.name}:issue:@issue.issueId"
+     data-url="/@{repository.owner}/@{repository.name}/issues/@issue.issueId/show_partial?partial=title">
+
+    <div class="gh-header-show ">
+        <div class="gh-header-actions">
+            <a href="@url(repository)/issues/new" class="minibutton primary" data-hotkey="c">
+                New issue
+            </a>
+        </div>
+
+        <h1 class="gh-header-title">
+            <span class="js-issue-title">@issue.title</span>
+            <span class="gh-header-number">#@issue.issueId</span>
+        </h1>
+    </div>
+    <div class="flex-table gh-header-meta">
+        <div class="flex-table-item">
+            @if(issue.closed) {
+            <div class="state state-closed">
+                <span class="octicon octicon-issue-closed"></span>
+                Closed
+            </div>
+            } else {
+            <div class="state state-open">
+                <span class="octicon octicon-issue-opened"></span>
+                Open
+            </div>
+            }
+        </div>
+        <div class="flex-table-item flex-table-item-primary">
+            <a href="@path/@issue.openedUserName" class="author">@issue.openedUserName</a>
+            opened this <span class="noun">Issue</span>
+            @datetime(issue.registeredDate) · @count comments
+        </div>
+    </div>
+</div>

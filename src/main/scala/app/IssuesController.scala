@@ -1,5 +1,7 @@
 package app
 
+import java.util.Date
+
 import jp.sf.amateras.scalatra.forms._
 import kafka.GitbucketProducer
 import org.scalatra.servlet.ScalatraAsyncSupport
@@ -11,6 +13,7 @@ import util.Implicits._
 import util.ControlUtil._
 import org.scalatra.Ok
 import model.Issue
+import view.helpers
 
 class IssuesController extends IssuesControllerBase
   with IssuesService with RepositoryService with AccountService with LabelsService with MilestonesService with ActivityService
@@ -105,6 +108,38 @@ trait IssuesControllerBase extends ControllerBase {
     }
   })
 
+
+  get("/:owner/:repository/issues/:id/show_partial")(referrersOnly { repository =>
+    defining(repository.owner, repository.name, params("id")){ case (owner, name, issueId) =>
+      getIssue(owner, name, issueId) map { issue =>
+        contentType = formats("html")
+        params("partial") match {
+          case "title" =>
+            val count = getCommentsCount(owner, name, issueId.toInt)
+            issues.html.issueTitle(issue, count, repository)
+          case "discussion_stats" =>
+            helpers.dataChannel("partial-discussion-stats", issue, repository)
+          case "timeline_marker" =>
+            val sinceLong = params("since").toLong
+            val since = new Date(sinceLong)
+            issues.html.commentListSince(issue, getCommentsSince(owner, name, issueId.toInt, since), sinceLong, hasWritePermission(owner, name, context.loginAccount), repository)
+          case "participants" =>
+            issues.html.participants(issue, getComments(owner, name, issueId.toInt), repository)
+
+        }
+//        issues.html.issue(
+//          _,
+//          getComments(owner, name, issueId.toInt),
+//          getIssueLabels(owner, name, issueId.toInt),
+//          (getCollaborators(owner, name) ::: (if(getAccountByUserName(owner).get.isGroupAccount) Nil else List(owner))).sorted,
+//          getMilestonesWithIssueCount(owner, name),
+//          getLabels(owner, name),
+//          hasWritePermission(owner, name, context.loginAccount),
+//          repository)
+      } getOrElse NotFound
+    }
+  })
+
   get("/:owner/:repository/issues/new")(readableUsersOnly { repository =>
     defining(repository.owner, repository.name){ case (owner, name) =>
       issues.html.create(
@@ -187,10 +222,14 @@ trait IssuesControllerBase extends ControllerBase {
     handleComment(form.issueId, form.content, repository)() map { case (oldIssue, (id, issueComment, operation)) =>
       val lastUpdateTime = oldIssue.updatedDate
       getIssue(repository.owner, repository.name, oldIssue.issueId.toString).map { issue =>
+
+        val timestamp = new Date()
+        GitbucketProducer.produceIssues(repository.owner, repository.name, form.issueId, timestamp)
+
         contentType = formats("json")
         val hasWrite = hasWritePermission(repository.owner, repository.name, context.loginAccount)
         val item = issues.html.commentItem(issue, issueComment, hasWrite, repository, None, true)
-        val participants = issues.html.participants(issue, getComments(repository.owner, repository.name, issue.issueId))
+        val participants = issues.html.participants(issue, getComments(repository.owner, repository.name, issue.issueId), repository)
         val buttons = issues.html.commentButton(issue, true, hasWrite, repository)
         val content = Map(s"#partial-timeline-marker[data-last-modified='${lastUpdateTime}']" -> item.toString,
           "#partial-users-participants" -> participants.toString,
@@ -503,7 +542,6 @@ trait IssuesControllerBase extends ControllerBase {
           createReferComment(owner, name, issue, content)
         }
 
-        GitbucketProducer.produceIssues(owner, name, issueId)
         // notifications
         Notifier() match {
           case f =>

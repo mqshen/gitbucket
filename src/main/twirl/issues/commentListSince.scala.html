@@ -1,0 +1,20 @@
+@(issue: model.Issue,
+comments: List[model.Comment],
+timestamp: Long,
+hasWritePermission: Boolean,
+repository: service.RepositoryService.RepositoryInfo,
+pullreq: Option[model.PullRequest] = None)(implicit context: app.Context)
+@import context._
+@import view.helpers._
+@comments.map {
+    case comment: model.IssueComment => {
+        @commentItem(issue, comment, hasWritePermission, repository, pullreq, unread = true)
+    }
+}
+@let( if(comments.isEmpty) timestamp else comments.last.registeredDate.getTime() ) { lastTimestamp =>
+<div id="partial-timeline-marker" class="js-timeline-marker js-socket-channel js-updatable-content"
+     data-channel="@{repository.owner}/@{repository.name}:issue:@{issue.issueId}"
+     data-url="/@{repository.owner}/@{repository.name}/issues/@{issue.issueId}/show_partial?partial=timeline_marker&amp;since=@{lastTimestamp}"
+     data-mark-as-read-url="@url(repository)/notifications/mark?ids=56958396" data-last-modified="@{issue.updatedDate}">
+</div>
+}

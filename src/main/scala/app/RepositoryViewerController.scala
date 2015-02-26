@@ -156,10 +156,8 @@ trait RepositoryViewerControllerBase extends ControllerBase {
   get("/:owner/:repository/show_partial")(referrersOnly { repository =>
     params("partial") match {
       case "recently_touched_branches_list" =>
-      case partial if partial == ""=>
-        repo.html.partial(repository, partial)
+        repo.html.partial(repository, "recently_touched_branches_list")
     }
-
   })
 
   get("/:owner/:repository/edit/*")(collaboratorsOnly { repository =>

@@ -20,6 +20,7 @@ import org.scalatra.servlet.ScalatraAsyncSupport
 import kafka.GitbucketConsumer
 import org.json4s._
 import org.scalatra._
+import service.{IssueConsumerActor, RepositoryConsumerActor, Event}
 import scala.collection.JavaConversions._
 import scala.concurrent.ExecutionContext
 import scala.collection.mutable
@@ -28,79 +29,24 @@ import org.json4s.jackson.Serialization
 /**
  * Created by goldratio on 2/13/15.
  */
-object IssuesConsumerActor {
-  def props() = Props(classOf[IssuesConsumerActor])
-}
+//object IssuesConsumerActor {
+//  def props() = Props(classOf[IssuesConsumerActor])
+//}
 
-class IssuesConsumerActor extends Actor {
-
-  def readIssuesNotification(binaryObject: Array[Byte]) = {
-    val message = new String(binaryObject)
-    println(message)
-  }
-
-  GitbucketConsumer.readIssues(readIssuesNotification)
-
-  override def receive: Receive = {
-    case e: String =>
-      println(e)
-  }
-}
-
-case class RepositoryEvent(userName: String, ownerName: String, repositoryName: String, timestamp: String) extends Event {
-
-  def reason: String = {
-    s""""repository '$ownerName/$repositoryName' was pushed to by '$userName'"}"""
-  }
-
-}
-
-class RepositoryConsumerActor extends Runnable{
-  implicit protected def jsonFormats: Formats = Serialization.formats(ShortTypeHints(List(classOf[RepositoryEvent])))
-
-  val subscribes = mutable.HashMap[String, mutable.ArrayBuffer[EventPusher]]()
-
-  def readRepositoryNotification(binaryObject: Array[Byte]): Unit = {
-    val message = new String(binaryObject)
-    println(message)
-    try {
-      val repositoryEvent = Serialization.read[RepositoryEvent](message)
-      subscribes.get(s"${repositoryEvent.ownerName}/${repositoryEvent.repositoryName}").map{ eventPushers =>
-        eventPushers.foreach(_.push(repositoryEvent))
-      }
-    }
-    catch {
-      case e: Throwable =>
-        e.printStackTrace()
-    }
-  }
-
-  override def run(): Unit = {
-    GitbucketConsumer.readRepository(readRepositoryNotification)
-  }
-
-
-  def registerSubscribe(title: String, eventPusher: EventPusher): Unit = {
-
-    subscribes.get(title).map(_ += eventPusher).getOrElse{
-      val list = new mutable.ArrayBuffer[EventPusher]()
-      list += eventPusher
-      subscribes.put(title, list)
-    }
-
-  }
-
-}
-
-trait Event {
-  def timestamp: String
-  def reason: String
-
-  override def toString(): String = {
-    s""""timestamp":"$timestamp","reason":$reason"""
-  }
-
-}
+//class IssuesConsumerActor extends Actor {
+//
+//  def readIssuesNotification(binaryObject: Array[Byte]) = {
+//    val message = new String(binaryObject)
+//    println(message)
+//  }
+//
+//  GitbucketConsumer.readIssues(readIssuesNotification)
+//
+//  override def receive: Receive = {
+//    case e: String =>
+//      println(e)
+//  }
+//}
 
 class EventPusher(subscribe: String, writer: PrintWriter, scheduler: ScheduledExecutorService) extends Runnable {
   var closed: Boolean = false
@@ -109,7 +55,7 @@ class EventPusher(subscribe: String, writer: PrintWriter, scheduler: ScheduledEx
     if (!closed) {
       writer.write(":keepalive\n\n")
       writer.flush()
-      scheduler.schedule(this, 2, TimeUnit.SECONDS)
+      scheduler.schedule(this, 60, TimeUnit.SECONDS)
     }
   }
 
@@ -133,7 +79,7 @@ class EventPusher(subscribe: String, writer: PrintWriter, scheduler: ScheduledEx
   }
 
   def push(event: Event) = {
-    writer.write(s"""data:["${subscribe}",{${event.toString()}]\n\n""")
+    writer.write(s"""data:["${subscribe}",{${event.toString()}}]\n\n""")
     writer.flush()
   }
 
@@ -148,6 +94,9 @@ class SocketController extends ScalatraServlet with ClientSideValidationFormSupp
 
   val repositoryConsumer = new RepositoryConsumerActor
   executor.execute(repositoryConsumer)
+
+  val issueConsumer = new IssueConsumerActor
+  executor.execute(issueConsumer)
 
   override implicit protected def jsonFormats: Formats = DefaultFormats
 
@@ -194,11 +143,17 @@ class SocketController extends ScalatraServlet with ClientSideValidationFormSupp
         val writer = response.getWriter()
         respond(request, response)
         val pusher = new EventPusher(subscribe, writer, scheduler)
-        val index = subscribe.indexOf(":")
-        val repositoryUrl  = subscribe.substring(0, index)
-        repositoryConsumer.registerSubscribe(repositoryUrl, pusher)
-        // submit the runnable to managedExecutorService
-        executor.execute(pusher)
+        val subscribes = subscribe.split(":")
+        if(subscribes.length == 3) {
+          subscribes(1) match {
+            case "post-receive" =>
+              repositoryConsumer.registerSubscribe(subscribes(0), pusher)
+            case "issue" =>
+              issueConsumer.registerSubscribe(subscribe, pusher)
+          }
+          // submit the runnable to managedExecutorService
+          //executor.execute(pusher)
+        }
       }
     }
   }

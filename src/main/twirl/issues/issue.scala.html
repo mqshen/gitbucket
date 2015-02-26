@@ -11,45 +11,7 @@
 @html.main(s"${issue.title} - Issue #${issue.issueId} - ${repository.owner}/${repository.name}", Some(repository)){
   @html.menu("issues", repository){
       <div id="show_issue" class="js-issues-results">
-          <div id="partial-discussion-header" class="gh-header js-details-container js-socket-channel js-updatable-content issue"
-          data-channel="" data-url="">
-
-              <div class="gh-header-show ">
-                  <div class="gh-header-actions">
-                      <a href="@url(repository)/issues/new" class="minibutton primary" data-hotkey="c">
-                          New issue
-                      </a>
-                  </div>
-
-                  <h1 class="gh-header-title">
-                      <span class="js-issue-title">@issue.title</span>
-                      <span class="gh-header-number">#@issue.issueId</span>
-                  </h1>
-              </div>
-              <div class="flex-table gh-header-meta">
-                  <div class="flex-table-item">
-                  @if(issue.closed) {
-                      <div class="state state-closed">
-                          <span class="octicon octicon-issue-closed"></span>
-                          Closed
-                      </div>
-                  } else {
-                      <div class="state state-open">
-                          <span class="octicon octicon-issue-opened"></span>
-                          Open
-                      </div>
-                  }
-                  </div>
-                  <div class="flex-table-item flex-table-item-primary">
-                      <a href="@path/@issue.openedUserName" class="author">@issue.openedUserName</a>
-                      opened this <span class="noun">Issue</span>
-                      @datetime(issue.registeredDate) ·
-                      @defining( comments.filter( _.action.contains("comment") ).size  ){  count =>
-                          @count
-                      } comments
-                  </div>
-              </div>
-          </div>
+          @issueTitle(issue, comments.filter( _.action.contains("comment") ).size, repository)
           <div id="discussion_bucket" class="tab-content clearfix">
               <div class="discussion-sidebar">
                   @dataChannel("partial-discussion-stats", issue, repository)

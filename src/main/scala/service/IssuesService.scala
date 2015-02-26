@@ -20,6 +20,14 @@ trait IssuesService {
   def getComments(owner: String, repository: String, issueId: Int)(implicit s: Session) =
     IssueComments filter (_.byIssue(owner, repository, issueId)) list
 
+  implicit val JavaUtilDateMapper =
+    MappedColumnType .base[java.util.Date, java.sql.Timestamp] (
+      d => new java.sql.Timestamp(d.getTime),
+      d => new java.util.Date(d.getTime))
+
+  def getCommentsSince(owner: String, repository: String, issueId: Int, since: java.util.Date)(implicit s: Session) =
+    IssueComments filter { comment =>  comment.byIssue(owner, repository, issueId) && (comment.registeredDate > since.bind)} list
+
   def getComment(owner: String, repository: String, commentId: String)(implicit s: Session) =
     if (commentId forall (_.isDigit))
       IssueComments filter { t =>
@@ -38,6 +46,9 @@ trait IssuesService {
 
   def getIssueLabel(owner: String, repository: String, issueId: Int, labelId: Int)(implicit s: Session) =
     IssueLabels filter (_.byPrimaryKey(owner, repository, issueId, labelId)) firstOption
+
+  def getCommentsCount(owner: String, repository: String, issueId: Int)(implicit s: Session): Int =
+    Query((IssueComments filter (_.byIssue(owner, repository, issueId))).length).first
 
   /**
    * Returns the count of the search result against  issues.

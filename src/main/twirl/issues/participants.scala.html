@@ -1,7 +1,10 @@
 @(issue: model.Issue,
-comments: List[model.Comment])(implicit context: app.Context)
+comments: List[model.Comment],
+repository: service.RepositoryService.RepositoryInfo)(implicit context: app.Context)
 @import view.helpers._
-<div id="partial-users-participants" class="discussion-sidebar-item js-socket-channel js-updatable-content" >
+<div id="partial-users-participants" class="discussion-sidebar-item js-socket-channel js-updatable-content"
+     data-channel="@{repository.owner}/@{repository.name}:issue:@issue.issueId"
+     data-url="/@{repository.owner}/@{repository.name}/issues/@issue.issueId/show_partial?partial=participants">
     <div class="participation">
         @defining((issue.openedUserName :: comments.map(_.commentedUserName)).distinct){ participants =>
         <h3 class="discussion-sidebar-heading">

@@ -187,7 +187,7 @@ object helpers extends AvatarImageProvider with LinkConverter with RequestCache 
   def url(userName: String)(implicit context: app.Context): String = s"${context.path}/${userName}"
 
   def dataChannel(id: String, issue: Issue, repository: service.RepositoryService.RepositoryInfo)
-                 (implicit context: app.Context): Html = Html(s"""<div id="$id" class="discussion-stats js-socket-channel js-updatable-content" data-channel="mqshen/WeTalk:issue:55980302" data-url="${url(repository)}/issues/5/show_partial?partial=discussion_stats"> </div>""")
+                 (implicit context: app.Context): Html = Html(s"""<div id="$id" class="discussion-stats js-socket-channel js-updatable-content" data-channel="${repository.owner}/${repository.name}:issue:${issue.issueId}" data-url="${url(repository)}/issues/${issue.issueId}/show_partial?partial=discussion_stats"> </div>""")
   /**
    * Returns the url to the root of assets.
    */

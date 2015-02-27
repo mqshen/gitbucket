@@ -19,7 +19,7 @@ case class RepositoryEvent(userName: String, owner: String, repositoryName: Stri
 
 }
 
-class RepositoryConsumerActor extends Runnable{
+class RepositoryConsumerActor extends Runnable with EventConsumerActor{
   implicit protected def jsonFormats: Formats = Serialization.formats(ShortTypeHints(List(classOf[RepositoryEvent])))
 
   val subscribes = mutable.HashMap[String, mutable.ArrayBuffer[EventPusher]]()
@@ -43,15 +43,29 @@ class RepositoryConsumerActor extends Runnable{
     GitbucketConsumer.readRepository(readRepositoryNotification)
   }
 
+  def getTitle(eventPusher: EventPusher): String = {
+    val subscribes = eventPusher.subscribe.split(":")
+    if(subscribes.length == 3) {
+      subscribes(0)
+    }
+    else {
+      ""
+    }
 
-  def registerSubscribe(title: String, eventPusher: EventPusher): Unit = {
+  }
 
+  override def registerSubscribe(eventPusher: EventPusher): Unit = {
+    val title = getTitle(eventPusher)
     subscribes.get(title).map(_ += eventPusher).getOrElse{
       val list = new mutable.ArrayBuffer[EventPusher]()
       list += eventPusher
       subscribes.put(title, list)
     }
+  }
 
+  override def unregisterSubscribe(eventPusher: EventPusher): Unit = {
+    val title = getTitle(eventPusher)
+    subscribes.get(title).map(_ -= eventPusher)
   }
 
 }

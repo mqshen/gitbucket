@@ -13,7 +13,7 @@ import util.Keys
 /**
  * Provides BASIC Authentication for [[servlet.GitRepositoryServlet]].
  */
-class BasicAuthenticationFilter extends Filter with RepositoryService with AccountService with SystemSettingsService with ScalatraAsyncSupport{
+class BasicAuthenticationFilter extends Filter with RepositoryService with AccountService with SystemSettingsService {
 
   private val logger = LoggerFactory.getLogger(classOf[BasicAuthenticationFilter])
 

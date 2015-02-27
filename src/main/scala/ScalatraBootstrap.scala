@@ -1,5 +1,4 @@
-import _root_.akka.actor.ActorSystem
-import _root_.servlet.{BasicAuthenticationFilter, TransactionFilter}
+import servlet.{BasicAuthenticationFilter, TransactionFilter}
 import app._
 import org.scalatra.servlet.RichServletContext
 
@@ -9,7 +8,6 @@ import javax.servlet._
 import java.util.EnumSet
 
 class ScalatraBootstrap extends LifeCycle {
-  val system = ActorSystem("scalatra")
 
   override def init(context: ServletContext) {
     // Register TransactionFilter and BasicAuthenticationFilter at first

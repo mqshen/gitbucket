@@ -5,7 +5,7 @@ import java.io.{PrintWriter, IOException, StringReader, BufferedReader}
 import java.nio.charset.Charset
 import java.util.{UUID, Date}
 import java.util.concurrent.{ScheduledExecutorService, Executors, TimeUnit}
-import javax.servlet.{ServletRequest, ServletConfig, ServletOutputStream}
+import javax.servlet._
 import javax.servlet.http.{HttpServletResponse, HttpServletRequest}
 
 import _root_.servlet.RedisClientPool
@@ -20,7 +20,7 @@ import org.scalatra.servlet.ScalatraAsyncSupport
 import kafka.GitbucketConsumer
 import org.json4s._
 import org.scalatra._
-import service.{IssueConsumerActor, RepositoryConsumerActor, Event}
+import service.{EventConsumerActor, IssueConsumerActor, RepositoryConsumerActor, Event}
 import scala.collection.JavaConversions._
 import scala.concurrent.ExecutionContext
 import scala.collection.mutable
@@ -48,18 +48,22 @@ import org.json4s.jackson.Serialization
 //  }
 //}
 
-class EventPusher(subscribe: String, writer: PrintWriter, scheduler: ScheduledExecutorService) extends Runnable {
+class EventPusher(val subscribe: String, writer: PrintWriter, ac: AsyncContext, eventConsumerActor: EventConsumerActor) extends Runnable {
   var closed: Boolean = false
 
   def scheduleHeartBeat() {
     if (!closed) {
       writer.write(":keepalive\n\n")
       writer.flush()
-      scheduler.schedule(this, 60, TimeUnit.SECONDS)
+      Thread.sleep(TimeUnit.MINUTES.toMillis(1))
+      scheduleHeartBeat()
+      //scheduler.schedule(this, 60, TimeUnit.SECONDS)
     }
   }
 
   def close(): Unit = {
+    eventConsumerActor.unregisterSubscribe(this)
+    ac.complete()
     closed = true
     writer.close()
   }
@@ -72,6 +76,7 @@ class EventPusher(subscribe: String, writer: PrintWriter, scheduler: ScheduledEx
     }
     catch {
       case x: IOException =>
+        close()
         println(x)
     }
     //complete async
@@ -85,11 +90,10 @@ class EventPusher(subscribe: String, writer: PrintWriter, scheduler: ScheduledEx
 
 }
 
-class SocketController extends ScalatraServlet with ClientSideValidationFormSupport
-  with Handler with CometProcessor with HttpEventServlet with ApiFormats
+class SocketController extends ScalatraServlet with ClientSideValidationFormSupport with ApiFormats
   with JacksonJsonSupport with I18nSupport with ScalatraAsyncSupport {
 
-  val scheduler = Executors.newSingleThreadScheduledExecutor()
+//  val scheduler = Executors.newSingleThreadScheduledExecutor()
   val executor = ExecutionContext.Implicits.global
 
   val repositoryConsumer = new RepositoryConsumerActor
@@ -139,23 +143,36 @@ class SocketController extends ScalatraServlet with ClientSideValidationFormSupp
     val sid = params("sid")
     RedisClientPool.clients.withClient { client =>
       client.get(sid).map { subscribe =>
-        val ac = request.startAsync(request, response)
-        val writer = response.getWriter()
-        respond(request, response)
-        val pusher = new EventPusher(subscribe, writer, scheduler)
-        val subscribes = subscribe.split(":")
-        if(subscribes.length == 3) {
-          subscribes(1) match {
-            case "post-receive" =>
-              repositoryConsumer.registerSubscribe(subscribes(0), pusher)
-            case "issue" =>
-              issueConsumer.registerSubscribe(subscribe, pusher)
+        println("socket for subscribe" + subscribe)
+        if (!request.isAsyncStarted) {
+          val ac = request.startAsync(request, response)
+
+          ac.setTimeout(0)
+          val writer = response.getWriter()
+          respond(request, response)
+          val subscribes = subscribe.split(":")
+          if(subscribes.length == 3) {
+            subscribes(1) match {
+              case "post-receive" =>
+                val pusher = new EventPusher(subscribe, writer, ac, repositoryConsumer)
+                repositoryConsumer.registerSubscribe(pusher)
+                ac.start(pusher)
+              case "issue" =>
+                val pusher = new EventPusher(subscribe, writer, ac, issueConsumer)
+                issueConsumer.registerSubscribe(pusher)
+                ac.start(pusher)
+            }
           }
-          // submit the runnable to managedExecutorService
-          //executor.execute(pusher)
         }
+//        if(request.getDispatcherType == DispatcherType.ERROR) {
+//          request.getAttribute("ASYNC_CONTEXT") match {
+//            case ac : AsyncContext =>
+//              ac.complete()
+//          }
+//        }
       }
     }
+    ""
   }
 
   def open(eventSource: EventSource , emitter: Emitter ) {
@@ -173,99 +190,6 @@ class SocketController extends ScalatraServlet with ClientSideValidationFormSupp
       response.addHeader("Connection", "close")
       //response.flushBuffer()
     }
-
-  def newEventSource(request: HttpServletRequest ): EventSource = {
-    new EventSource() {
-
-      def onOpen(emitter: Emitter ) {
-        emitter.sendData("event: server-time\r\n")  //take note of the 2 \n 's, also on the next line.
-        emitter.sendData("data: 1234\r\n")
-        emitter.sendData("\u20AC")
-      }
-
-      def onClose(): Unit = {
-        println("close")
-      }
-
-    }
-  }
-
-  class EventSourceEmitter(eventSource: EventSource, output: ServletOutputStream) extends Emitter with Runnable {
-    val closed: Boolean = false
-
-
-    override def sendEvent(name: String , data: String ) {
-        output.print("event: ")
-        output.print(name)
-        output.print("\r\n")
-      sendData(data)
-    }
-
-    override def sendData(data: String ) {
-      val reader = new BufferedReader(new StringReader(data))
-      Stream.continually(reader.readLine()).takeWhile(_ != null).foreach { line =>
-        output.print("data: ")
-        output.print(line)
-        output.print("\r\n")
-      }
-      flush()
-    }
-
-    override def sendComment(comment: String )  {
-        output.print(": ")
-        output.print(comment)
-        output.print("\r\n")
-        output.print("\r\n")
-        flush()
-    }
-
-    override def run() {
-      // If the other peer closes the connection, the first
-      // flush() should generate a TCP reset that is detected
-      // on the second flush()
-      try {
-        output.write('\r')
-        flush()
-        output.write('\n')
-        flush()
-        scheduleHeartBeat()
-      }
-      catch {
-        case x: IOException =>
-          println(x)
-      }
-    }
-
-    def flush()  {
-      //continuation.getServletResponse().flushBuffer()
-      output.flush()
-    }
-
-    override def close() {
-      output.flush()
-      output.close()
-    }
-
-    def scheduleHeartBeat() {
-      if (!closed) {
-        println("heartbeat")
-        val heartBeat = scheduler.schedule(this, 10, TimeUnit.SECONDS)
-        println(heartBeat)
-      }
-    }
-  }
-
-
-  override def event(cometEvent: catalina.CometEvent): Unit = {
-    println("comment catalina")
-
-  }
-
-  override def event(httpEvent: HttpEvent): Unit = {
-    println("comment http")
-
-  }
-
 
 }
 

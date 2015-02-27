@@ -24,8 +24,8 @@ import model.{Account, GroupMember}
 
 class AccountController extends AccountControllerBase
   with AccountService with RepositoryService with ActivityService with WikiService with LabelsService with SshKeyService
-  with OneselfAuthenticator with UsersAuthenticator with GroupManagerAuthenticator with ReadableUsersAuthenticator
-  with ScalatraAsyncSupport{
+  with OneselfAuthenticator with UsersAuthenticator with GroupManagerAuthenticator with ReadableUsersAuthenticator with ScalatraAsyncSupport
+  {
 }
 
 trait AccountControllerBase extends AccountManagementControllerBase {

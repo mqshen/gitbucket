@@ -20,7 +20,7 @@ case class IssueEvent(owner: String, repositoryName: String, issueId: String, ti
 
 }
 
-class IssueConsumerActor extends Runnable{
+class IssueConsumerActor extends Runnable with EventConsumerActor {
   implicit protected def jsonFormats: Formats = Serialization.formats(ShortTypeHints(List(classOf[IssueEvent])))
 
   val subscribes = mutable.HashMap[String, mutable.ArrayBuffer[EventPusher]]()
@@ -45,14 +45,18 @@ class IssueConsumerActor extends Runnable{
   }
 
 
-  def registerSubscribe(title: String, eventPusher: EventPusher): Unit = {
+  override def registerSubscribe(eventPusher: EventPusher): Unit = {
 
-    subscribes.get(title).map(_ += eventPusher).getOrElse{
+    subscribes.get(eventPusher.subscribe).map(_ += eventPusher).getOrElse{
       val list = new mutable.ArrayBuffer[EventPusher]()
       list += eventPusher
-      subscribes.put(title, list)
+      subscribes.put(eventPusher.subscribe, list)
     }
 
   }
 
+
+  override def unregisterSubscribe(eventPusher: EventPusher): Unit = {
+    subscribes.get(eventPusher.subscribe).map(_ -= eventPusher)
+  }
 }

@@ -20,7 +20,8 @@ class TransactionFilter extends Filter {
   def destroy(): Unit = {}
   
   def doFilter(req: ServletRequest, res: ServletResponse, chain: FilterChain): Unit = {
-    if(req.asInstanceOf[HttpServletRequest].getRequestURI().startsWith("/assets/")){
+    if(req.asInstanceOf[HttpServletRequest].getRequestURI().startsWith("/assets/") ||
+      req.asInstanceOf[HttpServletRequest].getRequestURI().startsWith("/socket/")){
       // assets don't need transaction
       chain.doFilter(req, res)
     } else {

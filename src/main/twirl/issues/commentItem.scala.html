@@ -7,7 +7,7 @@ showTimestamp: Boolean = false,
 unread: Boolean = false)(implicit context: app.Context)
 @import context._
 @import view.helpers._
-@if(comment.action != "close" && comment.action != "reopen" && comment.action != "delete_branch"){
+@if(comment.action != "close" && comment.action != "reopen" && comment.action != "delete_branch" && !comment.action.startWith("git")){
 <div class="timeline-comment-wrapper js-comment-container">
     <a href="@path/@comment.commentedUserName">
         @avatar(comment.commentedUserName, 48, avatarClass = "timeline-comment-avatar")
@@ -139,6 +139,56 @@ unread: Boolean = false)(implicit context: app.Context)
     </div>
 </div>
 }
+@if(comment.action == "git-push-close" || comment.action == "git-push-commit"){
+<div class="discussion-item discussion-item-ref">
+    <div class="discussion-item-header" id="ref-commit-33f00de">
+        <span class="octicon octicon-bookmark discussion-item-icon"></span>
+        @userTips(comment.commentedUserName, hasContainer = false)
+        @if(comment.action == "git-push-close") {
+            closed
+        } else {
+            reffer
+        }
+        this issue
+        from a commit
+        <a href="#ref-commit" class="timestamp"> @datetime(comment.registeredDate) </a>
+    </div>
+
+    <table class="timeline-commits">
+        <tbody>
+            <tr class="commit js-details-container " >
+            <td class="commit-icon hidden">
+                <span class="octicon octicon-git-commit"></span>
+            </td>
+            <td class="commit-gravatar">
+                <a href="@path/@comment.commentedUserName">
+                    @avatar(comment.commentedUserName, 16, avatarClass = "avatar-small")
+                </a>
+            </td>
+            <td class="commit-author">
+                <strong>
+                    <a href="@path/@comment.commentedUserName" class="author" rel="author">@comment.commentedUserName</a>
+                </strong>
+            </td>
+
+            <td class="commit-message">
+                <code>
+                    @markdown(comment.content.substring(0, comment.content.length - 41), repository, false, true)
+                </code>
+            </td>
+
+            <td class="commit-meta">
+                <code>
+                    @defining(comment.content.substring(comment.content.length - 40)){ id =>
+                    <a href="@url(repository)/commit/@id" class="commit-id">@id.substring(0, 7)</a>
+                    }
+                </code>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+}
 
 @if(comment.action == "merge"){
 <div class="small" style="margin-top: 10px; margin-bottom: 10px;">
@@ -157,7 +207,15 @@ unread: Boolean = false)(implicit context: app.Context)
 <div class="discussion-item discussion-item-closed">
     <div class="discussion-item-header" id="event-@comment.commentId">
         <span class="octicon octicon-circle-slash discussion-item-icon"></span>
-        @userTips(comment.commentedUserName, hasContainer = false) closed this   @datetime(comment.registeredDate)
+        @userTips(comment.commentedUserName, hasContainer = false) closed this
+        @if(comment.content.split(" ").last.matches("[a-f0-9]{40}")){
+            in <code>
+            @defining(comment.content.substring(comment.content.length - 40)){ id =>
+                <a href="@url(repository)/commit/@id" >@id.substring(0, 7)</a>
+            }
+            </code>
+        }
+        @datetime(comment.registeredDate)
     </div>
 </div>
 

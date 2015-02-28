@@ -319,10 +319,10 @@ trait IssuesService {
     }.toList
   }
 
-  def closeIssuesFromMessage(message: String, userName: String, owner: String, repository: String)(implicit s: Session) = {
+  def closeIssuesFromMessage(message: String, userName: String, owner: String, repository: String, commitId: String)(implicit s: Session) = {
     extractCloseId(message).foreach { issueId =>
       for(issue <- getIssue(owner, repository, issueId) if !issue.closed){
-        createComment(owner, repository, userName, issue.issueId, "Close", "close")
+        createComment(owner, repository, userName, issue.issueId, "Close " + commitId, "close")
         updateClosed(owner, repository, issue.issueId, true)
       }
     }

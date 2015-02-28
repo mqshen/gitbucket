@@ -523,7 +523,7 @@ trait RepositoryViewerControllerBase extends ControllerBase {
           List(new CommitInfo(JGitUtil.getRevCommitFromId(git, commitId))))
 
         // close issue by commit message
-        closeIssuesFromMessage(message, loginAccount.userName, repository.owner, repository.name)
+        closeIssuesFromMessage(message, loginAccount.userName, repository.owner, repository.name, "")
 
         // call web hook
         val commit = new JGitUtil.CommitInfo(JGitUtil.getRevCommitFromId(git, commitId))

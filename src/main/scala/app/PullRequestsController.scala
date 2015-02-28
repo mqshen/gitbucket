@@ -185,13 +185,13 @@ trait PullRequestsControllerBase extends ControllerBase {
             val defaultBranch = getRepository(owner, name, context.baseUrl).get.repository.defaultBranch
             if(pullreq.branch == defaultBranch){
               commits.flatten.foreach { commit =>
-                closeIssuesFromMessage(commit.fullMessage, loginAccount.userName, owner, name)
+                closeIssuesFromMessage(commit.fullMessage, loginAccount.userName, owner, name, commit.id)
               }
               issue.content match {
-                case Some(content) => closeIssuesFromMessage(content, loginAccount.userName, owner, name)
+                case Some(content) => closeIssuesFromMessage(content, loginAccount.userName, owner, name, "")
                 case _ =>
               }
-              closeIssuesFromMessage(form.message, loginAccount.userName, owner, name)
+              closeIssuesFromMessage(form.message, loginAccount.userName, owner, name, "")
             }
             // call web hook
             getWebHookURLs(owner, name) match {

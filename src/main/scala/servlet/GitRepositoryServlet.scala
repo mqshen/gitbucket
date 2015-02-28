@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory
 import javax.servlet.ServletConfig
 import javax.servlet.ServletContext
 import javax.servlet.http.{HttpServletResponse, HttpServletRequest}
+import util.StringUtil._
 import util.{StringUtil, Keys, JGitUtil, Directory}
 import util.ControlUtil._
 import util.Implicits._
@@ -97,7 +98,8 @@ import scala.collection.JavaConverters._
 
 class CommitLogHook(owner: String, repository: String, pusher: String, baseUrl: String)(implicit session: Session)
   extends PostReceiveHook with PreReceiveHook
-  with RepositoryService with AccountService with IssuesService with ActivityService with PullRequestService with WebHookService {
+  with RepositoryService with AccountService with IssuesService with ActivityService with PullRequestService
+  with WebHookService with CommitHookService {
   
   private val logger = LoggerFactory.getLogger(classOf[CommitLogHook])
   private var existIds: Seq[String] = Nil
@@ -143,10 +145,13 @@ class CommitLogHook(owner: String, repository: String, pusher: String, baseUrl: 
             if (!existIds.contains(commit.id) && !pushedIds.contains(commit.id)) {
               if (issueCount > 0) {
                 pushedIds.add(commit.id)
-                createIssueComment(commit)
                 // close issues
                 if(refName(1) == "heads" && branchName == defaultBranch && command.getType == ReceiveCommand.Type.UPDATE){
-                  closeIssuesFromMessage(commit.fullMessage, pusher, owner, repository)
+                  createIssueComment(commit)
+                  closeIssuesFromMessage(commit.fullMessage, pusher, owner, repository, commit.id)
+                }
+                else {
+                  createIssueComment(commit)
                 }
               }
               Some(commit)
@@ -203,10 +208,12 @@ class CommitLogHook(owner: String, repository: String, pusher: String, baseUrl: 
   }
 
   private def createIssueComment(commit: CommitInfo) = {
+    val close = extractCloseId(commit.fullMessage).hasNext
+    val action = if(close) "git-push-close" else "git-push-commit"
     StringUtil.extractIssueId(commit.fullMessage).foreach { issueId =>
       if(getIssue(owner, repository, issueId).isDefined){
         getAccountByMailAddress(commit.committerEmailAddress).foreach { account =>
-          createComment(owner, repository, account.userName, issueId.toInt, commit.fullMessage + " " + commit.id, "commit")
+          createComment(owner, repository, account.userName, issueId.toInt, commit.fullMessage + " " + commit.id, action)
         }
       }
     }

@@ -13863,3 +13863,6 @@ input.color-editor-input:focus ~ .label-colors {
 	color: #795da3;
 	font-weight: bold;
 }
+code p {
+    margin: 0px;
+}

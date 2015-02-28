@@ -158,12 +158,12 @@ trait AccountControllerBase extends AccountManagementControllerBase {
     }
   }
 
-  get("/settings/profile")(oneselfOnly {
+  get("/settings/profile"){
     context.loginAccount.map { user =>
       response.setHeader("Content-Security-Policy", "default-src *; script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline' 'unsafe-eval' ; img-src 'self' data: mqshen.qiniudn.com *.gravatar.com ; media-src 'none'; frame-src 'self' ; font-src 'self' assets-cdn.github.com; connect-src 'self' up.qbox.me  mqshen.qiniudn.com ")
       account.html.edit(user, flash.get("info"))
     } getOrElse Unauthorized
-  })
+  }
 
   post("/settings/profile", editForm)(oneselfOnly { form =>
     context.loginAccount.map { user =>

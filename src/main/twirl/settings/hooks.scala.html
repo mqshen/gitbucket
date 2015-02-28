@@ -8,20 +8,54 @@
   @html.menu("settings", repository){
     @menu("hooks", repository){
       @helper.html.information(info)
-      <h3>WebHook URLs</h3>
-      <ul>
-        @webHooks.map { webHook =>
-          <li>@webHook.url <a href="@url(repository)/settings/hooks/delete?url=@urlEncode(webHook.url)" class="remove">(remove)</a></li>
-        }
-      </ul>
-      <form method="POST" validate="true">
-        <div>
-          <span class="error" id="error-url"></span>
+<div id="hooks_bucket" class="tab-content">
+    <div class="boxed-group hooks-listing">
+        <a href="@url(repository)/settings/hooks/new" class="minibutton boxed-group-action" data-pjax="true">Add webhook</a>
+        <h3>Webhooks</h3>
+        <div class="boxed-group-inner">
+            <p>
+                Webhooks allow external services to be notified when certain events happen within your repository.
+                When the specified events happen, we'll send a POST request to each of the URLs you provide.
+                Learn more in our <a href="https://developer.github.com/webhooks/" target="_blank">Webhooks Guide</a>.
+            </p>
+            <ul class="boxed-group-list">
+                @webHooks.map { webHook =>
+                <li class="hook-item clearfix pending">
+                    <span class="item-status">
+                        <a href="@url(repository)/settings/hooks/@webHook.hookId#deliveries"
+                           aria-label="This hook has never been triggered." class="tooltipped tooltipped-n">
+                            <span class="octicon octicon-check icon-for-success"></span>
+                            <span class="octicon octicon-alert icon-for-failure"></span>
+                            <span class="octicon octicon-primitive-dot icon-for-pending"></span>
+                            <span class="octicon octicon-primitive-dot icon-for-inactive"></span>
+                        </a>
+                    </span>
+
+                    <a class="css-truncate" data-pjax="">
+                        <span class="hook-url css-truncate-target">
+                            @webHook.url
+                        </span>
+                    </a>
+                    <em class="description css-truncate">(<span class="css-truncate-target" title="push">push</span>)</em>
+                    <div class="button-group">
+                        <a href="#delete-webhook-@webHook.hookId" class="minibutton iconbutton danger tooltipped tooltipped-n" rel="facebox nofollow" aria-label="Delete">
+                            <span class="octicon octicon-x"></span>
+                        </a>
+                    </div>
+                    <div id="delete-webhook-@webHook.hookId" style="display:none;">
+                        <h2 class="facebox-header">Delete webhook?</h2>
+                        <div class="facebox-alert">
+                            This action cannot be undone. Future events will no longer be delivered to this webhook
+                            <em>(@webHook.url)</em>.
+                        </div>
+                        <a href="@url(repository)/settings/hooks/@webHook.hookId/delete" class="button button-block danger" data-method="delete" data-pjax="true">Yes, delete webhook</a>
+                    </div>
+                </li>
+                }
+            </ul>
         </div>
-        <input type="text" name="url" id="url" value="@enteredUrl" style="width: 300px; margin-bottom: 0px;"/>
-        <input type="submit" class="btn" formaction="@url(repository)/settings/hooks/add"  value="Add"/>
-        <input type="submit" class="btn" formaction="@url(repository)/settings/hooks/test" value="Test Hook"/>
-      </form>
+    </div>
+</div>
     }
   }
 }

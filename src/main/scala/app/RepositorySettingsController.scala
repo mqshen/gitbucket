@@ -139,10 +139,15 @@ trait RepositorySettingsControllerBase extends ControllerBase {
     settings.html.hooks(getWebHookURLs(repository.owner, repository.name), flash.get("url"), repository, flash.get("info"))
   })
 
+
+  get("/:owner/:repository/settings/hooks/new")(ownerOnly { repository =>
+    settings.html.createHooks(repository, flash.get("info"))
+  })
+
   /**
    * Add the web hook URL.
    */
-  post("/:owner/:repository/settings/hooks/add", webHookForm)(ownerOnly { (form, repository) =>
+  post("/:owner/:repository/settings/hooks", webHookForm)(ownerOnly { (form, repository) =>
     addWebHookURL(repository.owner, repository.name, form.url)
     redirect(s"/${repository.owner}/${repository.name}/settings/hooks")
   })
@@ -150,8 +155,8 @@ trait RepositorySettingsControllerBase extends ControllerBase {
   /**
    * Delete the web hook URL.
    */
-  get("/:owner/:repository/settings/hooks/delete")(ownerOnly { repository =>
-    deleteWebHookURL(repository.owner, repository.name, params("url"))
+  post("/:owner/:repository/settings/hooks/:id/delete")(ownerOnly { repository =>
+    deleteWebHookURL(params("id").toInt)
     redirect(s"/${repository.owner}/${repository.name}/settings/hooks")
   })
 

@@ -5,96 +5,43 @@
   @html.menu("settings", repository){
     @menu("options", repository){
       @helper.html.information(info)
-      <form id="form" method="post" action="@url(repository)/settings/options" validate="true">
-        <div class="box">
-          <div class="box-header">Settings</div>
-          <div class="box-content">
-            <fieldset>
-              <label for="repositoryName" class="strong">Repository Name:</label>
-              <input type="text" name="repositoryName" id="repositoryName" value="@repository.name"/>
-              <span id="error-repositoryName" class="error"></span>
-            </fieldset>
-            <fieldset class="margin">
-              <label for="description" class="strong">Description:</label>
-              <input type="text" name="description" id="description" style="width: 600px;" value="@repository.repository.description"/>
-            </fieldset>
-            <fieldset class="margin">
-              <label for="defaultBranch" class="strong">Default Branch:</label>
-              <select name="defaultBranch" id="defaultBranch"@if(repository.branchList.isEmpty){ disabled}>
-                @if(repository.branchList.isEmpty){
-                  <option value="none" selected>No Branch</option>
-                } else {
-                  @repository.branchList.map { branch =>
-                    <option@if(branch==repository.repository.defaultBranch){ selected}>@branch</option>
-                  }
-                }
-              </select>
-              @if(repository.branchList.isEmpty){
-                <input type="hidden" name="defaultBranch" value="none"/>
-              }
-              <span class="error" id="error-defaultBranch"></span>
-            </fieldset>
-            <fieldset class="margin">
-              <label class="radio">
-                <input type="radio" name="isPrivate" value="false"
-                  @if(!repository.repository.isPrivate              ){ checked  }
-                  @if(repository.repository.parentUserName.isDefined){ disabled }
-                >
-                <span class="strong">Public</span><br>
-                <div>
-                  <span>All users and guests can read this repository.</span>
-                </div>
-              </label>
-            </fieldset>
-            <fieldset>
-              <label class="radio">
-                <input type="radio" name="isPrivate" value="true"
-                  @if(repository.repository.isPrivate               ){ checked  }
-                  @if(repository.repository.parentUserName.isDefined){ disabled }
-                >
-                <span class="strong">Private</span><br>
-                <div>
-                  <span>Only collaborators can read this repository.</span>
-                </div>
-              </label>
-            </fieldset>
-          </div>
+<div id="options_bucket" class="tab-content">
+    <div class="boxed-group">
+        <h3>Settings</h3>
+        <div class="boxed-group-inner">
+            <form accept-charset="UTF-8" action="@url(repository)/settings/options" method="post">
+                <dl class="form clearfix">
+                    <dt><label for="rename_field">Repository name</label></dt>
+                    <dd>
+                        <input autocomplete="off" class="short js-repository-name" data-original-name="@repository.name"
+                               id="rename_field" name="repositoryName" type="text" value="@repository.name">
+                        <button type="submit" class="button js-rename-repository-button" disabled="">Rename</button>
+                    </dd><dd class="error form-note js-form-note" style="display:none"></dd>
+
+                </dl>
+            </form>
+
+            <hr class="bleed-flush">
+            <form accept-charset="UTF-8" action="@url(repository)/settings/options" class="edit_repository" method="post">
+                <dl class="form clearfix" id="change_default_branch">
+                    <dt><label for="default_branch">Default branch</label></dt>
+                    <dd>
+                        <select class="js-repo-default-branch" id="default_branch" name="default_branch">
+                            @if(repository.branchList.isEmpty){
+                            <option value="none" selected>No Branch</option>
+                            } else {
+                            @repository.branchList.map { branch =>
+                            <option @if(branch==repository.repository.defaultBranch){ selected}>@branch</option>
+                            }
+                            }
+                        </select>
+                        <span class="status-indicator js-status-indicator"></span>
+                    </dd>
+                </dl>
+            </form>
         </div>
-        @*
-        <div class="box">
-          <div class="box-header">Features:</div>
-          <div class="box-content">
-            <dl>
-              <dt>
-                <label class="checkbox strong">
-                  <input type="checkbox" name="wiki" id="wiki"/> Wiki
-                </label>
-              </dt>
-              <dd>
-                Adds lightweight Wiki system to this repository.
-                This is the simplest way to provide documentation or examples.
-                Only collaborators can edit Wiki pages.
-              </dd>
-            </dl>
-            <hr>
-            <dl>
-              <dt>
-                <label class="checkbox strong">
-                  <input type="checkbox" name="issue" id="issue"/> Issue
-                </label>
-              </dt>
-              <dd>
-                Adds lightweight issue tracking integrated with this repository.
-                All users who have signed in and can access this repository can register an issue.
-              </dd>
-            </dl>
-          </div>
-        </div>
-        *@
-        <fieldset>
-          <input type="submit" class="btn btn-success" value="Apply changes"/>
-        </fieldset>
-      </form>
+    </div>
+</div>
     }
   }
 }

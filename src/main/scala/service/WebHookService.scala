@@ -27,6 +27,9 @@ trait WebHookService {
   def deleteWebHookURL(owner: String, repository: String, url :String)(implicit s: Session): Unit =
     WebHooks.filter(_.byPrimaryKey(owner, repository, url)).delete
 
+  def deleteWebHookURL(webHookId: Int)(implicit s: Session): Unit =
+    WebHooks.filter(_.hookId === webHookId).delete
+
   def callWebHook(owner: String, repository: String, webHookURLs: List[WebHook], payload: WebHookPayload): Unit = {
     import org.json4s._
     import org.json4s.jackson.Serialization

@@ -1,0 +1,40 @@
+@(repository: service.RepositoryService.RepositoryInfo,
+info: Option[Any])(implicit context: app.Context)
+@import context._
+@import view.helpers._
+@html.main("Settings", Some(repository)){
+@html.menu("settings", repository){
+@menu("hooks", repository){
+@helper.html.information(info)
+<div class="boxed-group">
+    <h3>
+        <a href="@url(repository)/settings/hooks" class="boxed-group-breadcrumb" data-pjax="true">Webhooks /</a>
+        Add webhook
+    </h3>
+    <div class="boxed-group-inner">
+        <form accept-charset="UTF-8" action="@url(repository)/settings/hooks" class="hook-form js-hook-form" id="new_hook" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="✓"><input name="authenticity_token" type="hidden" value="TqFq/iu1iHRkHVNudYsSXn4CkIA6pX68y4ThnMMvSwqCwcRkjfdKUP86ARyw1CDznj/PDGUpQkdTGG9rUDp/UA=="></div>
+            <p>
+                We’ll send a <code>POST</code> request to the URL below with details of any subscribed events.
+                You can also specify which data format you'd like to receive (JSON, <code>x-www-form-urlencoded</code>, <em>etc</em>).
+                More information can be found in <a href="https://developer.github.com/webhooks/" target="_blank">our developer documentation</a>.
+            </p>
+
+            <hr class="bleed-flush compact">
+
+            <dl class="form required">
+                <dt><label for="hook_url">Payload URL</label></dt>
+                <dd>
+                    <input autocomplete="off" class="js-hook-url-field" id="hook_url" name="url"
+                           placeholder="https://example.com/postreceive" size="30" type="url">
+                </dd>
+            </dl>
+
+            <p>
+                <button type="submit" class="button primary">Add webhook</button>
+            </p>
+        </form>
+    </div>
+</div>
+}
+}
+}

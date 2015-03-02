@@ -40,9 +40,10 @@ trait RepositorySettingsControllerBase extends ControllerBase {
   )(CollaboratorForm.apply)
 
   // for web hook url addition
-  case class WebHookForm(url: String)
+  case class WebHookForm(authUrl: Option[String], url: String)
 
   val webHookForm = mapping(
+    "authUrl" -> trim(label("authUrl", optional(text()))),
     "url" -> trim(label("url", text(required, webHook)))
   )(WebHookForm.apply)
 
@@ -148,7 +149,7 @@ trait RepositorySettingsControllerBase extends ControllerBase {
    * Add the web hook URL.
    */
   post("/:owner/:repository/settings/hooks", webHookForm)(ownerOnly { (form, repository) =>
-    addWebHookURL(repository.owner, repository.name, form.url)
+    addWebHookURL(repository.owner, repository.name, form.authUrl, form.url)
     redirect(s"/${repository.owner}/${repository.name}/settings/hooks")
   })
 
@@ -173,7 +174,7 @@ trait RepositorySettingsControllerBase extends ControllerBase {
 
       getAccountByUserName(repository.owner).foreach { ownerAccount =>
         callWebHook(repository.owner, repository.name,
-          List(model.WebHook(repository.owner, repository.name, form.url)),
+          List(model.WebHook(repository.owner, repository.name, form.authUrl, form.url)),
           WebHookPayload(git, ownerAccount, "refs/heads/" + repository.repository.defaultBranch, repository, commits.toList, ownerAccount)
         )
       }

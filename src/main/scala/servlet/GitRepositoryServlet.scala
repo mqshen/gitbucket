@@ -195,6 +195,8 @@ class CommitLogHook(owner: String, repository: String, pusher: String, baseUrl: 
               }
             case _ =>
           }
+
+
         }
       }
       // update repository last modified time.

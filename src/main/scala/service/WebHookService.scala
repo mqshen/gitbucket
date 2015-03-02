@@ -1,6 +1,7 @@
 package service
 
 import model.Profile._
+import org.apache.http.client.methods.HttpGet
 import profile.simple._
 import model.{WebHook, Account}
 import org.slf4j.LoggerFactory
@@ -21,8 +22,8 @@ trait WebHookService {
   def getWebHookURLs(owner: String, repository: String)(implicit s: Session): List[WebHook] =
     WebHooks.filter(_.byRepository(owner, repository)).sortBy(_.url).list
 
-  def addWebHookURL(owner: String, repository: String, url :String)(implicit s: Session): Unit =
-    WebHooks insert WebHook(owner, repository, url)
+  def addWebHookURL(owner: String, repository: String, authUrl: Option[String], url :String)(implicit s: Session): Unit =
+    WebHooks insert WebHook(owner, repository, authUrl, url)
 
   def deleteWebHookURL(owner: String, repository: String, url :String)(implicit s: Session): Unit =
     WebHooks.filter(_.byPrimaryKey(owner, repository, url)).delete
@@ -49,6 +50,14 @@ trait WebHookService {
       webHookURLs.foreach { webHookUrl =>
         val f = Future {
           logger.debug(s"start web hook invocation for ${webHookUrl}")
+
+          //do auth
+          webHookUrl.authUrl.map { authUrl =>
+            val httpGet = new HttpGet(authUrl)
+            httpClient.execute(httpGet)
+            httpGet.releaseConnection()
+          }
+
           val httpPost = new HttpPost(webHookUrl.url)
 
           val params: java.util.List[NameValuePair] = new java.util.ArrayList()

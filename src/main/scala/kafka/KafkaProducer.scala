@@ -3,7 +3,7 @@ package kafka
 import java.util.{Properties, UUID}
 
 import kafka.message.{NoCompressionCodec, DefaultCompressionCodec}
-import kafka.producer.{KeyedMessage, ProducerConfig, Producer}
+import kafka.producer.{Partitioner, KeyedMessage, ProducerConfig, Producer}
 
 /**
  * Created by goldratio on 2/14/15.
@@ -28,19 +28,19 @@ case class KafkaProducer(topic: String,
   props.put("request.required.acks",requestRequiredAcks.toString)
   props.put("client.id",clientId.toString)
 
-  val producer = new Producer[AnyRef, AnyRef](new ProducerConfig(props))
+  val producer = new Producer[String, String](new ProducerConfig(props))
 
-  def kafkaMessage(message: Array[Byte], partition: Array[Byte]): KeyedMessage[AnyRef, AnyRef] = {
+  def kafkaMessage(message: String, partition: String): KeyedMessage[String, String] = {
     if (partition == null) {
-      new KeyedMessage(topic,message)
+      new KeyedMessage(topic, message)
     } else {
-      new KeyedMessage(topic,partition,message)
+      new KeyedMessage(topic, partition, message)
     }
   }
+//
+//  def send(message: String, partition: String = null): Unit = send(message.getBytes("UTF8"), if (partition == null) null else partition.getBytes("UTF8"))
 
-  def send(message: String, partition: String = null): Unit = send(message.getBytes("UTF8"), if (partition == null) null else partition.getBytes("UTF8"))
-
-  def send(message: Array[Byte], partition: Array[Byte]): Unit = {
+  def send(message: String, partition: String = null): Unit = {
     try {
       producer.send(kafkaMessage(message, partition))
     }
@@ -50,4 +50,17 @@ case class KafkaProducer(topic: String,
         System.exit(1)
     }
   }
+}
+
+class MyPartitioner extends Partitioner {
+
+  override def partition(key: Any, numPartitions: Int): Int = {
+    key match {
+      case e: Int if e > 0 =>
+        e % numPartitions
+      case _ =>
+        0
+    }
+  }
+
 }

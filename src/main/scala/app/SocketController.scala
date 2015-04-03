@@ -8,11 +8,9 @@ import java.util.concurrent.{ScheduledExecutorService, Executors, TimeUnit}
 import javax.servlet._
 import javax.servlet.http.{HttpServletResponse, HttpServletRequest}
 
-import _root_.servlet.RedisClientPool
+import servlet.RedisClientPool
 import akka.actor.{ Props, Actor}
 import jp.sf.amateras.scalatra.forms._
-import org.apache.catalina
-import org.apache.catalina.CometProcessor
 import org.jboss.servlet.http.{HttpEvent, HttpEventServlet}
 import org.scalatra.i18n.{I18nSupport, Messages}
 import org.scalatra.json.JacksonJsonSupport

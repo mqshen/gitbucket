@@ -20,6 +20,9 @@ class KafkaConsumer(topic: String,
   props.put("group.id", groupId)
   props.put("zookeeper.connect", zookeeperConnect)
   props.put("auto.offset.reset", if(readFromStartOfStream) "smallest" else "largest")
+  props.put("zookeeper.session.timeout.ms", "500")
+  props.put("zookeeper.sync.time.ms", "250")
+  props.put("auto.commit.interval.ms", "1000")
 
   val config = new ConsumerConfig(props)
   val connector = Consumer.create(config)

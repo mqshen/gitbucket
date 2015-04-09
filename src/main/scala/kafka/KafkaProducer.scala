@@ -21,12 +21,13 @@ case class KafkaProducer(topic: String,
   val codec = if(compress) DefaultCompressionCodec.codec else NoCompressionCodec.codec
 
   props.put("compression.codec", codec.toString)
+  props.put("serializer.class", "kafka.serializer.StringEncoder")
   props.put("producer.type", if(synchronously) "sync" else "async")
   props.put("metadata.broker.list", brokerList)
   props.put("batch.num.messages", batchSize.toString)
   props.put("message.send.max.retries", messageSendMaxRetries.toString)
   props.put("request.required.acks",requestRequiredAcks.toString)
-  props.put("client.id",clientId.toString)
+  props.put("client.id", clientId.toString)
 
   val producer = new Producer[String, String](new ProducerConfig(props))
 
@@ -47,7 +48,6 @@ case class KafkaProducer(topic: String,
     catch {
       case e: Exception =>
         e.printStackTrace
-        System.exit(1)
     }
   }
 }

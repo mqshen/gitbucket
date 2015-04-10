@@ -58,21 +58,13 @@
                                                 </div> <!-- /.select-menu-item -->
 
                                                 <div data-filterable-for="assignee-filter-field" data-filterable-type="fuzzy" role="menu">
-                                                    <div class="select-menu-item js-navigation-item" role="menuitem">
-                                                        <input name="assignedUserName" type="radio" value="mqshen">
-                                                        <span class="select-menu-item-icon octicon octicon-check"></span>
-
-                                                        <div class="select-menu-item-gravatar js-select-menu-item-gravatar">
-                                                            <img alt="" class="avatar" data-user="687580" height="20" src="https://avatars0.githubusercontent.com/u/687580?v=2&amp;s=40" width="20">
+                                                    @collaborators.map { collaborator =>
+                                                        <div class="select-menu-item js-navigation-item " role="menuitem">
+                                                            <input name="assignedUserName" type="radio" value="@collaborator" >
+                                                            <span class="select-menu-item-icon octicon octicon-check"></span>
+                                                            @userTips(collaborator)
                                                         </div>
-
-                                                        <div class="select-menu-item-text">
-                                                            <h4>mqshen <span class="description">miaoqi shen</span></h4>
-                                                        </div>
-                                                    </div>
-
-
-
+                                                    }
                                                 </div>
 
                                                 <div class="select-menu-no-results">Nothing to show</div>

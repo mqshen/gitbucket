@@ -1151,7 +1151,7 @@ dl.form>dd input[type="text"].is-autocheck-errored,dl.form>dd #adv_code_search .
     width: 16px;
     height: 16px;
     margin-top: -4px;
-    background: url(/assets/spinners/octocat-spinner-32-EAF2F5-0bdc57d34b85c4a4de9d0d1db10cd70e8a95f33ff4f46c5a8c48b4bf4e5a9abe.gif) 0 0 no-repeat;
+    background: url(/assets/spinners/octocat-spinner-32.gif) 0 0 no-repeat;
     background-size: 16px;
 }
 
@@ -13738,7 +13738,7 @@ input.color-editor-input:focus ~ .label-colors {
 
 @media screen and (-webkit-min-device-pixel-ratio: 2), screen and (max--moz-device-pixel-ratio: 2) {
     .ajax_paginate.loading a {
-        background-image: url(/assets/spinners/octocat-spinner-32-EAF2F5-0bdc57d34b85c4a4de9d0d1db10cd70e8a95f33ff4f46c5a8c48b4bf4e5a9abe.gif);
+        background-image: url(/assets/spinners/octocat-spinner-32.gif);
         background-size: 16px auto;
     }
 }

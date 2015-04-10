@@ -32,6 +32,12 @@ trait RepositorySettingsControllerBase extends ControllerBase {
     "isPrivate"      -> trim(label("Repository Type", boolean()))
   )(OptionsForm.apply)
 
+  case class BranchForm(defaultBranch: String)
+
+  val branchForm = mapping(
+    "value"  -> trim(label("Default Branch" , text(required, maxlength(100))))
+  )(BranchForm.apply)
+
   // for collaborator addition
   case class CollaboratorForm(userName: String)
 
@@ -67,7 +73,21 @@ trait RepositorySettingsControllerBase extends ControllerBase {
   get("/:owner/:repository/settings/options")(ownerOnly {
     settings.html.options(_, flash.get("info"))
   })
-  
+
+  put("/:owner/:repository/settings/options", branchForm)(ownerOnly { (form, repository) =>
+    val defaultBranch = if(repository.branchList.isEmpty) "master" else form.defaultBranch
+    saveRepositoryOptions(
+      repository.owner,
+      repository.name,
+      repository.repository.description,
+      defaultBranch,
+      repository.repository.parentUserName.map { _ =>
+        repository.repository.isPrivate
+      } getOrElse false
+    )
+    contentType = formats("html")
+    defaultBranch
+  })
   /**
    * Save the repository options.
    */

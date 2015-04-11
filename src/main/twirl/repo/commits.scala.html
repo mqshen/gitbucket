@@ -47,10 +47,11 @@
     @day.map { commit =>
         <li class="commit commits-list-item table-list-item js-navigation-item js-details-container js-socket-channel js-updatable-content"
             data-channel="" data-url="@url(repository)/commit/@commit.id/show_partial?partial=commits%2Fcommits_list_item">
+            @let(getCommitName(repository.owner, repository.name, commit.id, commit.authorName)){ userName =>
             <div class="table-list-cell commit-avatar-cell">
                 <div class="avatar-parent-child">
-                    <a href="/@commit.authorName" data-skip-pjax="true" rel="author">
-                        @avatar(commit, 36)
+                    <a href="/@userName" data-skip-pjax="true" rel="author">
+                        @avatar(userName, 36)
                     </a>
                 </div>
             </div>
@@ -63,12 +64,12 @@
                 </p>
 
                 <div class="commit-meta">
-                    <a href="@url(repository)/commits/master?author=@commit.authorName" aria-label="View all commits by @commit.authorName" class="commit-author tooltipped tooltipped-s" rel="author">@commit.authorName</a>
+                    <a href="@url(repository)/commits/master?author=@userName" aria-label="View all commits by @userName" class="commit-author tooltipped tooltipped-s" rel="author">@userName</a>
                     authored @datetime(commit.authorTime)
                     @if(commit.isDifferentFromAuthor) {
                     <span class="committer">
                         <span class="octicon octicon-arrow-right"></span>
-                        <a href="@url(repository)/commits/@branch?author=@commit.committerName" aria-label="View all commits by Reynold Xin" class="commit-author tooltipped tooltipped-s" rel="contributor">@commit.committerName</a>
+                        <a href="@url(repository)/commits/@branch?author=@userName" aria-label="View all commits by @userName" class="commit-author tooltipped tooltipped-s" rel="contributor">@userName</a>
                         committed @datetime(commit.commitTime)
                     </span>
                     }
@@ -83,6 +84,7 @@
                 </div>
                 <a href="@url(repository)/tree/@commit.id" aria-label="Browse the repository at this point in the history" class="button-outline tooltipped tooltipped-s" rel="nofollow"><span class="octicon octicon-code"></span></a>
             </div>
+            }
         </li>
     }
     </ol>

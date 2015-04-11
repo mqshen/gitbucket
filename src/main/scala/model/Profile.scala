@@ -33,7 +33,8 @@ object Profile extends {
   with RepositoryComponent
   with SshKeyComponent
   with WebHookComponent
-  with PluginComponent with Profile {
+  with PluginComponent
+  with CommitComponent with Profile {
 
   /**
    * Returns system date.

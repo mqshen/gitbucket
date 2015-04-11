@@ -55,9 +55,11 @@
     </span>
 
         <div class="authorship">
-            @avatar(commit, 24)
-            <span class="author-name"><a href="/@commit.authorName" rel="author">@commit.authorName</a></span>
-            authored @datetime(commit.authorTime)
+            @let(getCommitName(repository.owner, repository.name, commit.id, commit.authorName)){ userName =>
+                @avatar(userName, 24)
+                <span class="author-name"><a href="/@userName" rel="author">@userName</a></span>
+                authored @datetime(commit.authorTime)
+            }
         </div>
     </div>
 </div>

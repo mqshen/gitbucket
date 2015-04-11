@@ -57,11 +57,13 @@
                   latest commit <span class="sha">@latestCommit.id.substring(0, 10)</span></a>
 
               <div class="authorship">
-                  @avatar(latestCommit, 20)
-                  <span class="author-name">
-                      <a href="/@latestCommit.authorName" rel="author">@latestCommit.authorName</a>
-                  </span>
-                  authored @datetime(latestCommit.authorTime)
+                  @let(getCommitName(repository.owner, repository.name, latestCommit.id, latestCommit.authorName)){ userName =>
+                    @avatar(userName, 20)
+                    <span class="author-name">
+                        <a href="/@userName" rel="author">@userName</a>
+                    </span>
+                    authored @datetime(latestCommit.authorTime)
+                  }
               </div>
           </div>
       </div>

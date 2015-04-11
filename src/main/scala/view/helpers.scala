@@ -2,15 +2,16 @@ package view
 import java.util.{Locale, Date, TimeZone}
 import java.text.SimpleDateFormat
 import compare.Compare
-import model.{Repository, Issue}
+import model._
 import play.twirl.api.Html
+import util.Implicits._
 import util.StringUtil
-import service.RequestCache
+import service.{CommitNameService, RequestCache}
 
 /**
  * Provides helper methods for Twirl templates.
  */
-object helpers extends AvatarImageProvider with LinkConverter with RequestCache {
+object helpers extends AvatarImageProvider with LinkConverter with RequestCache with CommitNameService {
 
   /**
    * Format java.util.Date to "yyyy-MM-dd HH:mm:ss".
@@ -321,5 +322,6 @@ object helpers extends AvatarImageProvider with LinkConverter with RequestCache 
     }
     Html(stringBuffer.toString)
   }
+
 
 }

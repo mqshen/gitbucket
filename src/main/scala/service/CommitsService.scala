@@ -1,11 +1,13 @@
 package service
 
+import view.helpers._
+
 import scala.slick.jdbc.{StaticQuery => Q}
 import Q.interpolation
 
 import model.Profile._
 import profile.simple._
-import model.CommitComment
+import model.{Account, Commit, CommitComment}
 import util.Implicits._
 import util.StringUtil._
 
@@ -49,4 +51,32 @@ trait CommitsService {
 
   def deleteCommitComment(commentId: Int)(implicit s: Session) =
     CommitComments filter (_.byPrimaryKey(commentId)) delete
+
+}
+
+trait CommitNameService {
+
+  private implicit def context2Session(implicit context: app.Context): Session =
+    request2Session(context.request)
+
+  def getCommitRealUser(owner: String, repository: String, commitId: String)(implicit context: app.Context): Option[Commit] = {
+    (Commits filter (_.byPrimaryKey(owner, repository, commitId)) ).firstOption
+  }
+
+  def getCommitAccount(owner: String, repository: String, commitId: String)(implicit context: app.Context): Option[Account] = {
+    getCommitRealUser(owner, repository, commitId).map { commit =>
+      getAccountByUserName(commit.commitName)
+    }.getOrElse(None)
+  }
+
+  def getCommitName(owner: String, repository: String, commitId: String, defaultName: String)(implicit context: app.Context): String = {
+    getCommitRealUser(owner, repository, commitId).map { commit =>
+      getAccountByUserName(commit.commitName).map(_.userName).getOrElse(defaultName)
+    }.getOrElse(defaultName)
+  }
+
+  def createCommitName(owner: String, repository: String, commitId: String, commitName: String)(implicit s: Session) = {
+    Commits insert Commit(owner, repository, commitId, commitName)
+  }
+
 }

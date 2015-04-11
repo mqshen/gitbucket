@@ -99,7 +99,7 @@ import scala.collection.JavaConverters._
 class CommitLogHook(owner: String, repository: String, pusher: String, baseUrl: String)(implicit session: Session)
   extends PostReceiveHook with PreReceiveHook
   with RepositoryService with AccountService with IssuesService with ActivityService with PullRequestService
-  with WebHookService with CommitHookService {
+  with WebHookService with CommitHookService with CommitNameService {
   
   private val logger = LoggerFactory.getLogger(classOf[CommitLogHook])
   private var existIds: Seq[String] = Nil
@@ -142,6 +142,7 @@ class CommitLogHook(owner: String, repository: String, pusher: String, baseUrl: 
           // Extract new commit and apply issue comment
           val defaultBranch = getRepository(owner, repository, baseUrl).get.repository.defaultBranch
           val newCommits = commits.flatMap { commit =>
+            createCommitName(owner, repository, commit.id, pusher)
             if (!existIds.contains(commit.id) && !pushedIds.contains(commit.id)) {
               if (issueCount > 0) {
                 pushedIds.add(commit.id)
@@ -195,7 +196,6 @@ class CommitLogHook(owner: String, repository: String, pusher: String, baseUrl: 
               }
             case _ =>
           }
-
 
         }
       }

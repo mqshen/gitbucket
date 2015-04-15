@@ -142,8 +142,8 @@ class CommitLogHook(owner: String, repository: String, pusher: String, baseUrl: 
           // Extract new commit and apply issue comment
           val defaultBranch = getRepository(owner, repository, baseUrl).get.repository.defaultBranch
           val newCommits = commits.flatMap { commit =>
-            createCommitName(owner, repository, commit.id, pusher)
             if (!existIds.contains(commit.id) && !pushedIds.contains(commit.id)) {
+              createCommitName(owner, repository, commit.id, pusher)
               if (issueCount > 0) {
                 pushedIds.add(commit.id)
                 // close issues

@@ -6,7 +6,7 @@
 @import context._
 @import service.WikiService._
 @import view.helpers._
-@html.main(s"${pageName} - ${repository.owner}/${repository.name}", Some(repository)){
+@html.main(s"${pageName} - ${repository.owner}/${repository.name}", Some(repository), selectedLink = "repo_wiki"){
 @html.menu("wiki", repository){
 <div id="wiki-wrapper" class="wiki-wrapper page">
     <div class="gh-header">

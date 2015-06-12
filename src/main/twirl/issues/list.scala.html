@@ -11,7 +11,7 @@
   hasWritePermission: Boolean)(implicit context: app.Context)
 @import context._
 @import view.helpers._
-@html.main((if(target == "issues") "Issues" else "Pull requests") + s" - ${repository.owner}/${repository.name}", Some(repository), selectedLink = "repo_issues"){
+@html.main((if(target == "issues") "Issues" else "Pull requests") + s" - ${repository.owner}/${repository.name}", Some(repository), selectedLink = if(target == "issues") {"repo_issues" } else {"repo_pulls"}){
   @html.menu(target, repository){
     @tab(target, true, repository)
     @listparts(target, issues, page, openCount, closedCount, condition, collaborators, milestones, labels, Some(repository), hasWritePermission)

@@ -13866,3 +13866,6 @@ input.color-editor-input:focus ~ .label-colors {
 code p {
     margin: 0px;
 }
+span.select-menu-item-icon.octicon.octicon-check {
+  visibility: visible;
+}

@@ -17,7 +17,10 @@
         mini   = true
       ){
         @repository.branchList.map { x =>
-          <li><a href="@url(repository)/commits/@encodeRefName(x)">@helper.html.checkicon(x == branch) @x</a></li>
+        <a class="select-menu-item js-navigation-item js-navigation-open @if(x == branch){selected}" href="@url(repository)/commits/@encodeRefName(x)" data-name="@x" data-skip-pjax="true" rel="nofollow">
+        <span class="select-menu-item-icon octicon @if(x == branch){octicon-check}"></span>
+        <span class="select-menu-item-text css-truncate-target" title="@x">@x</span>
+        </a>
         }
       }
       @if(pathList.isEmpty){

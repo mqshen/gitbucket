@@ -1,16 +1,16 @@
-@(account: model.Account, members: List[String], isGroupManager: Boolean)(implicit context: app.Context)
+@(account: model.Account, members: List[model.Account], isGroupManager: Boolean)(implicit context: app.Context)
 @import context._
 @import view.helpers._
 @main(account, Nil, "members", isGroupManager){
   @if(members.isEmpty){
     No members
   } else {
-    @members.map { userName =>
-      <div class="block">
-        <div class="block-header">
-          @avatar(userName, 20) <a href="@url(userName)">@userName</a>
-        </div>
-      </div>
+    @members.map { user=>
+<a href="@url(user.userName)" class="member-row">
+    @avatar(user.userName, 40)
+    <strong class="member-name">@user.userName</strong>
+  <span class="member-fullname">@user.fullName</span>
+</a>
     }
   }
 }

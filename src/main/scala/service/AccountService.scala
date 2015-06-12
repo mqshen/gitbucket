@@ -166,6 +166,13 @@ trait AccountService {
       .sortBy(_.userName)
       .list
 
+  def getGroupUserMembers(groupName: String)(implicit s: Session): List[(Account, GroupMember)] =
+    Accounts.innerJoin(GroupMembers).on((t1, t2) => t1.userName === t2.userName)
+      .filter {case (t1, t2) => t2.groupName === groupName.bind }
+      .list
+
+
+
   def getGroupsByUserName(userName: String)(implicit s: Session): List[String] =
     GroupMembers
       .filter(_.userName === userName.bind)

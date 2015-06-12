@@ -1,9 +1,9 @@
 package app
 
-import _root_.util.Directory._
-import _root_.util.Implicits._
-import _root_.util.ControlUtil._
-import _root_.util.{StringUtil, FileUtil, Validations, Keys}
+import util.Directory._
+import util.Implicits._
+import util.ControlUtil._
+import util.{StringUtil, FileUtil, Validations, Keys}
 import org.scalatra._
 import org.scalatra.json._
 import org.json4s._

@@ -124,9 +124,9 @@ trait AccountControllerBase extends AccountManagementControllerBase {
 
         // Members
         case "members" if(account.isGroupAccount) => {
-          val members = getGroupMembers(account.userName)
-          _root_.account.html.members(account, members.map(_.userName),
-            context.loginAccount.exists(x => members.exists { member => member.userName == x.userName && member.isManager }))
+          val members = getGroupUserMembers(account.userName)
+          _root_.account.html.members(account, members.map(_._1),
+            context.loginAccount.exists(x => members.exists { member => member._2.userName == x.userName && member._2.isManager }))
         }
 
         // Repositories

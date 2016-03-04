@@ -10,13 +10,13 @@ repository: service.RepositoryService.RepositoryInfo)(implicit context: app.Cont
 <div id="partial-new-comment-form-actions" >
     @if((reopenable || !issue.closed) && (hasWritePermission || issue.openedUserName == loginAccount.get.userName)){
     @if(issue.closed || issue.fixed) {
-        <button type="submit" name="operation" value="Reopen" class="button js-comment-and-button" tabindex="3" data-comment-text="Reopen and comment" data-disable-with="">@action</button>
+        <button type="submit" name="operation" value="Reopen" class="button js-comment-and-button" tabindex="3" data-comment-text="Reopen and comment" data-disable-with="">Reopen</button>
     }
     @if(issue.open) {
-        <button type="submit" name="operation" value="Fixed" class="button js-comment-and-button" tabindex="4" data-comment-text="Fixed and comment" data-disable-with="">@action</button>
+        <button type="submit" name="operation" value="Fixed" class="button js-comment-and-button" tabindex="4" data-comment-text="Fixed and comment" data-disable-with="">Fixed</button>
     }
     @if(issue.fixed || issue.open) {
-        <button type="submit" name="operation" value="Close" class="button js-comment-and-button" tabindex="3" data-comment-text="Close and comment" data-disable-with="">@action</button>
+        <button type="submit" name="operation" value="Close" class="button js-comment-and-button" tabindex="3" data-comment-text="Close and comment" data-disable-with="">Close</button>
     }
     }
     <button type="submit" class="button primary" tabindex="2" data-disable-with="" data-disable-invalid="">Comment</button>

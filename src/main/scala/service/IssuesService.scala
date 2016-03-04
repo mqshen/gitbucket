@@ -254,13 +254,13 @@ trait IssuesService {
   def deleteComment(commentId: Int)(implicit s: Session) =
     IssueComments filter (_.byPrimaryKey(commentId)) delete
 
-  def updateClosed(owner: String, repository: String, issueId: Int, closed: Boolean)(implicit s: Session) =
+  def updateClosed(owner: String, repository: String, issueId: Int, state: Int)(implicit s: Session) =
     Issues
       .filter (_.byPrimaryKey(owner, repository, issueId))
       .map { t =>
-        t.closed -> t.updatedDate
+        t.state -> t.updatedDate
       }
-      .update (closed, currentDate)
+      .update (state, currentDate)
 
   /**
    * Search issues by keyword.
@@ -323,7 +323,7 @@ trait IssuesService {
     extractCloseId(message).foreach { issueId =>
       for(issue <- getIssue(owner, repository, issueId) if !issue.closed){
         createComment(owner, repository, userName, issue.issueId, "Close " + commitId, "close")
-        updateClosed(owner, repository, issue.issueId, true)
+        updateClosed(owner, repository, issue.issueId, 2)
       }
     }
   }

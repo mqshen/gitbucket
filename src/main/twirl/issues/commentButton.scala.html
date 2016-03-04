@@ -9,8 +9,14 @@ repository: service.RepositoryService.RepositoryInfo)(implicit context: app.Cont
 -->
 <div id="partial-new-comment-form-actions" >
     @if((reopenable || !issue.closed) && (hasWritePermission || issue.openedUserName == loginAccount.get.userName)){
-    @let(if(issue.closed || issue.) "Reopen" else  "Close") { action =>
-    <button type="submit" name="operation" value="@action" class="button js-comment-and-button" tabindex="3" data-comment-text="@action and comment" data-disable-with="">@action</button>
+    @if(issue.closed || issue.fixed) {
+        <button type="submit" name="operation" value="Reopen" class="button js-comment-and-button" tabindex="3" data-comment-text="Reopen and comment" data-disable-with="">@action</button>
+    }
+    @if(issue.open) {
+        <button type="submit" name="operation" value="Fixed" class="button js-comment-and-button" tabindex="4" data-comment-text="Fixed and comment" data-disable-with="">@action</button>
+    }
+    @if(issue.fixed || issue.open) {
+        <button type="submit" name="operation" value="Close" class="button js-comment-and-button" tabindex="3" data-comment-text="Close and comment" data-disable-with="">@action</button>
     }
     }
     <button type="submit" class="button primary" tabindex="2" data-disable-with="" data-disable-invalid="">Comment</button>

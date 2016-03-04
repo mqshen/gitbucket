@@ -149,7 +149,7 @@ trait IssuesService {
       repos
         .map { case (owner, repository) => t1.byRepository(owner, repository) }
         .foldLeft[Column[Boolean]](false) ( _ || _ ) &&
-      (t1.closed           === (condition.state == "closed").bind) &&
+      (t1.state            === (if(condition.state == "closed") 2 else {if(condition.state == "fixed") 1 else 0}).bind) &&
       (t1.milestoneId      === condition.milestoneId.get.get.bind, condition.milestoneId.flatten.isDefined) &&
       (t1.milestoneId.?    isEmpty, condition.milestoneId == Some(None)) &&
       (t1.assignedUserName === condition.assigned.get.bind, condition.assigned.isDefined) &&
@@ -193,7 +193,7 @@ trait IssuesService {
           assignedUserName,
           title,
           content,
-          false,
+          1,
           currentDate,
           currentDate,
           isPullRequest)

@@ -47,5 +47,6 @@ case class Issue(
   updatedDate: java.util.Date,
   isPullRequest: Boolean
 ) {
+  def fixed = state == 1
   def closed = state == 2
 }

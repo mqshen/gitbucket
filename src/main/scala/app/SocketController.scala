@@ -94,8 +94,8 @@ class SocketController extends ScalatraServlet with ClientSideValidationFormSupp
 //  val scheduler = Executors.newSingleThreadScheduledExecutor()
   val executor = ExecutionContext.Implicits.global
 
-  val repositoryConsumer = new RepositoryConsumerActor
-  executor.execute(repositoryConsumer)
+//  val repositoryConsumer = new RepositoryConsumerActor
+//  executor.execute(repositoryConsumer)
 
   //val issueConsumer = new IssueConsumerActor
   //executor.execute(issueConsumer)

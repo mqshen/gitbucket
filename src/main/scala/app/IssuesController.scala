@@ -514,7 +514,7 @@ trait IssuesControllerBase extends ControllerBase {
             .collect {
               case "Close" if(!issue.closed) => 2 ->
                 (Some("close")  -> Some(if(issue.isPullRequest) recordClosePullRequestActivity _ else recordCloseIssueActivity _))
-              case "Reopen" if(issue.closed) => 0 ->
+              case "Reopen" if(!issue.open) => 0 ->
                 (Some("reopen") -> Some(recordReopenIssueActivity _))
               case "Fixed" if(!issue.closed) => 1 ->
                 (Some("fixed") -> Some(recordFixedIssueActivity _))

@@ -36,7 +36,7 @@ class ScalatraBootstrap extends LifeCycle {
     context.mount(new PullRequestsController, "/*")
     context.mount(new RepositorySettingsController, "/*")
     //context.mount(new SocketController, "/socket")
-    context.mount(new SocketController, "/socket")
+    //context.mount(new SocketController, "/socket")
 
 
 

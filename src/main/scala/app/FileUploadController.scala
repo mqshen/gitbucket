@@ -145,8 +145,4 @@ class FileUploadController extends ScalatraServlet with ApiFormats with FileUplo
   }
 
 
-
-
-
-
 }

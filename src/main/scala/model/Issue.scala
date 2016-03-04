@@ -23,11 +23,11 @@ trait IssueComponent extends TemplateComponent { self: Profile =>
     val assignedUserName = column[String]("ASSIGNED_USER_NAME")
     val title = column[String]("TITLE")
     val content = column[String]("CONTENT")
-    val closed = column[Boolean]("CLOSED")
+    val state = column[Int]("STATE")
     val registeredDate = column[java.util.Date]("REGISTERED_DATE")
     val updatedDate = column[java.util.Date]("UPDATED_DATE")
     val pullRequest = column[Boolean]("PULL_REQUEST")
-    def * = (userName, repositoryName, issueId, openedUserName, milestoneId.?, assignedUserName.?, title, content.?, closed, registeredDate, updatedDate, pullRequest) <> (Issue.tupled, Issue.unapply)
+    def * = (userName, repositoryName, issueId, openedUserName, milestoneId.?, assignedUserName.?, title, content.?, state, registeredDate, updatedDate, pullRequest) <> (Issue.tupled, Issue.unapply)
 
     def byPrimaryKey(owner: String, repository: String, issueId: Int) = byIssue(owner, repository, issueId)
   }
@@ -42,8 +42,10 @@ case class Issue(
   assignedUserName: Option[String],
   title: String,
   content: Option[String],
-  closed: Boolean,
+  state: Int,
   registeredDate: java.util.Date,
   updatedDate: java.util.Date,
   isPullRequest: Boolean
-)
+) {
+  def closed = state == 2
+}

@@ -9,7 +9,7 @@ repository: service.RepositoryService.RepositoryInfo)(implicit context: app.Cont
 -->
 <div id="partial-new-comment-form-actions" >
     @if((reopenable || !issue.closed) && (hasWritePermission || issue.openedUserName == loginAccount.get.userName)){
-    @let(if(issue.closed) "Reopen" else  "Close") { action =>
+    @let(if(issue.closed || issue.) "Reopen" else  "Close") { action =>
     <button type="submit" name="operation" value="@action" class="button js-comment-and-button" tabindex="3" data-comment-text="@action and comment" data-disable-with="">@action</button>
     }
     }

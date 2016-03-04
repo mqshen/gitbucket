@@ -456,7 +456,7 @@ object IssuesService {
         param(request, "author"),
         param(request, "assigned"),
         param(request, "mentioned"),
-        param(request, "state",     Seq("open", "closed")).getOrElse("open"),
+        param(request, "state",     Seq("open", "fixed", "closed")).getOrElse("open"),
         param(request, "sort",      Seq("created", "comments", "updated")).getOrElse("created"),
         param(request, "direction", Seq("asc", "desc")).getOrElse("desc"),
         param(request, "visibility"),

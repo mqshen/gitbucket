@@ -2,6 +2,7 @@
   issues: List[service.IssuesService.IssueInfo],
   page: Int,
   openCount: Int,
+  fixedCount: Int,
   closedCount: Int,
   condition: service.IssuesService.IssueSearchCondition,
   collaborators: List[String] = Nil,
@@ -35,6 +36,11 @@
             <a href="@condition.copy(state = "open").toURL" class="button-link @if(condition.state == "open"){ selected}">
                 <span class="octicon octicon-issue-opened"></span>
                 @openCount Open
+            </a>
+
+            <a href="@condition.copy(state = "fixed").toURL" class="button-link @if(condition.state == "fixed"){ selected}">
+            <span class="octicon octicon-check"></span>
+            @closedCount Fixed
             </a>
 
             <a href="@condition.copy(state = "closed").toURL" class="button-link @if(condition.state == "closed"){ selected}">

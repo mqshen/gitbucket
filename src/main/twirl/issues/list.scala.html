@@ -5,6 +5,7 @@
   milestones: List[model.Milestone],
   labels: List[model.Label],
   openCount: Int,
+  fixedCount: Int,
   closedCount: Int,
   condition: service.IssuesService.IssueSearchCondition,
   repository: service.RepositoryService.RepositoryInfo,
@@ -14,7 +15,7 @@
 @html.main((if(target == "issues") "Issues" else "Pull requests") + s" - ${repository.owner}/${repository.name}", Some(repository), selectedLink = if(target == "issues") {"repo_issues" } else {"repo_pulls"}){
   @html.menu(target, repository){
     @tab(target, true, repository)
-    @listparts(target, issues, page, openCount, closedCount, condition, collaborators, milestones, labels, Some(repository), hasWritePermission)
+    @listparts(target, issues, page, openCount, fixedCount, closedCount, condition, collaborators, milestones, labels, Some(repository), hasWritePermission)
     @if(hasWritePermission){
       <form id="batcheditForm" method="POST">
         <input type="hidden" name="value"/>

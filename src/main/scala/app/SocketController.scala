@@ -102,10 +102,6 @@ class SocketController extends ScalatraServlet with ClientSideValidationFormSupp
 
   override implicit protected def jsonFormats: Formats = DefaultFormats
 
-  override def render(value: JValue)(implicit formats: Formats): JValue = {
-    JString("test")
-  }
-
   case class Message(subscribe : String)
 
   def subscribe = new ValueType[Message] {

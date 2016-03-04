@@ -1,5 +1,7 @@
 import com.typesafe.sbteclipse.plugin.EclipsePlugin.EclipseKeys
 import play.twirl.sbt.SbtTwirl
+import com.earldouglas.xwp.JettyPlugin
+import com.earldouglas.xwp.ContainerPlugin
 import sbt.Keys._
 import sbt._
 
@@ -8,8 +10,8 @@ object MyBuild extends Build {
   val Name = "gitbucket"
   val Version = "0.0.1"
   val ScalaVersion = "2.11.2"
-  //val ScalatraVersion = "2.3.0"
-  val ScalatraVersion = "2.4.0-SNAPSHOT"
+  val ScalatraVersion = "2.3.0"
+  //val ScalatraVersion = "2.4.0-SNAPSHOT"
 
 
 //  import java.io.File
@@ -51,7 +53,7 @@ object MyBuild extends Build {
       "org.scalatra" %% "scalatra-specs2" % ScalatraVersion % "test",
       "org.scalatra" %% "scalatra-json" % ScalatraVersion,
       "org.json4s" %% "json4s-jackson" % "3.2.10",
-      "jp.sf.amateras" %% "scalatra-forms" % "0.1.0-SNAPSHOT",
+      "jp.sf.amateras" %% "scalatra-forms" % "0.1.0",
       "commons-io" % "commons-io" % "2.4",
       "org.pegdown" % "pegdown" % "1.4.1",
       "org.apache.commons" % "commons-compress" % "1.5",
@@ -85,6 +87,6 @@ object MyBuild extends Build {
       customJars.classpath
     },
     unmanagedResourceDirectories in Compile := List(file("src/main/webapp"), file("src/main/resources"))
-    ).enablePlugins(SbtTwirl)
+    ).enablePlugins(SbtTwirl).enablePlugins(JettyPlugin)
 }
 

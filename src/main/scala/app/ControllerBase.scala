@@ -23,9 +23,6 @@ abstract class ControllerBase extends ScalatraFilter
   with SystemSettingsService {
   override implicit protected def jsonFormats: Formats = DefaultFormats
 
-  override def render(value: JValue)(implicit formats: Formats): JValue = {
-    JString("test")
-  }
 // TODO Scala 2.11
 //  // Don't set content type via Accept header.
 //  override def format(implicit request: HttpServletRequest) = ""

@@ -476,6 +476,7 @@ trait PullRequestsControllerBase extends ControllerBase {
         getMilestones(owner, repoName),
         getLabels(owner, repoName),
         countIssue(condition.copy(state = "open"  ), true, owner -> repoName),
+        countIssue(condition.copy(state = "fixed"  ), true, owner -> repoName),
         countIssue(condition.copy(state = "closed"), true, owner -> repoName),
         condition,
         repository,

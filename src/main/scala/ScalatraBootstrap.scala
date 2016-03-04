@@ -23,7 +23,7 @@ class ScalatraBootstrap extends LifeCycle {
     context.mount(new AnonymousAccessController, "/*")
     context.mount(new IndexController, "/")
     context.mount(new SearchController, "/")
-    context.mount(new FileUploadController, "/upload")
+    //context.mount(new FileUploadController, "/upload")
     context.mount(new DashboardController, "/*")
     context.mount(new UserManagementController, "/*")
     context.mount(new SystemSettingsController, "/*")

@@ -1,5 +1,7 @@
 import com.typesafe.sbteclipse.plugin.EclipsePlugin.EclipseKeys
 import play.twirl.sbt.SbtTwirl
+import com.earldouglas.xwp.JettyPlugin
+import com.earldouglas.xwp.ContainerPlugin
 import sbt.Keys._
 import sbt._
 
@@ -85,6 +87,6 @@ object MyBuild extends Build {
       customJars.classpath
     },
     unmanagedResourceDirectories in Compile := List(file("src/main/webapp"), file("src/main/resources"))
-    ).enablePlugins(SbtTwirl)
+    ).enablePlugins(SbtTwirl).enablePlugins(JettyPlugin)
 }
 

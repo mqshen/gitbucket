@@ -97,8 +97,8 @@ class SocketController extends ScalatraServlet with ClientSideValidationFormSupp
   val repositoryConsumer = new RepositoryConsumerActor
   executor.execute(repositoryConsumer)
 
-  val issueConsumer = new IssueConsumerActor
-  executor.execute(issueConsumer)
+  //val issueConsumer = new IssueConsumerActor
+  //executor.execute(issueConsumer)
 
   override implicit protected def jsonFormats: Formats = DefaultFormats
 
@@ -145,18 +145,18 @@ class SocketController extends ScalatraServlet with ClientSideValidationFormSupp
           val writer = response.getWriter()
           respond(request, response)
           val subscribes = subscribe.split(":")
-          if(subscribes.length == 3) {
-            subscribes(1) match {
-              case "post-receive" =>
-                val pusher = new EventPusher(subscribe, writer, ac, repositoryConsumer)
-                repositoryConsumer.registerSubscribe(pusher)
-                ac.start(pusher)
-              case "issue" =>
-                val pusher = new EventPusher(subscribe, writer, ac, issueConsumer)
-                issueConsumer.registerSubscribe(pusher)
-                ac.start(pusher)
-            }
-          }
+//          if(subscribes.length == 3) {
+//            subscribes(1) match {
+//              case "post-receive" =>
+//                val pusher = new EventPusher(subscribe, writer, ac, repositoryConsumer)
+//                repositoryConsumer.registerSubscribe(pusher)
+//                ac.start(pusher)
+//              case "issue" =>
+//                val pusher = new EventPusher(subscribe, writer, ac, issueConsumer)
+//                issueConsumer.registerSubscribe(pusher)
+//                ac.start(pusher)
+//            }
+//          }
         }
 //        if(request.getDispatcherType == DispatcherType.ERROR) {
 //          request.getAttribute("ASYNC_CONTEXT") match {

@@ -512,10 +512,12 @@ trait IssuesControllerBase extends ControllerBase {
         val (action, recordActivity) =
           getAction(issue)
             .collect {
-              case "Close" if(!issue.closed) => true  ->
+              case "Close" if(!issue.closed) => 2 ->
                 (Some("close")  -> Some(if(issue.isPullRequest) recordClosePullRequestActivity _ else recordCloseIssueActivity _))
-              case "Reopen" if(issue.closed) => false ->
+              case "Reopen" if(issue.closed) => 0 ->
                 (Some("reopen") -> Some(recordReopenIssueActivity _))
+              case "Fixed" if(issue.closed) => 1 ->
+                (Some("fixed") -> Some(recordFixedIssueActivity _))
             }
             .map { case (closed, t) =>
               updateClosed(owner, name, issueId, closed)

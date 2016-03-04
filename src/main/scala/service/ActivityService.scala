@@ -79,6 +79,14 @@ trait ActivityService {
       Some(title),
       currentDate)
 
+  def recordFixedIssueActivity(userName: String, repositoryName: String, activityUserName: String, issueId: Int, title: String)
+                               (implicit s: Session): Unit =
+    Activities insert Activity(userName, repositoryName, activityUserName,
+      "reopen_issue",
+      s"[user:${activityUserName}] fixed issue [issue:${userName}/${repositoryName}#${issueId}]",
+      Some(title),
+      currentDate)
+
   def recordCommentIssueActivity(userName: String, repositoryName: String, activityUserName: String, issueId: Int, comment: String)
                                 (implicit s: Session): Unit =
     Activities insert Activity(userName, repositoryName, activityUserName,

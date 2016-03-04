@@ -32,7 +32,8 @@ class FixCommitHook extends CommitHook with IssuesService{
       commit.fullMessage match {
         case regex(ed, issue) =>
           val issueId = issue.toInt
-          updateClosed(owner, repository, issueId, true)
+          //add fixed state
+          updateClosed(owner, repository, issueId, 1)
           createComment(owner, repository, commit.committerName, issueId, commit.fullMessage, "close_comment")
         case _ =>
       }

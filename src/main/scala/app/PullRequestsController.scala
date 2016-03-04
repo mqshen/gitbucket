@@ -135,7 +135,7 @@ trait PullRequestsControllerBase extends ControllerBase {
             val loginAccount = context.loginAccount.get
             createComment(owner, name, loginAccount.userName, issueId, form.message, "merge")
             createComment(owner, name, loginAccount.userName, issueId, "Close", "close")
-            updateClosed(owner, name, issueId, true)
+            updateClosed(owner, name, issueId, 2)
 
             // record activity
             recordMergeActivity(owner, name, loginAccount.userName, issueId, form.message)

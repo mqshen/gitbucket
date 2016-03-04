@@ -42,12 +42,12 @@ trait MilestonesService {
   def getMilestonesWithIssueCount(owner: String, repository: String)(implicit s: Session): List[(Milestone, Int, Int)] = {
     val counts = Issues
       .filter  { t => (t.byRepository(owner, repository)) && (t.milestoneId.? isDefined) }
-      .groupBy { t => t.milestoneId -> t.closed }
+      .groupBy { t => t.milestoneId -> t.state}
       .map     { case (t1, t2) => t1._1 -> t1._2 -> t2.length }
       .toMap
 
     getMilestones(owner, repository).map { milestone =>
-      (milestone, counts.getOrElse((milestone.milestoneId, false), 0), counts.getOrElse((milestone.milestoneId, true), 0))
+      (milestone, counts.getOrElse((milestone.milestoneId, 0), 0), counts.getOrElse((milestone.milestoneId, 2), 0))
     }
   }
 

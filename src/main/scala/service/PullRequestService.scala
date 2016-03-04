@@ -21,12 +21,12 @@ trait PullRequestService { self: IssuesService =>
                 .map(pr => pr.commitIdTo -> pr.commitIdFrom)
                 .update((commitIdTo, commitIdFrom))
 
-  def getPullRequestCountGroupByUser(closed: Boolean, owner: Option[String], repository: Option[String])
+  def getPullRequestCountGroupByUser(state: Int, owner: Option[String], repository: Option[String])
                                     (implicit s: Session): List[PullRequestCount] =
     PullRequests
       .innerJoin(Issues).on { (t1, t2) => t1.byPrimaryKey(t2.userName, t2.repositoryName, t2.issueId) }
       .filter { case (t1, t2) =>
-        (t2.closed         === closed.bind) &&
+        (t2.state === state.bind) &&
         (t1.userName       === owner.get.bind, owner.isDefined) &&
         (t1.repositoryName === repository.get.bind, repository.isDefined)
       }
@@ -68,7 +68,7 @@ trait PullRequestService { self: IssuesService =>
       commitIdFrom,
       commitIdTo)
 
-  def getPullRequestsByRequest(userName: String, repositoryName: String, branch: String, closed: Boolean)
+  def getPullRequestsByRequest(userName: String, repositoryName: String, branch: String, state: Int)
                               (implicit s: Session): List[PullRequest] =
     PullRequests
       .innerJoin(Issues).on { (t1, t2) => t1.byPrimaryKey(t2.userName, t2.repositoryName, t2.issueId) }
@@ -76,7 +76,7 @@ trait PullRequestService { self: IssuesService =>
         (t1.requestUserName       === userName.bind) &&
         (t1.requestRepositoryName === repositoryName.bind) &&
         (t1.requestBranch         === branch.bind) &&
-        (t2.closed                === closed.bind)
+        (t2.state                === state.bind)
       }
       .map { case (t1, t2) => t1 }
       .list

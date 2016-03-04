@@ -191,7 +191,7 @@ trait RepositoryService { self: AccountService =>
     (Repositories filter { t => t.byRepository(userName, repositoryName) } firstOption) map { repository =>
       // for getting issue count and pull request count
       val issues = Issues.filter { t =>
-        t.byRepository(repository.userName, repository.repositoryName) && (t.closed === false.bind)
+        t.byRepository(repository.userName, repository.repositoryName) && (t.state === 0.bind)
       }.map(_.pullRequest).list
 
       new RepositoryInfo(

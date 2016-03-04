@@ -225,7 +225,7 @@ class CommitLogHook(owner: String, repository: String, pusher: String, baseUrl: 
    * Fetch pull request contents into refs/pull/${issueId}/head and update pull request table.
    */
   private def updatePullRequests(branch: String) =
-    getPullRequestsByRequest(owner, repository, branch, false).foreach { pullreq =>
+    getPullRequestsByRequest(owner, repository, branch, 0).foreach { pullreq =>
       if(getRepository(pullreq.userName, pullreq.repositoryName, baseUrl).isDefined){
         using(Git.open(Directory.getRepositoryDir(pullreq.userName, pullreq.repositoryName)),
               Git.open(Directory.getRepositoryDir(pullreq.requestUserName, pullreq.requestRepositoryName))){ (oldGit, newGit) =>

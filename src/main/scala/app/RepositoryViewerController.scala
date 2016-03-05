@@ -16,7 +16,7 @@ import _root_.util.ControlUtil._
 import _root_.util._
 import service._
 import org.scalatra._
-import java.io.File
+import java.io.{ByteArrayOutputStream, InputStream, File}
 
 import org.eclipse.jgit.api.{ArchiveCommand, Git}
 import org.eclipse.jgit.archive.{TgzFormat, ZipFormat}
@@ -136,7 +136,15 @@ trait RepositoryViewerControllerBase extends ControllerBase {
         response = client.execute(httpGet, context)
         val entity = response.getEntity
         if (entity != null) {
-          org.json4s.jackson.Serialization.write( entity.getContent )
+          val baos =  new ByteArrayOutputStream()
+          def readString(in: InputStream) = {
+            val read = in.read()
+            if(read != -1) {
+              baos.write(read)
+            }
+          }
+          readString(entity.getContent)
+          baos.toString()
         }
       } finally {
         if(response != null)

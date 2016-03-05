@@ -7,7 +7,7 @@ showTimestamp: Boolean = false,
 unread: Boolean = false)(implicit context: app.Context)
 @import context._
 @import view.helpers._
-@if(comment.action != "close" && comment.action != "reopen" && comment.action != "delete_branch" && !comment.action.startsWith("git")){
+@if(comment.action != "close" && comment.action != "reopen" && comment.action != "fixed" && comment.action != "delete_branch" && !comment.action.startsWith("git")){
 <div class="timeline-comment-wrapper js-comment-container">
     <a href="@path/@comment.commentedUserName">
         @avatar(comment.commentedUserName, 48, avatarClass = "timeline-comment-avatar")
@@ -220,6 +220,27 @@ unread: Boolean = false)(implicit context: app.Context)
 </div>
 
 }
+
+
+@if(comment.action == "fixed" || comment.action == "fixed_comment"){
+
+<div class="discussion-item discussion-item-fixed">
+    <div class="discussion-item-header" id="event-@comment.commentId">
+        <span class="octicon octicon-circle-slash discussion-item-icon"></span>
+        @userTips(comment.commentedUserName, hasContainer = false) fixed this
+        @if(comment.content.split(" ").last.matches("[a-f0-9]{40}")){
+        in <code>
+        @defining(comment.content.substring(comment.content.length - 40)){ id =>
+        <a href="@url(repository)/commit/@id" >@id.substring(0, 7)</a>
+        }
+    </code>
+        }
+        @datetime(comment.registeredDate)
+    </div>
+</div>
+
+}
+
 @if(comment.action == "reopen" || comment.action == "reopen_comment"){
 
 <div class="discussion-item discussion-item-reopened">

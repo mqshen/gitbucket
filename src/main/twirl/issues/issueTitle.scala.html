@@ -27,10 +27,17 @@ repository: service.RepositoryService.RepositoryInfo)(implicit context: app.Cont
                 Closed
             </div>
             } else {
-            <div class="state state-open">
-                <span class="octicon octicon-issue-opened"></span>
-                Open
-            </div>
+                @if(issue.open) {
+                    <div class="state state-open">
+                        <span class="octicon octicon-issue-opened"></span>
+                        Open
+                    </div>
+                } else {
+                    <div class="state state-fixed">
+                        <span class="octicon octicon-issue-fixed"></span>
+                        Open
+                    </div>
+                }
             }
         </div>
         <div class="flex-table-item flex-table-item-primary">

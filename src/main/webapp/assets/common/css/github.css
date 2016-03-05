@@ -10702,6 +10702,11 @@ button.discussion-sidebar-toggle {
     background-color: #bd2c00;
 }
 
+.discussion-item-fixed .discussion-item-icon {
+    color: #fff;
+    background-color: #f3c251;
+}
+
 .discussion-item-head_ref_deleted .discussion-item-icon {
     padding-left: 2px;
     color: #fff;
@@ -13774,6 +13779,10 @@ input.color-editor-input:focus ~ .label-colors {
 
 .state-closed {
     background-color: #bd2c00;
+}
+
+.state-fixed {
+    background-color: #f4c351;
 }
 
 .state-renamed {

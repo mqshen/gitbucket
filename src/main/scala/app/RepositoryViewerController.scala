@@ -126,7 +126,6 @@ trait RepositoryViewerControllerBase extends ControllerBase {
   val cm = new PoolingHttpClientConnectionManager
 
   get("/:owner/:repository/build/lastSuccessful")(referrersOnly { repository =>
-    contentType = formats("json")
     repository.repository.jenkins.map { url =>
       val client = HttpClients.custom.setConnectionManager(cm).build
       var response: CloseableHttpResponse = null

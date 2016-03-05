@@ -4862,6 +4862,10 @@ body.menu-active .modal-backdrop {
     content: '\f028';
 }
 
+.octicon-issue-fixed:before {
+    content: '\f028';
+}
+
 .octicon-issue-opened:before {
     content: '\f026';
 }

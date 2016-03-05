@@ -224,7 +224,7 @@ trait IssuesControllerBase extends ControllerBase {
       getIssue(repository.owner, repository.name, oldIssue.issueId.toString).map { issue =>
 
         val timestamp = new Date()
-        GitbucketProducer.produceIssues(repository.owner, repository.name, form.issueId, timestamp)
+        //GitbucketProducer.produceIssues(repository.owner, repository.name, form.issueId, timestamp)
 
         contentType = formats("json")
         val hasWrite = hasWritePermission(repository.owner, repository.name, context.loginAccount)

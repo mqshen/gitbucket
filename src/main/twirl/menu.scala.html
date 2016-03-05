@@ -154,6 +154,19 @@
         </div>
         <div id="js-repo-pjax-container" class="repository-content context-loader-container" data-pjax-container="">
         @if(expand) {
+            @repository.repository.jenkins.map { jenkins =>
+            <div class="repository-meta js-details-container ">
+                <span class="repository-build" id="repository-build"></span>
+            </div>
+            <script>
+$(function() {
+  $.getJSON('@jenkins/lastSuccessfulBuild/api/json', function(data) {
+    var unixTimestamp = new Date(data.timestamp)
+    $('#repository-build').text(unixTimestamp.toLocaleString())
+  });
+});
+                </script>
+            }
             <span id="js-show-full-navigation"></span>
             @repository.repository.description.map { description =>
                 <div class="repository-meta js-details-container ">
@@ -161,6 +174,7 @@
                         @description
                     </div>
                 </div>
+
             }
 
 
@@ -205,6 +219,7 @@
         }
     }
     @body
+
 @if(!isPJax) {
     </div>
 </div>

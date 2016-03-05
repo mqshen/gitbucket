@@ -154,7 +154,7 @@ trait RepositoryViewerControllerBase extends ControllerBase {
         if(response != null)
           response.close()
       }
-    }.get("")
+    }.getOrElse("")
   })
 
   /**

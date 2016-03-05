@@ -1,7 +1,6 @@
 package app
 
 import _root_.util.JGitUtil.CommitInfo
-import com.ynet.iwowo.exception.WeixinException
 import org.apache.http.HttpEntity
 import org.apache.http.client.methods.{HttpGet, CloseableHttpResponse}
 import org.apache.http.impl.client.{HttpClients, CloseableHttpClient}

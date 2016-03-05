@@ -137,10 +137,11 @@ trait RepositoryViewerControllerBase extends ControllerBase {
         val entity = response.getEntity
         if (entity != null) {
           val baos =  new ByteArrayOutputStream()
-          def readString(in: InputStream) = {
+          def readString(in: InputStream): Unit = {
             val read = in.read()
             if(read != -1) {
               baos.write(read)
+              readString(in)
             }
           }
           readString(entity.getContent)

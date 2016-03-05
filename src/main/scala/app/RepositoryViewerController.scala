@@ -146,7 +146,8 @@ trait RepositoryViewerControllerBase extends ControllerBase {
             }
           }
           readString(entity.getContent)
-          Html(baos.toString())
+          println(baos.toString())
+          html.json(baos.toString())
         }
       } finally {
         if(response != null)

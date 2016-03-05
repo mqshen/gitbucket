@@ -12,6 +12,7 @@ class SecurityPolicyFilter extends Filter {
   def destroy(): Unit = {}
 
   def doFilter(req: ServletRequest, res: ServletResponse, chain: FilterChain): Unit = {
+    chain.doFilter(req, res)
     res match {
       case response: HttpServletResponse  =>
         println("=====================")
@@ -19,7 +20,6 @@ class SecurityPolicyFilter extends Filter {
         response.setHeader("Access-Control-Allow-Origin", "*")
       case _ =>
     }
-    chain.doFilter(req, res)
   }
 
 }

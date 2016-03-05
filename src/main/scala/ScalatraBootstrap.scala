@@ -10,6 +10,9 @@ import java.util.EnumSet
 class ScalatraBootstrap extends LifeCycle {
 
   override def init(context: ServletContext) {
+    val securityPolicyFilterHolder = context.addFilter("securityPolicyFilter", new SecurityPolicyFilter)
+    securityPolicyFilterHolder.setAsyncSupported(true)
+    context.getFilterRegistration("securityPolicyFilter").addMappingForUrlPatterns(EnumSet.allOf(classOf[DispatcherType]), true, "/*")
     // Register TransactionFilter and BasicAuthenticationFilter at first
     val transactionFilterHolder = context.addFilter("transactionFilter", new TransactionFilter)
     transactionFilterHolder.setAsyncSupported(true)
@@ -40,9 +43,6 @@ class ScalatraBootstrap extends LifeCycle {
     context.mount(new SocketController, "/socket")
 
 
-    val securityPolicyFilterHolder = context.addFilter("securityPolicyFilter", new SecurityPolicyFilter)
-    securityPolicyFilterHolder.setAsyncSupported(true)
-    context.getFilterRegistration("securityPolicyFilter").addMappingForUrlPatterns(EnumSet.allOf(classOf[DispatcherType]), true, "/*")
 
     // Create GITBUCKET_HOME directory if it does not exist
     val dir = new java.io.File(_root_.util.Directory.GitBucketHome)

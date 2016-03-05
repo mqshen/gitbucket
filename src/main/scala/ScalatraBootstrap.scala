@@ -1,4 +1,4 @@
-import servlet.{BasicAuthenticationFilter, TransactionFilter}
+import _root_.servlet.{SecurityPolicyFilter, BasicAuthenticationFilter, TransactionFilter}
 import app._
 import org.scalatra.servlet.RichServletContext
 
@@ -14,6 +14,7 @@ class ScalatraBootstrap extends LifeCycle {
     val transactionFilterHolder = context.addFilter("transactionFilter", new TransactionFilter)
     transactionFilterHolder.setAsyncSupported(true)
     context.getFilterRegistration("transactionFilter").addMappingForUrlPatterns(EnumSet.allOf(classOf[DispatcherType]), true, "/*")
+
 
     val authFilterHolder = context.addFilter("basicAuthenticationFilter", new BasicAuthenticationFilter)
     authFilterHolder.setAsyncSupported(true)
@@ -39,6 +40,9 @@ class ScalatraBootstrap extends LifeCycle {
     context.mount(new SocketController, "/socket")
 
 
+    val securityPolicyFilterHolder = context.addFilter("securityPolicyFilter", new SecurityPolicyFilter)
+    securityPolicyFilterHolder.setAsyncSupported(true)
+    context.getFilterRegistration("securityPolicyFilter").addMappingForUrlPatterns(EnumSet.allOf(classOf[DispatcherType]), true, "/*")
 
     // Create GITBUCKET_HOME directory if it does not exist
     val dir = new java.io.File(_root_.util.Directory.GitBucketHome)

@@ -1,4 +1,4 @@
-import _root_.servlet.{SecurityPolicyFilter, BasicAuthenticationFilter, TransactionFilter}
+import servlet.{BasicAuthenticationFilter, TransactionFilter}
 import app._
 import org.scalatra.servlet.RichServletContext
 
@@ -10,14 +10,10 @@ import java.util.EnumSet
 class ScalatraBootstrap extends LifeCycle {
 
   override def init(context: ServletContext) {
-    val securityPolicyFilterHolder = context.addFilter("securityPolicyFilter", new SecurityPolicyFilter)
-    securityPolicyFilterHolder.setAsyncSupported(true)
-    context.getFilterRegistration("securityPolicyFilter").addMappingForUrlPatterns(EnumSet.allOf(classOf[DispatcherType]), true, "/*")
     // Register TransactionFilter and BasicAuthenticationFilter at first
     val transactionFilterHolder = context.addFilter("transactionFilter", new TransactionFilter)
     transactionFilterHolder.setAsyncSupported(true)
     context.getFilterRegistration("transactionFilter").addMappingForUrlPatterns(EnumSet.allOf(classOf[DispatcherType]), true, "/*")
-
 
     val authFilterHolder = context.addFilter("basicAuthenticationFilter", new BasicAuthenticationFilter)
     authFilterHolder.setAsyncSupported(true)

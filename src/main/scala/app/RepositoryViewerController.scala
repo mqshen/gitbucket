@@ -9,6 +9,7 @@ import org.apache.http.protocol.{BasicHttpContext, HttpContext}
 import org.apache.http.util.EntityUtils
 import org.scalatra.i18n.Messages
 import org.scalatra.servlet.ScalatraAsyncSupport
+import play.twirl.api.Html
 import syntax.SyntaxUtil
 import util.Directory._
 import util.Implicits._
@@ -145,7 +146,7 @@ trait RepositoryViewerControllerBase extends ControllerBase {
             }
           }
           readString(entity.getContent)
-          baos.toString()
+          Html(baos.toString())
         }
       } finally {
         if(response != null)

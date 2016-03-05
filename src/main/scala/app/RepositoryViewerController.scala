@@ -136,10 +136,10 @@ trait RepositoryViewerControllerBase extends ControllerBase {
         response = client.execute(httpGet, context)
         val entity = response.getEntity
         if (entity != null) {
-          val baos =  new ByteArrayOutputStream()
+          val baos = new ByteArrayOutputStream()
           def readString(in: InputStream): Unit = {
             val read = in.read()
-            if(read != -1) {
+            if (read != -1) {
               baos.write(read)
               readString(in)
             }
@@ -147,6 +147,8 @@ trait RepositoryViewerControllerBase extends ControllerBase {
           readString(entity.getContent)
           println(baos.toString())
           html.json(baos.toString())
+        } else {
+          ""
         }
       } finally {
         if(response != null)

@@ -160,7 +160,7 @@
             </div>
             <script>
 $(function() {
-  $.getJSON('@jenkins/lastSuccessfulBuild/api/json', function(data) {
+  $.getJSON('@{url(repository)}/build/lastSuccessful', function(data) {
     var unixTimestamp = new Date(data.timestamp)
     $('#repository-build').text(unixTimestamp.toLocaleString())
   });

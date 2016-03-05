@@ -1,6 +1,13 @@
 package app
 
 import _root_.util.JGitUtil.CommitInfo
+import com.ynet.iwowo.exception.WeixinException
+import org.apache.http.HttpEntity
+import org.apache.http.client.methods.{HttpGet, CloseableHttpResponse}
+import org.apache.http.impl.client.{HttpClients, CloseableHttpClient}
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager
+import org.apache.http.protocol.{BasicHttpContext, HttpContext}
+import org.apache.http.util.EntityUtils
 import org.scalatra.i18n.Messages
 import org.scalatra.servlet.ScalatraAsyncSupport
 import syntax.SyntaxUtil
@@ -115,6 +122,31 @@ trait RepositoryViewerControllerBase extends ControllerBase {
       Map("count" ->  1
       ))
   }
+
+  val cm = new PoolingHttpClientConnectionManager
+
+  get("/:owner/:repository/build/lastSuccessful")(referrersOnly { repository =>
+    contentType = formats("json")
+    repository.repository.jenkins.map { url =>
+      val client = HttpClients.custom.setConnectionManager(cm).build
+      var response: CloseableHttpResponse = null
+      try {
+        val httpGet = new HttpGet(url)
+        httpGet.addHeader("Connection", "close")
+        val context: HttpContext = new BasicHttpContext
+        response = client.execute(httpGet, context)
+        val entity = response.getEntity
+        if (entity != null) {
+          org.json4s.jackson.Serialization.write( entity.getContent )
+        }
+      } finally {
+        if(response != null)
+          response.close()
+        client.close()
+      }
+    }
+
+  })
 
   /**
    * Displays the file list of the specified path and branch.

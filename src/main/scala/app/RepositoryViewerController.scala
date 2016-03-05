@@ -153,10 +153,8 @@ trait RepositoryViewerControllerBase extends ControllerBase {
       } finally {
         if(response != null)
           response.close()
-        client.close()
       }
-    }
-
+    }.get("")
   })
 
   /**

@@ -35,7 +35,8 @@ trait RepositoryService { self: AccountService =>
         originUserName       = originUserName,
         originRepositoryName = originRepositoryName,
         parentUserName       = parentUserName,
-        parentRepositoryName = parentRepositoryName)
+        parentRepositoryName = parentRepositoryName,
+        jenkins              = None)
 
     IssueId insert (userName, repositoryName, 0)
   }

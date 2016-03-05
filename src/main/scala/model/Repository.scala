@@ -17,7 +17,8 @@ trait RepositoryComponent extends TemplateComponent { self: Profile =>
     val originRepositoryName = column[String]("ORIGIN_REPOSITORY_NAME")
     val parentUserName = column[String]("PARENT_USER_NAME")
     val parentRepositoryName = column[String]("PARENT_REPOSITORY_NAME")
-    def * = (userName, repositoryName, isPrivate, description.?, defaultBranch, registeredDate, updatedDate, lastActivityDate, originUserName.?, originRepositoryName.?, parentUserName.?, parentRepositoryName.?) <> (Repository.tupled, Repository.unapply)
+    val jenkins = column[String]("JENKINS_URL")
+    def * = (userName, repositoryName, isPrivate, description.?, defaultBranch, registeredDate, updatedDate, lastActivityDate, originUserName.?, originRepositoryName.?, parentUserName.?, parentRepositoryName.?, jenkins.?) <> (Repository.tupled, Repository.unapply)
 
     def byPrimaryKey(owner: String, repository: String) = byRepository(owner, repository)
   }
@@ -35,5 +36,6 @@ case class Repository(
   originUserName: Option[String],
   originRepositoryName: Option[String],
   parentUserName: Option[String],
-  parentRepositoryName: Option[String]
+  parentRepositoryName: Option[String],
+  jenkins: Option[String]
 )

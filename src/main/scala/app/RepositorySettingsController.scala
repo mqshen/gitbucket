@@ -32,6 +32,15 @@ trait RepositorySettingsControllerBase extends ControllerBase {
     "isPrivate"      -> trim(label("Repository Type", boolean()))
   )(OptionsForm.apply)
 
+
+
+  // for repository options
+  case class JenkinsForm(jenkins: Option[String])
+
+  val jenkinsForm = mapping(
+    "jenkins" -> trim(label("Jenkins"    , optional(text())))
+  )(JenkinsForm.apply)
+
   case class BranchForm(defaultBranch: String)
 
   val branchForm = mapping(
@@ -88,6 +97,28 @@ trait RepositorySettingsControllerBase extends ControllerBase {
     contentType = formats("html")
     defaultBranch
   })
+
+  /**
+   * Display the Options page.
+   */
+  get("/:owner/:repository/settings/jenkins")(ownerOnly {
+    settings.html.jenkins(_, flash.get("info"))
+  })
+
+
+  /**
+   * Save the repository options.
+   */
+  post("/:owner/:repository/settings/jenkins", jenkinsForm)(ownerOnly { (form, repository) =>
+    saveRepositoryJenkins(
+      repository.owner,
+      repository.name,
+      form.jenkins
+    )
+    flash += "info" -> "Jenkins settings has been updated."
+    redirect(s"/${repository.owner}/${repository.name}/settings/jenkins")
+  })
+
   /**
    * Save the repository options.
    */

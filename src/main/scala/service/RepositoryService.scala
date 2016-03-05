@@ -310,6 +310,13 @@ trait RepositoryService { self: AccountService =>
       .update (description, defaultBranch, isPrivate, currentDate)
 
   /**
+   * Save repository options.
+   */
+  def saveRepositoryJenkins(userName: String, repositoryName: String, jenkins: Option[String])(implicit s: Session): Unit =
+    Repositories.filter(_.byRepository(userName, repositoryName))
+      .map { r => (r.jenkins.?) }
+      .update (jenkins)
+  /**
    * Add collaborator to the repository.
    *
    * @param userName the user name of the repository owner

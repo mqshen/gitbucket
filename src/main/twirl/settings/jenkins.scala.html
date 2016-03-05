@@ -1,0 +1,28 @@
+@(repository: service.RepositoryService.RepositoryInfo, info: Option[Any])(implicit context: app.Context)
+@import context._
+@import view.helpers._
+@html.main("Settings", Some(repository)){
+  @html.menu("settings", repository){
+    @menu("jenkins", repository){
+      @helper.html.information(info)
+<div id="options_bucket" class="tab-content">
+    <div class="boxed-group">
+        <h3>Settings</h3>
+        <div class="boxed-group-inner">
+            <form accept-charset="UTF-8" action="@url(repository)/settings/jenkins" method="post">
+                <dl class="form clearfix">
+                    <dt><label for="rename_field">Jenkins URL</label></dt>
+                    <dd>
+                        <input autocomplete="off" class="short js-repository-name" data-original-name="@repository.jenkins"
+                               id="rename_field" name="jenkins" type="text" value="@repository.jenkins">
+                        <button type="submit" class="button js-rename-repository-button" disabled="">Rename</button>
+                    </dd><dd class="error form-note js-form-note" style="display:none"></dd>
+                </dl>
+            </form>
+
+        </div>
+    </div>
+</div>
+    }
+  }
+}

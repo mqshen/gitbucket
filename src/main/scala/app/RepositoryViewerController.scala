@@ -130,7 +130,7 @@ trait RepositoryViewerControllerBase extends ControllerBase {
       val client = HttpClients.custom.setConnectionManager(cm).build
       var response: CloseableHttpResponse = null
       try {
-        val httpGet = new HttpGet(url)
+        val httpGet = new HttpGet(s"$url/lastSuccessfulBuild/api/json")
         httpGet.addHeader("Connection", "close")
         val context: HttpContext = new BasicHttpContext
         response = client.execute(httpGet, context)

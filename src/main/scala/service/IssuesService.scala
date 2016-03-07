@@ -193,7 +193,7 @@ trait IssuesService {
           assignedUserName,
           title,
           content,
-          1,
+          0,
           currentDate,
           currentDate,
           isPullRequest)

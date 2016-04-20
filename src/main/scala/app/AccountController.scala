@@ -245,20 +245,20 @@ trait AccountControllerBase extends AccountManagementControllerBase {
     redirect("/")
   })
 
-  get("/settings/ssh")(oneselfOnly {
+  get("/settings/ssh")(usersOnly {
     context.loginAccount.map { user =>
       account.html.ssh(user, getPublicKeys(user.userName))
     } getOrElse NotFound
   })
 
-  post("/settings/ssh", sshKeyForm)(oneselfOnly { form =>
+  post("/settings/ssh", sshKeyForm)(usersOnly { form =>
     context.loginAccount.map { user =>
       addPublicKey(user.userName, form.title, form.publicKey)
       redirect(s"/settings/ssh")
     }
   })
 
-  get("/setting/ssh/delete/:id")(oneselfOnly {
+  get("/setting/ssh/delete/:id")(usersOnly {
     context.loginAccount.map { user =>
       val sshKeyId = params("id").toInt
       deletePublicKey(user.userName, sshKeyId)
